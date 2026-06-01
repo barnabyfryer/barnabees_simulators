@@ -5,3 +5,4 @@ This repository contains:
 
 - MATLAB implementations
 - Python implementations
+- Mathematical formulations
