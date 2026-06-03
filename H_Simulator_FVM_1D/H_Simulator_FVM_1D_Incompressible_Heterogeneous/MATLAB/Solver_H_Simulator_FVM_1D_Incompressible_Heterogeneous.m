@@ -57,9 +57,9 @@ ux = zeros(1,Nx+1);
 
 %% - Build transmissivities
 %Find harmonic average between cells for permeability
-kHx = k(1:end-1).*k(2:end)./(k(1:end-1)+k(2:end));
+kHx = 2*k(1:end-1).*k(2:end)./(k(1:end-1)+k(2:end));
 %Calculate transmissivity
-HTx(:,2:Nx) = kHx/(mu*dx/2);
+HTx(:,2:Nx) = kHx/(mu*dx);
 %Deal with edge cell boundaries
 HTx(:,1) = k(:,1)/(mu*dx/2);
 HTx(:,Nx+1) = k(:,Nx)/(mu*dx/2);
