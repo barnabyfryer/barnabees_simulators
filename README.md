@@ -54,11 +54,15 @@ represents a:
 |------------|----------|------------------|---------|---------|
 | 01_H_Simulator_FVM_1D_Incompressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |
 | 02_H_Simulator_FVM_1D_Incompressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |
+| 03_H_Simulator_FVM_1D_Compressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ |  |
+| 04_H_Simulator_FVM_1D_Compressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ |  |
 
 ## Recommended Learning Order
 
 1. 01_H_FVM_1D_Incompressible_Homogeneous
 2. 02_H_FVM_1D_Incompressible_Heterogeneous
+3. 03_H_FVM_1D_Compressible_Homogeneous
+4. 04_H_FVM_1D_Compressible_Heterogeneous
 
 ---
 
@@ -108,12 +112,54 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 
 ---
 
+## 03_H_Simulator_FVM_1D_Compressible_Homogeneous
+
+**Directory**
+
+`H_Simulator_FVM_1D/03_H_Simulator_FVM_1D_Compressible_Homogeneous`
+
+**Description**
+
+A one-dimensional steady-state hydraulic flow simulator based on the Finite Volume Method (FVM).
+
+**Assumptions**
+
+- Single-phase fluid
+- Slightly compressible fluid
+- Homogeneous permeability
+- Constant permeability
+- No gravity
+- Fixed-pressure (Dirichlet) boundary conditions
+- Steady-state formulation
+
+---
+
+## 04_H_Simulator_FVM_1D_Compressible_Heterogeneous
+
+**Directory**
+
+`H_Simulator_FVM_1D/04_H_Simulator_FVM_1D_Compressible_Heterogeneous`
+
+**Description**
+
+A one-dimensional steady-state hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity.
+
+**Assumptions**
+
+- Single-phase fluid
+- Slightly compressible fluid
+- Heterogeneous permeability and porosity
+- Constant permeability within each cell
+- No gravity
+- Fixed-pressure (Dirichlet) boundary conditions
+- Steady-state formulation
+
+---
+
 ## Planned Future Simulators
 
 ### Hydraulic (H)
 
-- 1D transient flow
-- Compressible fluid flow
 - Variable viscosity
 - Gravity-driven flow
 - Multiphase flow

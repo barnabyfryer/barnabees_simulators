@@ -1,0 +1,37 @@
+function [A] = Upwind(Gen,State,Trans)
+%% - Upwind Calculator
+%Returns structure of 2 matrices containg whether a cell (represented by the row)
+%is the upstream direction for flow between it and the cell (column) on the right (or top) of row cell
+%Barnaby Fryer - EPFL - 29.03.17
+
+P = reshape(State.P,Gen.Nx,1);                              %[Nx,1]
+Nx = Gen.Nx;                                                %[1,1]
+Ny = 1;                                                     %[1,1]
+N = Nx*Ny;                                                  %[1,1]
+
+%Find velocities at edges. These velocities are still missing all fluid
+%properties which need to be upwinded (kr, rho, mu)
+U.x = zeros(Nx+1,1);                                        %[Nx+1,1]
+%Velocity at cell edge in x-direction. If positive flow to right
+U.x(2:Nx,:) = (P(1:Nx-1,:)-P(2:Nx,:)).*Trans.x(2:Nx,:);     %[1,Nx]
+
+%Use velocity to build upwind operator
+%The U.x >0 returns a 1 for all locations with non-negative velocity
+R = reshape((U.x(2:Nx+1,:) >= 0), N, 1);                    %[N,1] 
+%Then the vector is reshaped to be the size of the reservoir
+L = reshape((U.x(1:Nx,:) < 0), N, 1);                       %[N,1]
+
+%Stores the vectors containing if the cell is upstream on its right and
+%left interfaces
+DiagVecs = [R, L];                                          %[N,2]              
+%This and the line below build a diagonal matrix. Note!! The vector
+%containing if the cell is the upstream direction for the left interface
+%is cut-off
+DiagIndx = [0,1];                                           %[1,2]                        
+%This means that the left directions are shifted such that in the first row
+%it will actually be if the second cell is the upstream direction for the
+%first cell
+A.x = spdiags(DiagVecs,DiagIndx,N,N);                       %[N,1]
+
+end
+
