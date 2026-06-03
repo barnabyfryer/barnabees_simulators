@@ -36,7 +36,7 @@ Additional descriptors indicate:
 
 Example:
 
-`H_Simulator_FVM_1D_Incompressible_Homogeneous`
+`01_H_Simulator_FVM_1D_Incompressible_Homogeneous`
 
 represents a:
 
@@ -52,18 +52,23 @@ represents a:
 
 | Simulator | Physics | Numerical Method | MATLAB | Python |
 |------------|----------|------------------|---------|---------|
-| H_Simulator_FVM_1D_Incompressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |
-| H_Simulator_FVM_1D_Incompressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |
+| 01_H_Simulator_FVM_1D_Incompressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |
+| 02_H_Simulator_FVM_1D_Incompressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |
+
+## Recommended Learning Order
+
+1. 01_H_FVM_1D_Incompressible_Homogeneous
+2. 02_H_FVM_1D_Incompressible_Heterogeneous
 
 ---
 
 # Simulator Descriptions
 
-## H_Simulator_FVM_1D_Incompressible_Homogeneous
+## 01_H_Simulator_FVM_1D_Incompressible_Homogeneous
 
 **Directory**
 
-`H_Simulator_FVM_1D/H_Simulator_FVM_1D_Incompressible_Homogeneous`
+`H_Simulator_FVM_1D/01_H_Simulator_FVM_1D_Incompressible_Homogeneous`
 
 **Description**
 
@@ -81,11 +86,11 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 
 ---
 
-## H_Simulator_FVM_1D_Incompressible_Heterogeneous
+## 02_H_Simulator_FVM_1D_Incompressible_Heterogeneous
 
 **Directory**
 
-`H_Simulator_FVM_1D/H_Simulator_FVM_1D_Incompressible_Heterogeneous`
+`H_Simulator_FVM_1D/02_H_Simulator_FVM_1D_Incompressible_Heterogeneous`
 
 **Description**
 
