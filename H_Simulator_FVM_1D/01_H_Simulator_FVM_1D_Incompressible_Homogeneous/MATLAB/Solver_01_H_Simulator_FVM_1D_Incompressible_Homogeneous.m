@@ -14,7 +14,7 @@ close all
 
 %% - Inputs
 %Number of cells for discretization [-]
-Nx = 10;
+Nx = 100;
 %Viscosity [Pa sec]
 mu = 1;
 %Permeability [m^2]
@@ -28,7 +28,7 @@ PR = 0;
 
 %% - Plotting inputs
 Plotting.lwidth_1col = 0.75;
-Plotting.Position_1col_matrix = [2.2 1.8 6 4.5];
+Plotting.Position_1col_matrix = [4.5 3 6 4.5];
 Plotting.fsize_1col = 7;
 
 %% - Preparation
@@ -85,19 +85,31 @@ end
 ux(:,1) = (PL - P(1)).*HTx_boundary;
 ux(:,Nx+1) = (P(Nx) - PR).*HTx_boundary;
 
+%% - Find error
+P_an = (PL + (PR-PL)*x/Lx);
+ux_an = -k*(PR-PL)/(mu*Lx)*(ux*0+1);
+
+Ep = max(abs((P' - P_an)./P_an));
+Eq = max(abs((ux - ux_an)./ux_an));
+
 %% - Plotting pressure
 fh = figure;
 ax = axes;
 set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+hold on
 plot(x,P/1e6, 'k-','LineWidth',Plotting.lwidth_1col);
+plot(x,P_an/1e6, 'r--','LineWidth',Plotting.lwidth_1col);
 xlab = xlabel('$$x$$ [m]');
 ylab = ylabel('$$P_{\mathrm{p}}$$ [MPa]');
 set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+lgd = legend('Simulation','Analytical Soln.');
+set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+legend box off
 
 %% - Plotting velocity
 fh = figure;
@@ -105,11 +117,16 @@ ax = axes;
 set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+hold on
 plot(x_edge,ux, 'k-','LineWidth',Plotting.lwidth_1col);
+plot(x_edge,ux_an 'r--','LineWidth',Plotting.lwidth_1col);
 xlab = xlabel('$$x$$ [m]');
 ylab = ylabel('Darcy Flux $$q_{x}$$ [m/s]');
 set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+lgd = legend('Simulation','Analytical Soln.');
+set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+legend box off
 

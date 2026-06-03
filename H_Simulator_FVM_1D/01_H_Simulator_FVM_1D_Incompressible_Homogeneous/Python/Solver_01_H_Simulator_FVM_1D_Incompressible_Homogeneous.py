@@ -97,6 +97,19 @@ ux[0] = (PL - P[0]) * HTx_boundary
 ux[-1] = (P[-1] - PR) * HTx_boundary
 
 # =============================================================================
+# Find error
+# =============================================================================
+
+P_an = (PL + (PR-PL)*x/Lx)
+ux_an = -k*(PR-PL)/(mu*Lx)*(ux*0+1)
+
+Ep = np.max(np.abs((P - P_an) / P_an))
+Eq = np.max(np.abs((ux - ux_an) / ux_an))
+
+print(f'Maximum relative pressure error     = {Ep:.6e}')
+print(f'Maximum relative Darcy flux error   = {Eq:.6e}')
+
+# =============================================================================
 # Plotting pressure
 # =============================================================================
 
@@ -104,7 +117,8 @@ fig, ax = plt.subplots()
 # Figure size
 fig.set_size_inches(6, 4.5)
 # Plot
-ax.plot(x, P/1e6, 'k-', linewidth=1)
+ax.plot(x, P/1e6, 'k-', linewidth=1, label='Simulation')
+ax.plot(x, P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
 # Labels
 ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
 ax.set_ylabel(r'Pressure, $P$ [MPa]', fontsize=10)
@@ -115,6 +129,11 @@ ax.tick_params(direction='out')
 # Box off
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
+lgd = ax.legend(fontsize=7)
+lgd.set_frame_on(False)
+fig.savefig('../Verification/Pp_Python.jpg',
+            dpi=300,
+            bbox_inches='tight')
 plt.show()
 
 # =============================================================================
@@ -125,7 +144,8 @@ fig, ax = plt.subplots()
 # Figure size
 fig.set_size_inches(6, 4.5)
 # Plot
-ax.plot(x_edge, ux, 'k-', linewidth=1)
+ax.plot(x_edge, ux, 'k-', linewidth=1, label='Simulation')
+ax.plot(x_edge, ux_an, 'r--', linewidth=1, label='Analytical Soln.')
 # Labels
 ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
 ax.set_ylabel(r'Darcy Flux [m/s]', fontsize=10)
@@ -136,4 +156,9 @@ ax.tick_params(direction='out')
 # Box off
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
+lgd = ax.legend(fontsize=7)
+lgd.set_frame_on(False)
+fig.savefig('../Verification/Flux_Python.jpg',
+            dpi=300,
+            bbox_inches='tight')
 plt.show()

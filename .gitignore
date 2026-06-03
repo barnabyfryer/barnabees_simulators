@@ -1,4 +1,15 @@
+# Python files
 .venv/
 .idea/
 __pycache__/
 *.pyc
+
+# Latex files
+*.aux
+*.log
+*.out
+*.tex
+*.jpg
+
+# MATLAB files
+*.asv
