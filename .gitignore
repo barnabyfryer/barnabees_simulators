@@ -10,6 +10,7 @@ __pycache__/
 *.out
 *.tex
 *.jpg
+*.sty
 
 # MATLAB files
 *.asv
