@@ -54,7 +54,7 @@ represents a:
 |------------|----------|------------------|---------|---------|------------|------------|
 | 01_H_Simulator_FVM_1D_Incompressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ | ✓ | ✓ |
 | 02_H_Simulator_FVM_1D_Incompressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |  | ✓ |
-| 03_H_Simulator_FVM_1D_Compressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ |  |  |  |
+| 03_H_Simulator_FVM_1D_Compressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
 | 04_H_Simulator_FVM_1D_Compressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ |  |  |  |
 
 ## Recommended Learning Order
