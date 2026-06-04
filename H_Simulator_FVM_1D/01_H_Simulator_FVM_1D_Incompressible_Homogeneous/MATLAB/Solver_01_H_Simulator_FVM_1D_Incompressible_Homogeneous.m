@@ -119,7 +119,7 @@ set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 hold on
 plot(x_edge,ux, 'k-','LineWidth',Plotting.lwidth_1col);
-plot(x_edge,ux_an 'r--','LineWidth',Plotting.lwidth_1col);
+plot(x_edge,ux_an, 'r--','LineWidth',Plotting.lwidth_1col);
 xlab = xlabel('$$x$$ [m]');
 ylab = ylabel('Darcy Flux $$q_{x}$$ [m/s]');
 set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
