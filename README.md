@@ -56,6 +56,7 @@ represents a:
 | 02_H_Simulator_FVM_1D_Incompressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |  | ✓ |
 | 03_H_Simulator_FVM_1D_Compressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
 | 04_H_Simulator_FVM_1D_Compressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
+| 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | Finite Volume Method |  |  |  | ✓ |
 
 ## Recommended Learning Order
 
@@ -63,6 +64,7 @@ represents a:
 2. 02_H_FVM_1D_Incompressible_Heterogeneous
 3. 03_H_FVM_1D_Compressible_Homogeneous
 4. 04_H_FVM_1D_Compressible_Heterogeneous
+5. 05_H_FVM_1D_Neumann_Wells
 
 ---
 
@@ -153,6 +155,29 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 - No gravity
 - Fixed-pressure (Dirichlet) boundary conditions
 - Steady-state formulation
+
+---
+
+## 05_H_Simulator_FVM_1D_Neumann_Wells
+
+**Directory**
+
+`H_Simulator_FVM_1D/05_H_Simulator_FVM_1D_Neumann_Wells`
+
+**Description**
+
+A one-dimensional steady-state hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity and including source terms (wells).
+
+**Assumptions**
+
+- Single-phase fluid
+- Slightly compressible fluid
+- Heterogeneous permeability and porosity
+- Constant permeability within each cell
+- No gravity
+- No-flow (Neumann) boundary conditions
+- Steady-state formulation
+- Source terms in domain (wells)
 
 ---
 
