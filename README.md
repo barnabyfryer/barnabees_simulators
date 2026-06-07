@@ -57,6 +57,8 @@ represents a:
 | 03_H_Simulator_FVM_1D_Compressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
 | 04_H_Simulator_FVM_1D_Compressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
 | 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | Finite Volume Method |  |  |  | ✓ |
+| 06_H_Simulator_FVM_1D_CompressibleRock | Hydraulic | Finite Volume Method |  |  |  | ✓ |
+| 07_H_Simulator_FVM_1D_2Phase_Immiscible | Hydraulic | Finite Volume Method |  |  |  |  |
 
 ## Recommended Learning Order
 
@@ -65,6 +67,8 @@ represents a:
 3. 03_H_FVM_1D_Compressible_Homogeneous
 4. 04_H_FVM_1D_Compressible_Heterogeneous
 5. 05_H_FVM_1D_Neumann_Wells
+6. 06_H_Simulator_FVM_1D_CompressibleRock
+7. 07_H_Simulator_FVM_1D_2Phase_Immiscible
 
 ---
 
@@ -122,7 +126,7 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 
 **Description**
 
-A one-dimensional steady-state hydraulic flow simulator based on the Finite Volume Method (FVM).
+A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FVM).
 
 **Assumptions**
 
@@ -132,7 +136,6 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 - Constant permeability
 - No gravity
 - Fixed-pressure (Dirichlet) boundary conditions
-- Steady-state formulation
 
 ---
 
@@ -144,7 +147,7 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 
 **Description**
 
-A one-dimensional steady-state hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity.
+A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity.
 
 **Assumptions**
 
@@ -154,7 +157,6 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 - Constant permeability within each cell
 - No gravity
 - Fixed-pressure (Dirichlet) boundary conditions
-- Steady-state formulation
 
 ---
 
@@ -166,7 +168,7 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 
 **Description**
 
-A one-dimensional steady-state hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity and including source terms (wells).
+A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity and including source terms (wells).
 
 **Assumptions**
 
@@ -176,7 +178,50 @@ A one-dimensional steady-state hydraulic flow simulator based on the Finite Volu
 - Constant permeability within each cell
 - No gravity
 - No-flow (Neumann) boundary conditions
-- Steady-state formulation
+- Source terms in domain (wells)
+
+---
+
+## 06_H_Simulator_FVM_1D_CompressibleRock
+
+**Directory**
+
+`H_Simulator_FVM_1D/06_H_Simulator_FVM_1D_CompressibleRock`
+
+**Description**
+
+A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity which depend on fluid pressure and including source terms (wells).
+
+**Assumptions**
+
+- Single-phase fluid
+- Slightly compressible fluid
+- Heterogeneous permeability and porosity which depends on fluid pressure
+- Constant permeability within each cell
+- No gravity
+- No-flow (Neumann) boundary conditions
+- Source terms in domain (wells)
+
+---
+
+## 07_H_Simulator_FVM_1D_2Phase_Immiscible
+
+**Directory**
+
+`H_Simulator_FVM_1D/07_H_Simulator_FVM_1D_2Phase_Immiscible`
+
+**Description**
+
+A one-dimensional two-phase hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity which depend on fluid pressure and including source terms (wells).
+
+**Assumptions**
+
+- Two-phase immiscible fluids
+- Slightly compressible fluids
+- Heterogeneous permeability and porosity which depends on fluid pressure
+- Constant permeability within each cell
+- No gravity
+- No-flow (Neumann) boundary conditions
 - Source terms in domain (wells)
 
 ---
