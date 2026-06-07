@@ -23,12 +23,12 @@ import matplotlib.pyplot as plt
 Nx = 100
 # Viscosity [Pa sec]
 mu = 1
-# Permeability, of outer edges [m^2]
-k_out = 1
-# Permeability, of inner zone [m^2]
-k_in = 5
-# Permeability edge bands length [m]
-L_k = 0.2
+# Permeability, of left edges [m^2]
+k_1 = 1
+# Permeability, of right zone [m^2]
+k_2 = 5
+# Permeability left bands length [m]
+L_1 = 0.5
 # Length [m]
 Lx = 1
 #Fixed boundary pressure on left [Pa]
@@ -51,9 +51,8 @@ x = np.linspace(dx/2, Lx - dx/2, Nx)
 # Define edge positions
 x_edge = np.linspace(0, Lx, Nx+1)
 # Define permeability of each cell
-k = np.ones(Nx)*k_in
-k[x < L_k] = k_out
-k[x > Lx-L_k] = k_out
+k = np.ones(Nx)*k_2
+k[x < L_1] = k_1
 # Predefine memory for flow through each cell
 q = np.zeros(Nx)
 # Predefine memory for velocity across cell boundary
@@ -110,6 +109,22 @@ ux[0] = (PL - P[0]) * HTx[0]
 ux[-1] = (P[-1] - PR) * HTx[-1]
 
 # =============================================================================
+# Find error
+# =============================================================================
+
+keff = Lx / (L_1/k_1 + (Lx - L_1)/k_2)
+ux_an = -keff * (PR - PL) / (mu *Lx)
+
+P_an = PL - (mu*ux_an/k_1)*x
+P_an[x > L_1] = PR - (mu*ux_an/k_2) * (x[x > L_1] - Lx)
+
+Ep = np.max(np.abs((P - P_an) / P_an))
+Eq = np.max(np.abs((ux - ux_an) / ux_an))
+
+print(f'Maximum relative pressure error     = {Ep:.6e}')
+print(f'Maximum relative Darcy flux error   = {Eq:.6e}')
+
+# =============================================================================
 # Plotting pressure
 # =============================================================================
 
@@ -117,7 +132,8 @@ fig, ax = plt.subplots()
 # Figure size
 fig.set_size_inches(6, 4.5)
 # Plot
-ax.plot(x, P/1e6, 'k-', linewidth=1)
+ax.plot(x, P/1e6, 'k-', linewidth=1, label='Simulation')
+ax.plot(x, P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
 # Labels
 ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
 ax.set_ylabel(r'Pressure, $P$ [MPa]', fontsize=10)
@@ -128,6 +144,11 @@ ax.tick_params(direction='out')
 # Box off
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
+lgd = ax.legend(fontsize=7)
+lgd.set_frame_on(False)
+fig.savefig('../Verification/Pp_Python.jpg',
+            dpi=300,
+            bbox_inches='tight')
 plt.show()
 
 # =============================================================================
@@ -159,7 +180,8 @@ fig, ax = plt.subplots()
 # Figure size
 fig.set_size_inches(6, 4.5)
 # Plot
-ax.plot(x_edge, ux, 'k-', linewidth=1)
+ax.plot(x_edge, ux, 'k-', linewidth=1, label='Simulation')
+ax.plot([0, Lx], [ux_an, ux_an], 'r--', linewidth=1, label='Analytical Soln.')
 # Labels
 ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
 ax.set_ylabel(r'Darcy Flux [m/s]', fontsize=10)
@@ -170,4 +192,9 @@ ax.tick_params(direction='out')
 # Box off
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
+lgd = ax.legend(fontsize=7)
+lgd.set_frame_on(False)
+fig.savefig('../Verification/Flux_Python.jpg',
+            dpi=300,
+            bbox_inches='tight')
 plt.show()

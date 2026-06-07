@@ -53,7 +53,7 @@ represents a:
 | Simulator | Physics | Numerical Method | MATLAB | Python | Verification | Formulation |
 |------------|----------|------------------|---------|---------|------------|------------|
 | 01_H_Simulator_FVM_1D_Incompressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ | ✓ | ✓ |
-| 02_H_Simulator_FVM_1D_Incompressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ |  | ✓ |
+| 02_H_Simulator_FVM_1D_Incompressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ | ✓ | ✓ |
 | 03_H_Simulator_FVM_1D_Compressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
 | 04_H_Simulator_FVM_1D_Compressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
 | 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | Finite Volume Method |  |  |  | ✓ |

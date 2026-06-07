@@ -17,12 +17,12 @@ close all
 Nx = 100;
 %Viscosity [Pa sec]
 mu = 1;
-%Permeability, of outer edges [m^2]
-k_out = 1;
-%Permeability, of inner zone [m^2]
-k_in = 5;
-%Permeability edge bands length [m]
-L_k = 0.2;
+%Permeability, of left edges [m^2]
+k_1 = 1;
+%Permeability, of right zone [m^2]
+k_2 = 5;
+%Permeability left bands length [m]
+L_1 = 0.5;
 %Length [m]
 Lx = 1;
 %Fixed boundary pressure on left [Pa]
@@ -32,7 +32,7 @@ PR = 0;
 
 %% - Plotting inputs
 Plotting.lwidth_1col = 0.75;
-Plotting.Position_1col_matrix = [2.2 1.8 6 4.5];
+Plotting.Position_1col_matrix = [4.5 3 6 4.5];
 Plotting.fsize_1col = 7;
 
 %% - Preparation
@@ -47,9 +47,8 @@ x = linspace(dx/2,Nx*dx-dx/2,Nx);
 %Define edge positions
 x_edge = linspace(0,Lx,Nx+1);
 %Define permeability of each cell
-k = ones(1,Nx)*k_in;
-k(x < L_k) = k_out;
-k(x > Lx-L_k) = k_out;
+k = ones(1,Nx)*k_2;
+k(x < L_1) = k_1;
 %Predefine memory for flow through each cell
 q = zeros(Nx,1);
 %Predefine memory for velocity across cell boundary
@@ -98,19 +97,34 @@ end
 ux(:,1) = (PL - P(1)).*HTx(:,1);
 ux(:,Nx+1) = (P(Nx) - PR).*HTx(:,Nx+1);
 
+%% - Find error
+keff = Lx/(L_1/k_1 + (Lx-L_1)/k_2);
+ux_an = -keff*(PR-PL)/(mu*Lx);
+
+P_an = PL - mu*ux_an/k_1 .* x;
+P_an(x > L_1) = PR - mu*ux_an/k_2 .* (x(x > L_1) - Lx);
+
+Ep = max(abs((P' - P_an)./P_an));
+Eq = max(abs((ux - ux_an)./ux_an));
+
 %% - Plotting pressure
 fh = figure;
 ax = axes;
 set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+hold on
 plot(x,P/1e6, 'k-','LineWidth',Plotting.lwidth_1col);
+plot(x,P_an/1e6, 'r--','LineWidth',Plotting.lwidth_1col);
 xlab = xlabel('$$x$$ [m]');
 ylab = ylabel('$$P_{\mathrm{p}}$$ [MPa]');
 set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+lgd = legend('Simulation','Analytical Soln.');
+set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+legend box off
 
 %% - Plotting permeability
 fh = figure;
@@ -132,11 +146,16 @@ ax = axes;
 set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+hold on
 plot(x_edge,ux, 'k-','LineWidth',Plotting.lwidth_1col);
+plot([0 Lx],[ux_an ux_an], 'r--','LineWidth',Plotting.lwidth_1col);
 xlab = xlabel('$$x$$ [m]');
 ylab = ylabel('Darcy Flux $$q_{x}$$ [m/s]');
 set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+lgd = legend('Simulation','Analytical Soln.');
+set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+legend box off
 
