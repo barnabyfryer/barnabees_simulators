@@ -56,7 +56,7 @@ represents a:
 | 02_H_Simulator_FVM_1D_Incompressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ | ✓ | ✓ | ✓ |
 | 03_H_Simulator_FVM_1D_Compressible_Homogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
 | 04_H_Simulator_FVM_1D_Compressible_Heterogeneous | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
-| 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | Finite Volume Method |  |  |  | ✓ |
+| 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | Finite Volume Method | ✓ |  |  | ✓ |
 | 06_H_Simulator_FVM_1D_CompressibleRock | Hydraulic | Finite Volume Method |  |  |  | ✓ |
 | 07_H_Simulator_FVM_1D_2Phase_Immiscible | Hydraulic | Finite Volume Method |  |  |  |  |
 
