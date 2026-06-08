@@ -12,10 +12,10 @@
 # =============================================================================
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from src.FIMPressure_1D_1Phase import FIMPressure_1D_1Phase
 from src.input_data import input_data
+from src.Plotting_file import Plotting_file
 
 # =============================================================================
 # Inputs
@@ -31,6 +31,11 @@ while State["t"] < Gen["tf"]:
 
     State = FIMPressure_1D_1Phase(Flow,Gen,State)
 
+    #Store results
+    if np.any(np.isclose(State["t"], Storage["TStorage"])):
+        State["step"] += 1
+        Storage["P"][State["step"], :] = State["P"]
+        Storage["flux"][State["step"], :] = State["flux"]
 
     State["t"] += Gen["tstep"]
 
@@ -38,30 +43,6 @@ while State["t"] < Gen["tf"]:
 # Plotting
 # =============================================================================
 
-# =============================================================================
-# Plotting pressure
-# =============================================================================
+Plotting_file(Gen,Storage)
 
-fig, ax = plt.subplots()
-# Figure size
-fig.set_size_inches(6, 4.5)
-# Plot
-ax.plot(Gen["x"], State["P"]/1e6, 'k-', linewidth=1, label='Simulation')
-#ax.plot(x, P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
-# Labels
-ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
-ax.set_ylabel(r'Pressure, $P$ [MPa]', fontsize=10)
-# Font size
-ax.tick_params(labelsize=7)
-# Tick direction
-ax.tick_params(direction='out')
-# Box off
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-lgd = ax.legend(fontsize=7)
-lgd.set_frame_on(False)
-#fig.savefig('../Verification/Pp_Python.jpg',
-            #dpi=300,
-            #bbox_inches='tight')
-plt.show()
 

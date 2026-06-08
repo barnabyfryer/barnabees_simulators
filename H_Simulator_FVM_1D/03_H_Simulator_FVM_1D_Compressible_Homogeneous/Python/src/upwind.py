@@ -19,12 +19,13 @@ def upwind(Gen,State,Trans):
 
     #Use velocity to build upwind operator
     #The U.x >0 returns a 1 for all locations with non-negative velocity
-    R = (Ux[1:Nx+1] >= 0).astype(int)
+    R = (Ux[1:Nx+1] >= 0).astype(np.float64)
     #Then the vector is reshaped to be the size of the reservoir
-    L = (Ux[0:Nx] < 0).astype(int)
+    L = (Ux[0:Nx] < 0).astype(np.float64)
 
     #Stores the vectors containing if the cell is upstream on its right and left interfaces
     A = {}
     A["x"] = diags([R, L],[0, 1],shape=(N, N)).tocsr()
+
 
     return A

@@ -63,7 +63,7 @@ def FIMPressure_1D_1Phase(Flow,Gen,State):
     #Find convection into cell
     Conv = Ftrans @ State["P"]
     #Add boundary condition
-    BC = add_bc(dRhodP,Gen,Rho,State,trans)
+    BC,_ = add_bc(dRhodP,Gen,Rho,State,trans)
     #Fluid flux into cell
     State["flux"] = -(Conv + BC)
 

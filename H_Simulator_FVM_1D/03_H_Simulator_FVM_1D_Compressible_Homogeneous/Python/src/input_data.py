@@ -68,7 +68,7 @@ def input_data():
         1e5
     )
 
-    State["step"] = 1
+    State["step"] = 0
 
     # ------------------------------------------------------------------
     # Storage Matrices
@@ -87,10 +87,17 @@ def input_data():
             * Gen["tstep"]
     )
 
+
+    #Store the initial pressure and prepare storage space
     Storage["P"] = np.zeros(
-        (TStore, Gen["Nx"])
+        (TStore+1, Gen["Nx"])
     )
 
     Storage["P"][0, :] = State["P"]
+
+    #Store the initial flux (assumed zero) and prepare storage space
+    Storage["flux"] = np.zeros(
+        (TStore+1, Gen["Nx"])
+    )
 
     return Flow, Gen, State, Storage
