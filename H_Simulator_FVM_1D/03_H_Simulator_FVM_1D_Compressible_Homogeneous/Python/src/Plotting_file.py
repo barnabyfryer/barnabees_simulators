@@ -1,6 +1,19 @@
 import matplotlib.pyplot as plt
+from scipy.special import erfc
+import numpy as np
 
-def Plotting_file(Gen,Storage):
+def Plotting_file(Flow,Gen,Storage):
+
+    # =============================================================================
+    # Validation
+    # =============================================================================
+    #Semi infinite solution, valid at early time
+    alpha = Flow["kx"] / (Flow["phi"] * Flow["muf"] * Flow["cf"])
+    P_an = 1e5 + (Gen["PL"] - 1e5) * erfc(Storage["x"] / (2 * np.sqrt(alpha * Storage["TStorage"][1])))
+    #Error calculation
+    err = np.abs((Storage["P"][1, :] - P_an) / (Gen["PL"] - Gen["PR"]))
+    Ep = np.max(err)
+    print(f'Maximum relative pressure error     = {Ep:.6e}')
 
     # =============================================================================
     # Plotting pressure
@@ -10,12 +23,8 @@ def Plotting_file(Gen,Storage):
     # Figure size
     fig.set_size_inches(6, 4.5)
     # Plot
-    ax.plot(Gen["x"], Storage["P"][0, :] / 1e6, 'k-', linewidth=1, label='Simulation')
     ax.plot(Gen["x"], Storage["P"][1, :] / 1e6, 'k-', linewidth=1, label='Simulation')
-    ax.plot(Gen["x"], Storage["P"][2, :] / 1e6, 'k-', linewidth=1, label='Simulation')
-    ax.plot(Gen["x"], Storage["P"][3, :] / 1e6, 'k-', linewidth=1, label='Simulation')
-    ax.plot(Gen["x"], Storage["P"][4, :] / 1e6, 'k-', linewidth=1, label='Simulation')
-    # ax.plot(x, P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
+    ax.plot(Gen["x"], P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
     # Labels
     ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
     ax.set_ylabel(r'Pressure, $P$ [MPa]', fontsize=10)
@@ -41,11 +50,7 @@ def Plotting_file(Gen,Storage):
     # Figure size
     fig.set_size_inches(6, 4.5)
     # Plot
-    ax.plot(Gen["x"], Storage["flux"][0, :], 'k-', linewidth=1, label='Simulation')
     ax.plot(Gen["x"], Storage["flux"][1, :], 'k-', linewidth=1, label='Simulation')
-    ax.plot(Gen["x"], Storage["flux"][2, :], 'k-', linewidth=1, label='Simulation')
-    ax.plot(Gen["x"], Storage["flux"][3, :], 'k-', linewidth=1, label='Simulation')
-    ax.plot(Gen["x"], Storage["flux"][4, :], 'k-', linewidth=1, label='Simulation')
     # Labels
     ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
     ax.set_ylabel(r'Darcy Flux [m/s]', fontsize=10)

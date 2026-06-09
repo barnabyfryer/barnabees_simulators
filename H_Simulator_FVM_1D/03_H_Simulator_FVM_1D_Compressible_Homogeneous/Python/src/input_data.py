@@ -8,18 +8,18 @@ def input_data():
 
     Gen = {}
 
-    Gen["tf"] = 1000.0  # Final time [sec]
-    Gen["tstep"] = 100.0  # Time step [sec]
-    Gen["tol"] = 1e-4  # Tolerance [-]
+    Gen["tf"] = 200.0  # Final time [sec]
+    Gen["tstep"] = 1.0  # Time step [sec]
+    Gen["tol"] = 1e-8  # Tolerance [-]
 
-    Gen["Nx"] = 1000  # Number of cells [-]
+    Gen["Nx"] = 10000  # Number of cells [-]
 
     Gen["Lx"] = 10.0  # Reservoir length x [m]
     Gen["Ly"] = 1.0  # Reservoir length y [m]
     Gen["Lz"] = 1.0  # Reservoir height [m]
 
     Gen["PL"] = 10e6  # Left pressure [Pa]
-    Gen["PR"] = 1e6  # Right pressure [Pa]
+    Gen["PR"] = 1e5  # Right pressure [Pa]
 
     # ------------------------------------------------------------------
     # Basic Calculations
@@ -49,7 +49,7 @@ def input_data():
     Flow["kx"] = 1e-12  # Permeability [m²]
     Flow["phi"] = 0.2  # Porosity [-]
 
-    Flow["cf"] = 1e-8  # Fluid compressibility [1/Pa]
+    Flow["cf"] = 5e-8  # Fluid compressibility [1/Pa]
     Flow["muf"] = 0.1  # Fluid viscosity [Pa.s]
 
     Flow["Rho0"] = 1000.0  # Reference density [kg/m³]
@@ -74,7 +74,7 @@ def input_data():
     # Storage Matrices
     # ------------------------------------------------------------------
 
-    TStore = 5
+    TStore = 1
 
     Storage["TStorage"] = np.arange(
         0,

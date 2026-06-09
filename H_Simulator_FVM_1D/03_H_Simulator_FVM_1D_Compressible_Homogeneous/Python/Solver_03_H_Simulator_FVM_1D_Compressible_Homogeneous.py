@@ -28,8 +28,10 @@ Flow, Gen, State, Storage = input_data()
 # =============================================================================
 
 while State["t"] < Gen["tf"]:
-
+    #Solve for new pressure
     State = FIMPressure_1D_1Phase(Flow,Gen,State)
+    #Update to new time
+    State["t"] += Gen["tstep"]
 
     #Store results
     if np.any(np.isclose(State["t"], Storage["TStorage"])):
@@ -37,12 +39,12 @@ while State["t"] < Gen["tf"]:
         Storage["P"][State["step"], :] = State["P"]
         Storage["flux"][State["step"], :] = State["flux"]
 
-    State["t"] += Gen["tstep"]
+
 
 # =============================================================================
 # Plotting
 # =============================================================================
 
-Plotting_file(Gen,Storage)
+Plotting_file(Flow,Gen,Storage)
 
 
