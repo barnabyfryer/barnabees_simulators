@@ -36,7 +36,7 @@ def build_jacobian(Flow,Gen,State,trans):
     # Derivative of accumulation terms
     # =============================================================================
 
-    Acc = dRhodP @ Flow["phi"] * V / Gen["tstep"]
+    Acc = dRhodP * Flow["phi"] * V / Gen["tstep"]
 
     # =============================================================================
     # Derivative of convection terms

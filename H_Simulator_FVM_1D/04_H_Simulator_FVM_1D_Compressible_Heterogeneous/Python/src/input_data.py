@@ -10,7 +10,7 @@ def input_data():
 
     Gen["tf"] = 10000.0  # Final time [sec]
     Gen["tstep"] = 100.0  # Time step [sec]
-    Gen["tol"] = 1e-6  # Tolerance [-]
+    Gen["tol"] = 1e-4  # Tolerance [-]
 
     Gen["Nx"] = 5000  # Number of cells [-]
 

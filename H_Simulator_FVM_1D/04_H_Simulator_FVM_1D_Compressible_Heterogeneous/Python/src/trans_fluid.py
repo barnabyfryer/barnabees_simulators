@@ -32,7 +32,7 @@ def trans_fluid(A,dRhodP,Flow,Gen,Rho,Trans):
 
     #Update transmissibility to include fluid mobility
     #Applies the upwind fluid mobility to the right interface
-    Tx[1:Nx,:] = Trans["x"][1:-1] * Mupx[0:Nx-1,:]
+    Tx[1:Nx,0] = Trans["x"][1:-1] * Mupx[0:Nx-1,0]
 
     #Construct matrix
     #Grabs left interface trans (inc mobility) of a cell
