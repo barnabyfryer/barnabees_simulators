@@ -7,7 +7,7 @@ def upwind(Gen,State,Trans):
     #between it and the cell (column) on the right (or top) of row cell
 
     #Basic definitions
-    P = State["P"]
+    P = np.asarray(State["P"]).reshape(-1)
     Nx = Gen["Nx"]
     Ny = 1
     N = Nx * Ny
@@ -15,7 +15,7 @@ def upwind(Gen,State,Trans):
     #Find velocities at edges. These velocities are still missing all fluid properties which need to be upwinded (kr, rho, mu)
     Ux = np.zeros(Nx+1)
     #Velocity at cell edge in x-direction. If positive flow to right
-    Ux[1:Nx] = (P[0:Nx-1] - P[1:Nx]) * Trans["x"][1:-1]
+    Ux[1:Nx] = (P[0:Nx-1] - P[1:Nx]) * Trans["x"][1:Nx]
 
     #Use velocity to build upwind operator
     #The U.x >0 returns a 1 for all locations with non-negative velocity

@@ -17,8 +17,8 @@ close all
 %% - Run Simulation
 while State.t < Gen.tf
 
-%% - Solve For Pressure
-[State] = FIMPressure1D_1Phase(Flow,Gen,State,Wells);
+    %% - Solve For Pressure
+    [State] = FIMPressure1D_1Phase(Flow,Gen,State,Wells);
 
     %Store results
     if ~isempty(find(State.t == Storage.TStorage,1))
@@ -27,7 +27,7 @@ while State.t < Gen.tf
         Storage.flux(State.step,:) = State.flux;
     end
 
-State.t = State.t + Gen.tstep;
+    State.t = State.t + Gen.tstep;
 end
 
 %% - Plotting pressure

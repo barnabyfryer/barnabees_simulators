@@ -22,9 +22,9 @@ dRhodP(Pwf>=State.P,1) = 0;                                     %[N,1]
     Density(Flow,State.P(Pwf<State.P,1));                       %[N,1]
 
 %Flow rate [kg/sec]
-Q = (Pwf - State.P).*WI.*Rho/Flow.muf;                          %[N,1]     
+Q = Flow.kx(:,1).*(Pwf - State.P).*WI.*Rho/Flow.muf;            %[N,1]     
 %Derivative of flow rate wrt pressure [kg/(Pa*sec)]
-dQdP = WI.*(dRhodP.*(Pwf - State.P) - Rho)/Flow.muf;            %[N,1]
+dQdP = Flow.kx(:,1).*WI.*(dRhodP.*(Pwf - State.P) - Rho)/Flow.muf;            %[N,1]
 
 %% - Add fixed rate wells
 

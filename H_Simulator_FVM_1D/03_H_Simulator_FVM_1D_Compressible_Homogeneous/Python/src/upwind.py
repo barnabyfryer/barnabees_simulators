@@ -25,7 +25,7 @@ def upwind(Gen,State,Trans):
 
     #Stores the vectors containing if the cell is upstream on its right and left interfaces
     A = {}
-    A["x"] = diags([R, L],[0, 1],shape=(N, N)).tocsr()
+    A["x"] = diags([R, L[1:]],[0, 1],shape=(N, N)).tocsr()
 
 
     return A
