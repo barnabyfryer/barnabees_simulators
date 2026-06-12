@@ -51,7 +51,7 @@ function [State] = FIMPressure1D_1Phase(Flow,Gen,State)
     %Upwind
     [A] = Upwind(Gen,State,Trans);                                  %[N,N][N,N] 
     %Fluid tansmissivity
-    [FTrans,~] = Trans_Fluid(A,dRhodP,Flow,Gen,Rho,Trans);          %[N,N]
+    [FTrans,~] = Trans_Fluid(A,Flow,Gen,State);                     %[N,N]
     %Find convection into cell
     Conv = FTrans*State.P;                                          %[N,1]
     %Add boundary condition

@@ -13,9 +13,9 @@ def build_residual(Flow,Gen,State,State0,trans):
     Rho,dRhodP = density(Flow,State["P"])
 
     #Transmissibility matrix
-    FTrans,_ = trans_fluid(A,dRhodP,Flow,Gen,Rho,trans)
+    FTrans,_ = trans_fluid(A,Flow,Gen,State)
 
-    #Cross sectional area in x direction
+    #Cross-sectional area in x direction
     Ax = Gen["Ly"]/1 * Gen["Lz"]/1
     #Cell volume
     V = Gen["Ly"]/1 * Gen["Lz"]/1 * Gen["dx"]

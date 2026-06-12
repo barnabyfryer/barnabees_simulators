@@ -15,7 +15,7 @@ function [Res] = BuildResidual(Flow,Gen,State,State0,Trans)
 [Rho,dRhodP] = Density(Flow,State.P);                           %[N,1]
 
 %Transmissibility matrix
-[FTrans,~] = Trans_Fluid(A,dRhodP,Flow,Gen,Rho,Trans);          %[N,N]
+[FTrans,~] = Trans_Fluid(A,Flow,Gen,State);                     %[N,N]
 
 %Length of cell in y-direction [m]
 dy = Gen.Ly/1;                                                  %[1,1]                
