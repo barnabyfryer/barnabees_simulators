@@ -59,7 +59,7 @@ def FIMPressure_1D_1Phase(Flow,Gen,State):
     #Upwind
     A = upwind(Gen,State,trans)
     #Fluid transmissivity
-    Ftrans,_ = trans_fluid(A,dRhodP,Flow,Gen,Rho,trans)
+    Ftrans,_ = trans_fluid(A,Flow,Gen,State)
     #Find convection into cell
     Conv = Ftrans @ State["P"]
     #Add boundary condition

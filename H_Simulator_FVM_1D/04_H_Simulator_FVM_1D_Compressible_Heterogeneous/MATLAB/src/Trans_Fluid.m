@@ -1,4 +1,4 @@
-function [FTrans,dFTrans] = Trans_Fluid(A,dRhodP,Flow,Gen,Rho,Trans)
+function [FTrans,dFTrans] = Trans_Fluid(A,Flow,Gen,State)
 %% - Full Transmissibility Builder
 %Returns the transmissibilities between the two cells
 %The sum of all transmissibilities is also located in the main diagonal
@@ -13,6 +13,13 @@ function [FTrans,dFTrans] = Trans_Fluid(A,dRhodP,Flow,Gen,Rho,Trans)
 Nx = Gen.Nx;                                        %[1,1]
 Ny = 1;                                             %[1,1]
 N = Nx*Ny;                                          %[1,1]
+
+%Grab pressure
+P = reshape(State.P,Nx,Ny);                         %[Nx,1]
+%Get density
+[Rho,dRhodP] = Density(Flow,P);                     %[Nx,1]
+%Get rock transmissibility
+[Trans] = Trans_Rock(Flow,Gen);
 
 %Predefine memory
 Tx = zeros(Nx+1, Ny);                               %[Nx+1,1]
@@ -38,7 +45,7 @@ x2 = reshape(Tx(2:Nx+1,:),N,1);                     %[N,1]
 % below the diagonal it removes the first cells and above this it removes
 % the bottom cells. Because of this we have to swap left and right!
 %Collects all transmissibilities
-DiagVecs = [-x2,x2+x1,-x1];                   %[N,3]
+DiagVecs = [-x2,x2+x1,-x1];                         %[N,3]
 %Now we end up with a matrix where the row is the cell of interest and the columns are the cells that can either be flowed into or out of
 DiagIndx = [-1,0,1];                                %[3,1]
 %The values are the transmissibilities between the two cells
@@ -48,14 +55,15 @@ FTrans = spdiags(DiagVecs,DiagIndx,N,N);            %[N,N]
 %basically this is so you can multiply FTrans*P (where P is a vector of
 %pressure) and get the equations T_R * (P-P_R) + T_L * (P-P_L) etc
 
-%% - dTransdP
+%% - dTransdP, part 1 (density dependence on pressure)
 %The derivative of each cell's transmissibility wrt to the
 %pressure of every cell, multiplied by the difference in pressure of those
 %two cells. This is effectively the effect compressibility has.
 
 %Predefines memory for derivative of trans wrt pressure
 %Derivative due to dependence of x interface on pressure
-dTxdp = zeros(Nx+1,Ny);                             %[Nx+1,Ny]
+dTxdp_L = zeros(Nx+1,Ny);                           %[Nx+1,Ny]
+dTxdp_R = zeros(Nx+1,Ny);                           %[Nx+1,Ny]
 
 %Fluid dependence on pressure at right x-interfaces
 dMupx = A.x*dRhodP/Flow.muf;                        %[N,1]
@@ -64,16 +72,17 @@ dMupx = A.x*dRhodP/Flow.muf;                        %[N,1]
 dMupx = reshape(dMupx, Nx, Ny);                     %[Nx,Ny]
 
 %Multiply the fluid derivative by the appropriate rock transmissibility
-dTxdp(2:Nx,:) = Trans.x(2:Nx,:).*dMupx(1:Nx-1,:);   %[Nx+1,Ny]
+dTxdp_L(2:Nx,:) = Trans.x(2:Nx,:).*dMupx(2:Nx,:).*(P(2:Nx,:) - P(1:Nx-1,:));        %[Nx+1,Ny]
+dTxdp_R(2:Nx,:) = Trans.x(2:Nx,:).*dMupx(1:Nx-1,:).*(P(2:Nx,:) - P(1:Nx-1,:));      %[Nx+1,Ny]
 
 %Finds the diagonals that will go into the dTransmissibility matrix
 %Left
-L = reshape(dTxdp(1:Nx,:),N,1);                     %[N,1]
+L = reshape(dTxdp_L(1:Nx,:),N,1);                   %[N,1]
 %Right
-R = reshape(dTxdp(2:Nx+1,:),N,1);                   %[N,1]
+R = -reshape(dTxdp_R(2:Nx+1,:),N,1);                %[N,1]
 
 %Collect all the dependencies
-DiagVecs = [-R, L+R, -L];                       %[N,3]
+DiagVecs = [-R, L+R, -L];                           %[N,3]
 %Assign to which column they belong
 DiagIndx = [-1, 0, 1];                              %[3,1]
 %Create a matrix of the dependencies in the correct row

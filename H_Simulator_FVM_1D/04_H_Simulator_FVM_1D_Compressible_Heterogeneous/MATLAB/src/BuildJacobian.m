@@ -19,7 +19,7 @@ V = dx*dy*Gen.Lz;                                       %[1,1]
 
 %Returns the transmissibilities between the two cells
 [FTrans,dFTrans] =...
-    Trans_Fluid(A,dRhodP,Flow,Gen,Rho,Trans);           %[N,N] [N,N] 
+    Trans_Fluid(A,Flow,Gen,State);                      %[N,N] [N,N] 
 %The sum of all transmissibilities is also located in the main diagonal
 %basically this is so you can multiply FTrans*P (where P is a vector of
 %pressure) and get the equations T_R * (P-P_R) + T_L * (P-P_L) etc
