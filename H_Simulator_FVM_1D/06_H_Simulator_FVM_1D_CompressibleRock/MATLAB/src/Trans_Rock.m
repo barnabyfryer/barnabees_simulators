@@ -43,7 +43,7 @@ Trans.x(end,:) = kx(end,:)*Ax./(dx/2);                   	%[Nx+1,1]
 %Derivative of transmissibility wrt left or bottom cell
 dTransdP_LB.x(2:Gen.Nx,:) = (2*Ax/dx) .* kx(2:end,:).^2 ./ (kx(1:end-1,:) + kx(2:end,:)).^2 .* dkxdp(1:end-1,:);%[Nx+1,1]
 %Right most interface dependence on cell Nx
-dTransdP_RT.x(Gen.Nx+1,:) = (2*Ax/dx) * dkxdp(end,:);
+dTransdP_LB.x(Gen.Nx+1,:) = (2*Ax/dx) * dkxdp(end,:);
 
 %Derivative of transmissibility wrt right or top cell
 dTransdP_RT.x(2:Gen.Nx,:) = (2*Ax/dx) .* kx(1:end-1,:).^2 ./ (kx(1:end-1,:) + kx(2:end,:)).^2 .* dkxdp(2:end,:);%[Nx+1,1]
