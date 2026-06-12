@@ -10,10 +10,10 @@ def build_residual(Flow,Gen,State,State0,trans,Wells):
     #Old time step density
     RhoOld,_ = density(Flow,State0["P"])
     #Current iteration density
-    Rho,dRhodP = density(Flow,State["P"])
+    Rho,_ = density(Flow,State["P"])
 
     #Transmissibility matrix
-    FTrans,_ = trans_fluid(A,dRhodP,Flow,Gen,Rho,trans)
+    FTrans,_ = trans_fluid(A,Flow,Gen,State)
 
     #Cross-sectional area in x direction
     Ax = Gen["Ly"]/1 * Gen["Lz"]/1

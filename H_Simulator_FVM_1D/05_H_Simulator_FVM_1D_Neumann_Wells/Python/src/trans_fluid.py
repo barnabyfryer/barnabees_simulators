@@ -1,7 +1,9 @@
 import numpy as np
+from src.density import density
+from src.trans_rock import trans_rock
 from scipy.sparse import diags
 
-def trans_fluid(A,dRhodP,Flow,Gen,Rho,Trans):
+def trans_fluid(A,Flow,Gen,State):
 
     #Returns the transmissibilities between the two cells
     #The sum of all transmissibilities is also located in the main diagonal
@@ -16,6 +18,13 @@ def trans_fluid(A,dRhodP,Flow,Gen,Rho,Trans):
     Nx = Gen["Nx"]
     Ny = 1
     N = Nx*Ny
+
+    #Grab pressure
+    P = np.reshape(State["P"],(Nx,Ny))
+    #Get density
+    Rho,dRhodP = density(Flow,P)
+    #Get rock transmissibility
+    Trans = trans_rock(Flow,Gen)
 
     #Predefine memory
     Tx = np.zeros((Nx+1,Ny))
@@ -51,7 +60,7 @@ def trans_fluid(A,dRhodP,Flow,Gen,Rho,Trans):
     # FTrans*P (where P is a vector of pressure) and get the equations T_R * (P-P_R) + T_L * (P-P_L) etc
 
     # =============================================================================
-    # dTransdP
+    # dTransdP, part 1 (density dependence on pressure)
     # =============================================================================
 
     #Fluid dependence on pressure at right x-interfaces
@@ -59,12 +68,14 @@ def trans_fluid(A,dRhodP,Flow,Gen,Rho,Trans):
     dMupx = np.asarray(dMupx).reshape(Nx, Ny)
 
     #Multiply the fluid derivative by the appropriate rock transmissibility
-    dTxdp = np.zeros((Nx + 1, Ny))
-    dTxdp[1:Nx, 0] = Trans["x"][1:-1] * dMupx[:-1, 0]
+    dTxdp_L = np.zeros((Nx + 1, Ny))
+    dTxdp_R = np.zeros((Nx + 1, Ny))
+    dTxdp_L[1:Nx, 0] = Trans["x"][1:-1] * dMupx[1:, 0] * (P[1:,0] - P[:-1,0])
+    dTxdp_R[1:Nx, 0] = Trans["x"][1:-1] * dMupx[:-1, 0] * (P[1:,0] - P[:-1,0])
 
     #Finds the diagonals that will go into the dTransmissibility matrix
-    L = dTxdp[:Nx, 0].reshape(N, 1)
-    R = dTxdp[1:Nx + 1, 0].reshape(N, 1)
+    L = dTxdp_L[:Nx, 0].reshape(N, 1)
+    R = -dTxdp_R[1:Nx + 1, 0].reshape(N, 1)
 
     #Create a matrix of the dependencies in the correct row
     dFTrans = diags(

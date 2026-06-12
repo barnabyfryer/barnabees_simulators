@@ -20,12 +20,12 @@ def build_jacobian(Flow,Gen,State,trans,Wells):
     N = Gen["Nx"] * 1
 
     #Find density and derivative
-    Rho, dRhodP = density(Flow,State["P"])
+    _, dRhodP = density(Flow,State["P"])
     #Find upwinding
     A = upwind(Gen,State,trans)
 
     #Returns the transmissibilities between the two cells
-    FTrans, dFTrans = trans_fluid(A,dRhodP,Flow,Gen,Rho,trans)
+    FTrans, dFTrans = trans_fluid(A,Flow,Gen,State)
 
     #The sum of all transmissibilities is also located in the main diagonal basically this is so you can multiply
     #FTrans*P (where P is a vector of pressure) and get the equations T_R * (P-P_R) + T_L * (P-P_L) etc It also

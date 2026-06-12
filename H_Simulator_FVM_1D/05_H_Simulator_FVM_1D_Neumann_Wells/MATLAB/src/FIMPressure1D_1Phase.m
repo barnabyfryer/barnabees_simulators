@@ -46,13 +46,11 @@ function [State] = FIMPressure1D_1Phase(Flow,Gen,State,Wells)
 
     
     %Find fluid flux
-    %Current time step density [kg/m^3]
-    [Rho,dRhodP] = Density(Flow,State.P);                           %[N,1]
     %Upwind
-    [A] = Upwind(Gen,State,Trans);                                  %[N,N][N,N] 
+    [A] = Upwind(Gen,State,Trans);                              %[N,N][N,N] 
     %Fluid tansmissivity
-    [FTrans,~] = Trans_Fluid(A,dRhodP,Flow,Gen,Rho,Trans);          %[N,N]
+    [FTrans,~] = Trans_Fluid(A,Flow,Gen,State);                 %[N,N]
     %Find convection into cell
-    State.flux = -FTrans*State.P;                                   %[N,1]
+    State.flux = -FTrans*State.P;                               %[N,1]
 
 end

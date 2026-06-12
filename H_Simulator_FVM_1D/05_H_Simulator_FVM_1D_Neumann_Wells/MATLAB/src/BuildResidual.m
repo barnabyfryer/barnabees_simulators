@@ -12,10 +12,10 @@ function [Res] = BuildResidual(Flow,Gen,State,State0,Trans,Wells)
 %Old time step density [kg/m^3]
 [RhoOld,~] = Density(Flow,State0.P);                            %[N,1]
 %Current iteration density [kg/m^3]
-[Rho,dRhodP] = Density(Flow,State.P);                           %[N,1]
+[Rho,~] = Density(Flow,State.P);                                %[N,1]
 
 %Transmissibility matrix
-[FTrans,~] = Trans_Fluid(A,dRhodP,Flow,Gen,Rho,Trans);          %[N,N]
+[FTrans,~] = Trans_Fluid(A,Flow,Gen,State);                     %[N,N]
 
 %Length of cell in y-direction [m]
 dy = Gen.Ly/1;                                                  %[1,1]                

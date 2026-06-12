@@ -53,12 +53,10 @@ def FIMPressure_1D_1Phase(Flow,Gen,State,Wells):
     # Find fluid flux
     # =============================================================================
 
-    #Current time step density [kg/m^3]
-    Rho,dRhodP = density(Flow,State["P"])
     #Upwind
     A = upwind(Gen,State,trans)
     #Fluid transmissivity
-    Ftrans,_ = trans_fluid(A,dRhodP,Flow,Gen,Rho,trans)
+    Ftrans,_ = trans_fluid(A,Flow,Gen,State)
     #Fluid flux into cell
     State["flux"] = -Ftrans @ State["P"]
 
