@@ -24,7 +24,7 @@ def Plotting_file(Flow,Gen,Storage):
     fig.set_size_inches(6, 4.5)
     # Plot
     ax.plot(Gen["x"], Storage["P"][1, :] / 1e6, 'k-', linewidth=1, label='Simulation')
-    #ax.plot(Gen["x"], P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
+    ax.plot(Gen["x"], P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
     # Labels
     ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
     ax.set_ylabel(r'Pressure, $P$ [MPa]', fontsize=10)
