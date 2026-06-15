@@ -58,7 +58,7 @@ represents a:
 | 04_H_Simulator_FVM_1D_Compressible_Heterogeneous | Hydraulic | ✓ | ✓ |  | ✓ |
 | 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | ✓ | ✓ |  | ✓ |
 | 06_H_Simulator_FVM_1D_CompressibleRock | Hydraulic | ✓ | ✓ |  | ✓ |
-| 07_H_Simulator_FVM_2D | Hydraulic | ✓ |  |  |  |
+| 07_H_Simulator_FVM_2D | Hydraulic | ✓ |  |  | ✓ |
 
 ## Recommended Learning Order
 
