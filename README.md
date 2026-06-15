@@ -59,6 +59,7 @@ represents a:
 | 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | ✓ | ✓ |  | ✓ |
 | 06_H_Simulator_FVM_1D_CompressibleRock | Hydraulic | ✓ | ✓ |  | ✓ |
 | 07_H_Simulator_FVM_2D | Hydraulic | ✓ |  |  | ✓ |
+| 08_M_Simulator_FEM_2D | Mechanical |  |  |  |  |
 
 ## Recommended Learning Order
 
@@ -69,6 +70,7 @@ represents a:
 5. 05_H_FVM_1D_Neumann_Wells
 6. 06_H_Simulator_FVM_1D_CompressibleRock
 7. 07_H_Simulator_FVM_2D
+8. 08_M_Simulator_FEM_2D
 
 ---
 
@@ -223,6 +225,23 @@ A two-dimensional hydraulic flow simulator based on the Finite Volume Method (FV
 - No gravity
 - No-flow (Neumann) boundary conditions
 - Source terms in domain (wells)
+
+---
+
+## 08_M_Simulator_FEM_2D
+
+**Directory**
+
+`M_Simulator_FEM_2D/08_M_Simulator_FEM_2D`
+
+**Description**
+
+A two-dimensional mechanics simulator based on the Finite Element Method (FVM) with linear elasticity and small strains.
+
+**Assumptions**
+
+- Linear elasticity
+- Small strains
 
 ---
 
