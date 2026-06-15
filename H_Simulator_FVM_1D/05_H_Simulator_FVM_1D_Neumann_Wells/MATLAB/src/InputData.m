@@ -54,7 +54,7 @@ Flow.RhoP = 1e5;                                                %[1,1]
 % Constant pressure wells
 %Row vector of well pressures [Pa]
 Wells.P = [5e7 1e7];                                            %[1,Nwells]
-%Well indexes [m^3]
+%Well indexes [m]
 Wells.WI = [1 1];                                               %[1,Nwells]
 % Well locations [m]
 Wells.xP = [10 0];                                              %[1,Nwells]

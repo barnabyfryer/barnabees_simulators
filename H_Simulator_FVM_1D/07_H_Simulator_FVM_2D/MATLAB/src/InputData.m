@@ -4,34 +4,60 @@ function [Flow, Gen, Plotting, State, Storage, Wells] = InputData()
 %Final time [sec]
 Gen.tf = 10000;                                                 %[1,1]    
 %Time step [sec]
-Gen.tstep = 10;                                                %[1,1]    
+Gen.tstep = 10;                                                 %[1,1]    
 %Tolerance [-]
 Gen.tol = 1e-5;                                                 %[1,1]    
 %Number of cells in x-direction [-]
-Gen.Nx = 500;                                                  %[1,1]  
+Gen.Nx = 50;                                                   %[1,1]  
+%Number of cells in y-direction [-]
+Gen.Ny = 40;                                                   %[1,1]  
 %Reservoir length in x-direction [m]
 Gen.Lx = 10;                                                    %[1,1]   
 %Reservoir length in y-direction [m]
-Gen.Ly = 1;                                                     %[1,1]    
+Gen.Ly = 8;                                                    %[1,1]    
 %Reservoir height [m]
 Gen.Lz = 1;                                                     %[1,1]  
 
 %% - Basic Calculations
+%Total number of elements
+Gen.N = Gen.Nx*Gen.Ny;                                          %[1,1]
 %Element edge lengths
 Gen.dx = Gen.Lx/Gen.Nx;                                         %[1,1]
-%Cell locations
-Storage.x = linspace(Gen.dx/2,Gen.Lx-Gen.dx/2,Gen.Nx);          %[N,1]
+%Element edge lengths
+Gen.dy = Gen.Ly/Gen.Ny;                                         %[1,1]
+
+% Cell center coordinates
+xc = linspace(Gen.dx/2, Gen.Lx-Gen.dx/2, Gen.Nx);
+yc = linspace(Gen.dy/2, Gen.Ly-Gen.dy/2, Gen.Ny);
+
+% Mesh of cell centers
+[xc,yc] = meshgrid(xc,yc);                        
+Storage.x = reshape(xc',1,Gen.Nx*Gen.Ny);                        %[1,N]
+Storage.y = reshape(yc',1,Gen.Nx*Gen.Ny);                        %[1,N]
 
 %% - Flow Model
+%x-direction
 %Permeability, of left edges [m^2]
-k_left = 1e-12;                                                  %[1,1] 
+kx_left = 1e-11;                                                %[1,1] 
 %Permeability, of right zone [m^2]
-k_right = 1e-13;                                                %[1,1] 
+kx_right = 1e-12;                                               %[1,1] 
 %Permeability left edge bands length [m]
-L_k = 2;                                                        %[1,1] 
+Lx_k = 2;                                                       %[1,1] 
 %Permeability [m^2] 
-Flow.kx0 = k_right*ones(Gen.Nx,1);                              %[1,1]
-Flow.kx0(Storage.x < L_k) = k_left;
+Flow.kx0 = kx_right*ones(Gen.Nx*Gen.Ny,1);                      %[1,1]
+Flow.kx0(Storage.x < Lx_k) = kx_left;
+
+%y-direction
+%Permeability, of left edges [m^2]
+ky_left = 1e-12;                                                %[1,1] 
+%Permeability, of right zone [m^2]
+ky_right = 1e-13;                                               %[1,1] 
+%Permeability left edge bands length [m]
+Ly_k = 2;                                                       %[1,1] 
+%Permeability [m^2] 
+Flow.ky0 = ky_right*ones(Gen.Nx*Gen.Ny,1);                      %[1,1]
+Flow.ky0(Storage.y < Ly_k) = ky_left;
+
 %"Compressibility" of permeability
 Flow.ck = 1e-8;                                                 %[1,1] 
 %Reference pressure [Pa]
@@ -44,8 +70,9 @@ phi_right = 0.2;                                                %[1,1]
 %Porosity left edge bands length [m]
 L_phi = 2;                                                      %[1,1] 
 %Porosity [-]
-Flow.phi0 = phi_right*ones(Gen.Nx,1);                           %[1,1]  
+Flow.phi0 = phi_right*ones(Gen.Nx*Gen.Ny,1);                    %[1,1]  
 Flow.phi0(Storage.x < L_phi) = phi_left;
+
 %"Compressibility" of porosity
 Flow.cphi = 1e-9;                                               %[1,1] 
 %Reference pressure [Pa]
@@ -70,22 +97,24 @@ Wells.P = [5e7 1e7];                                            %[1,Nwells]
 Wells.WI = [1 1];                                               %[1,Nwells]
 % Well locations [m]
 Wells.xP = [10 0];                                              %[1,Nwells]
+Wells.yP = [10 0];                                              %[1,Nwells]
     
 %Find the cells of these wells
 Wells.Loc_P = zeros(size(Wells.xP));
 for i = 1:length(Wells.xP)
-    [~, Wells.Loc_P(i)] = min(abs(Storage.x - Wells.xP(i)));
+    [~, Wells.Loc_P(i)] = min((Storage.x - Wells.xP(i)).^2 + (Storage.y - Wells.yP(i)).^2);
 end
 
 %Constant rate wells (always keep at least a zero contribution in one cell
 %Define constant rate [kg/sec]
-Wells.Q = 1;                                                    %[1,Nwells_Q]
-Wells.xQ = 4;                                                   %[1,Nwells_Q]
+Wells.Q = 0;                                                    %[1,Nwells_Q]
+Wells.xQ = 6;                                                   %[1,Nwells_Q]
+Wells.yQ = 4;                                                   %[1,Nwells_Q]
 
 %Find the cells of these wells
 Wells.Loc_Q = zeros(size(Wells.xQ));
 for i = 1:length(Wells.xQ)
-    [~, Wells.Loc_Q(i)] = min(abs(Storage.x - Wells.xQ(i)));
+    [~, Wells.Loc_Q(i)] = min((Storage.x - Wells.xQ(i)).^2 + (Storage.y - Wells.yQ(i)).^2);
 end
 
 
@@ -93,11 +122,11 @@ end
 %Initialize time
 State.t = 0;                                                    %[1,1]
 %Initialize pressure
-State.P = zeros(Gen.Nx,1) + 1e5;                                %[N,1]
+State.P = zeros(Gen.Nx*Gen.Ny,1) + 1e5;                         %[N,1]
 %Time step counter
 State.step = 1;                                                 %[1,1]
 %Initialize permeability
-[State,~] = Perm(Flow,State);                                   %[N,1]
+[State,~,~,~,~] = Perm(Flow,State);                             %[N,1]
 %Initialize porosity
 [State.phi,~] = PhiCalc(Flow,State);                	        %[N,1]
 
@@ -108,17 +137,19 @@ TStore = 5;                                                     %[1,1]
 Storage.TStorage = 0:Gen.tf/TStore:Gen.tf;                      %[1,TStore]
 Storage.TStorage = floor(Storage.TStorage/Gen.tstep)*Gen.tstep; %[1,TStore]
 %Predefine memory for saved pressures
-Storage.P = zeros(TStore,Gen.Nx);                               %[TStore,N]
+Storage.P = zeros(TStore,Gen.Nx*Gen.Ny);                        %[TStore,N]
 %Store initial pressure
 Storage.P(1,:) = State.P;                                       %[TStore,N]
 
 %Predefine memory for saved permeabilities
-Storage.k = zeros(TStore,Gen.Nx);                               %[TStore,N]
+Storage.kx = zeros(TStore,Gen.Nx*Gen.Ny);                       %[TStore,N]
+Storage.ky = zeros(TStore,Gen.Nx*Gen.Ny);                       %[TStore,N]
 %Store initial pressure
-Storage.k(1,:) = State.kx;                                      %[TStore,N]
+Storage.kx(1,:) = State.kx;                                     %[TStore,N]
+Storage.ky(1,:) = State.kx;                                     %[TStore,N]
 
 %Predefine memory for saved porosities
-Storage.phi = zeros(TStore,Gen.Nx);                             %[TStore,N]
+Storage.phi = zeros(TStore,Gen.Nx*Gen.Ny);                      %[TStore,N]
 %Store initial pressure
 Storage.phi(1,:) = State.phi;                                   %[TStore,N]
 

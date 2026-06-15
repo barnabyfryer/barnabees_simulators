@@ -76,7 +76,7 @@ def input_data():
     #Constant pressure wells
     Wells = {}
     Wells["P"] = [5e7, 1e7] #Row vector of well pressurese [Pa]
-    Wells["WI"] = [1, 1]    #Well indices [m^3]
+    Wells["WI"] = [1, 1]    #Well indices [m]
     Wells["xP"] = [10, 0]   #Well locations [m]
 
     #Find the cells for these wells

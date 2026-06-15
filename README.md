@@ -58,7 +58,7 @@ represents a:
 | 04_H_Simulator_FVM_1D_Compressible_Heterogeneous | Hydraulic | ✓ | ✓ |  | ✓ |
 | 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | ✓ | ✓ |  | ✓ |
 | 06_H_Simulator_FVM_1D_CompressibleRock | Hydraulic | ✓ | ✓ |  | ✓ |
-| 07_H_Simulator_FVM_1D_2Phase_Immiscible | Hydraulic |  |  |  |  |
+| 07_H_Simulator_FVM_2D | Hydraulic | ✓ |  |  |  |
 
 ## Recommended Learning Order
 
@@ -68,7 +68,7 @@ represents a:
 4. 04_H_FVM_1D_Compressible_Heterogeneous
 5. 05_H_FVM_1D_Neumann_Wells
 6. 06_H_Simulator_FVM_1D_CompressibleRock
-7. 07_H_Simulator_FVM_1D_2Phase_Immiscible
+7. 07_H_Simulator_FVM_2D
 
 ---
 
@@ -204,20 +204,20 @@ A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FV
 
 ---
 
-## 07_H_Simulator_FVM_1D_2Phase_Immiscible
+## 07_H_Simulator_FVM_2D
 
 **Directory**
 
-`H_Simulator_FVM_1D/07_H_Simulator_FVM_1D_2Phase_Immiscible`
+`H_Simulator_FVM_1D/07_H_Simulator_FVM_2D`
 
 **Description**
 
-A one-dimensional two-phase hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity which depend on fluid pressure and including source terms (wells).
+A two-dimensional hydraulic flow simulator based on the Finite Volume Method (FVM) with spatially varying permeability and porosity which depend on fluid pressure and including source terms (wells).
 
 **Assumptions**
 
-- Two-phase immiscible fluids
-- Slightly compressible fluids
+- Single-phase fluid
+- Slightly compressible fluid
 - Heterogeneous permeability and porosity which depends on fluid pressure
 - Constant permeability within each cell
 - No gravity

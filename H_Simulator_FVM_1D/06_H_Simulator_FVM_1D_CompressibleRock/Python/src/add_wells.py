@@ -17,7 +17,7 @@ def add_wells(Flow,State,Wells):
     Pwf = np.zeros(N)  #Wellbore flowing pressure [Pa]
     Pwf[Wells["Loc_P"]] = Wells["P"]        #Only application location with wells
 
-    WI = np.zeros(N)  # Well index [m^3]
+    WI = np.zeros(N)  # Well index [m]
     WI[Wells["Loc_P"]] = Wells["WI"]  # Only application location with wells
 
     Rho = np.zeros(N)  # Density [kg/m^3]
