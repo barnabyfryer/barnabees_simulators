@@ -59,7 +59,8 @@ represents a:
 | 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | ✓ | ✓ |  | ✓ |
 | 06_H_Simulator_FVM_1D_CompressibleRock | Hydraulic | ✓ | ✓ |  | ✓ |
 | 07_H_Simulator_FVM_2D | Hydraulic | ✓ |  |  | ✓ |
-| 08_M_Simulator_FEM_2D | Mechanical |  |  |  |  |
+| 08_M_Simulator_FEM_2D | Mechanical |  |  |  | ✓ |
+| 09_HM_Simulator_FEM_FVM_2D | Hydro-Mechanical |  |  |  | ✓ |
 
 ## Recommended Learning Order
 
@@ -236,12 +237,39 @@ A two-dimensional hydraulic flow simulator based on the Finite Volume Method (FV
 
 **Description**
 
-A two-dimensional mechanics simulator based on the Finite Element Method (FVM) with linear elasticity and small strains.
+A two-dimensional mechanics simulator based on the Finite Element Method (FEM) with linear elasticity and small strains.
 
 **Assumptions**
 
 - Linear elasticity
 - Small strains
+
+---
+
+## 09_HM_Simulator_FEM_FVM_2D
+
+**Directory**
+
+`M_Simulator_FEM_2D/09_HM_Simulator_FEM_2D`
+
+**Description**
+
+A two-dimensional mechanics simulator based on the Finite Element Method (FEM) with linear elasticity and small strains. The simulator is sequentially coupled to a FVM flow model (simulator 07).
+
+**Assumptions**
+
+Mechanics
+- Linear elasticity
+- Small strains
+
+Fluid
+- Single-phase fluid
+- Slightly compressible fluid
+- Heterogeneous permeability and porosity which depends on fluid pressure
+- Constant permeability within each cell
+- No gravity
+- No-flow (Neumann) boundary conditions
+- Source terms in domain (wells)
 
 ---
 
