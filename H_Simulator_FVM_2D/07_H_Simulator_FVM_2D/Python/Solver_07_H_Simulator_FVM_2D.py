@@ -1,7 +1,7 @@
 # - About
 # This reservoir simulator uses a FVM formulation to solve the continuity of mass
-# balance equation in 1-D. The boundary conditions are fixed pressure
-# at the edges (Dirichlet). It uses a varying, heterogeneous permeability.
+# balance equation in 2-D. The boundary conditions are fixed pressure
+# at the edges (Dirichlet). It uses a pressure dependent, heterogeneous, anisotropic permeability.
 # There is no gravity and the simulator is single phase. The fluid is
 # considered to be slightly compressible.
 
@@ -13,7 +13,7 @@
 
 import numpy as np
 
-from src.FIMPressure_1D_1Phase import FIMPressure_1D_1Phase
+from src.FIMPressure_2D_1Phase import FIMPressure_2D_1Phase
 from src.input_data import input_data
 from src.Plotting_file import Plotting_file
 
@@ -29,7 +29,7 @@ Flow, Gen, State, Storage, Wells = input_data()
 
 while State["t"] < Gen["tf"]:
     #Solve for new pressure
-    State = FIMPressure_1D_1Phase(Flow,Gen,State,Wells)
+    State = FIMPressure_2D_1Phase(Flow,Gen,State,Wells)
     #Update to new time
     State["t"] += Gen["tstep"]
 
@@ -39,6 +39,7 @@ while State["t"] < Gen["tf"]:
         Storage["P"][State["step"], :] = State["P"]
         Storage["phi"][State["step"], :] = State["phi"]
         Storage["kx"][State["step"], :] = State["kx"]
+        Storage["ky"][State["step"], :] = State["ky"]
         Storage["flux"][State["step"], :] = State["flux"]
 
 

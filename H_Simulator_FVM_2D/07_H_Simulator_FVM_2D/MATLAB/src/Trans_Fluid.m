@@ -129,7 +129,7 @@ Mupy = reshape(Mupy, Nx, Ny);                       %[Nx,Ny]
 dTxdp_L(2:Nx,:) = dTransdP_LB.x(2:Nx,:).*Mupx(2:Nx,:).*(P(2:Nx,:) - P(1:Nx-1,:));       %[Nx+1,Ny]
 dTxdp_R(2:Nx,:) = dTransdP_RT.x(2:Nx,:).*Mupx(1:Nx-1,:).*(P(2:Nx,:) - P(1:Nx-1,:));     %[Nx+1,Ny]
 dTydp_B(:,2:Ny) = dTransdP_LB.y(:,2:Ny).*Mupy(:,2:Ny).*(P(:,2:Ny) - P(:,1:Ny-1));       %[Nx,Ny+1]
-dTydp_T(:,2:Ny) = dTransdP_LB.y(:,2:Ny).*Mupy(:,1:Ny-1).*(P(:,2:Ny) - P(:,1:Ny-1));     %[Nx,Ny+1]
+dTydp_T(:,2:Ny) = dTransdP_RT.y(:,2:Ny).*Mupy(:,1:Ny-1).*(P(:,2:Ny) - P(:,1:Ny-1));     %[Nx,Ny+1]
 
 %Finds the diagonals that will go into the dTransmissibility matrix
 %Left
