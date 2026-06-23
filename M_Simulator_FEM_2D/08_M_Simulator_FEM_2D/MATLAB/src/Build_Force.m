@@ -10,7 +10,8 @@ C = 4:2:2*Gen.Nx;
 D = 2*(Gen.Nx+1)+1:2*(Gen.Nx+1):2*Gen.Nn-4*(Gen.Nx+1)+1;
 %Set up force vector
 F = zeros(2*Gen.Nn,1);                                      %[2*Nn,1]
-%Apply force
+
+%Apply force (per unit of out of plane thickness) [N/m]
 fy = -10e7;
 fx = -8.5e7;
 
