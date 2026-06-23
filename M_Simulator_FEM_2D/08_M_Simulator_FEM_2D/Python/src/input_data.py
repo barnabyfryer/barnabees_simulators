@@ -45,15 +45,23 @@ def input_data():
     # Fixed displacement nodes
     # =============================================================================
 
-    # =============================================================================
-    # Connectivity function
-    # =============================================================================
+    #Fix x-direction
+    #Fix left nodes
+    Gen["nodesx"] = np.arange(0, Gen["Nn"], Gen["Nx"] + 1)
+    #Fix right nodes
+    # Gen["nodesx"] = np.arange(Gen["Nx"], Gen["Nn"], Gen["Nx"] + 1)
 
-
-
+    #Fix y-direction
+    #Fix bottom nodes
+    Gen["nodesy"] = np.arange(0, Gen["Nx"] + 1, 1)
+    #Fix top nodes
+    Gen["nodesy"] = np.arange(Gen["Nn"] - Gen["Nx"] - 1, Gen["Nn"], 1)
 
     return Gen, Pos
 
+# =============================================================================
+# Connectivity function
+# =============================================================================
 
 def build_connectivity(Nx, Ny):
     elements = []
