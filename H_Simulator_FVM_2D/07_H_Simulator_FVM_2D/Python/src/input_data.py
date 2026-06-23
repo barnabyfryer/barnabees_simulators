@@ -38,8 +38,8 @@ def input_data():
 
     Storage = {}
 
-    Storage["x"] = xc_grid.T.reshape(-1)
-    Storage["y"] = yc_grid.T.reshape(-1)
+    Storage["x"] = xc_grid.T.reshape(-1, order='F')
+    Storage["y"] = yc_grid.T.reshape(-1, order='F')
 
     # ------------------------------------------------------------------
     # Flow Model
