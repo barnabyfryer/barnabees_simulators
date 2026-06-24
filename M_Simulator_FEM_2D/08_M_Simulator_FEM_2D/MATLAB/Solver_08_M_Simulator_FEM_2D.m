@@ -39,7 +39,7 @@ Pos.y_new = Pos.y + Pos.dv;                                     %[Nx+1,Ny+1]
 
 %% - Solve for stresses
 %Solve for stresses
-[Sig] = Solve_Stresses(Gen,Pos);                                %[Nn,3]
+[Sig, e_vol] = Solve_Stresses(Gen,Pos);                         %[Nn,3]
 
 %% - Plot
-Plotting_sim(F,Gen,Plotting,Pos,Sig);
+Plotting_sim(e_vol,F,Gen,Plotting,Pos,Sig);

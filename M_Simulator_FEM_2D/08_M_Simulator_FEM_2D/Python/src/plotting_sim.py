@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import ListedColormap, BoundaryNorm
 
-def plotting_sim(f, Gen, Plotting, Pos, Sig):
+def plotting_sim(f, Gen, Plotting, Pos, Sig, e_vol):
 
     plt.close('all')
 
@@ -237,6 +237,26 @@ def plotting_sim(f, Gen, Plotting, Pos, Sig):
     fig8.patch.set_facecolor('white')
 
     fig8.savefig('Plots/Sigxy.jpg',
+                 dpi=300,
+                 bbox_inches='tight')
+
+    plt.show()
+
+    # =============================================================================
+    # Plot volumetric strain
+    # =============================================================================
+
+    fig8 = plt.figure()
+    ax8 = fig8.add_subplot(111, projection='3d')
+    ax8.plot_surface(xc, yc, e_vol, cmap='viridis')
+
+    ax8.set_xlabel('x-Location [m]', fontsize=fsize_1col)
+    ax8.set_ylabel('y-Location [m]', fontsize=fsize_1col)
+    ax8.set_zlabel(r'$\epsilon_{v}$ [-]', fontsize=fsize_1col)
+
+    fig8.patch.set_facecolor('white')
+
+    fig8.savefig('Plots/e_vol.jpg',
                  dpi=300,
                  bbox_inches='tight')
 

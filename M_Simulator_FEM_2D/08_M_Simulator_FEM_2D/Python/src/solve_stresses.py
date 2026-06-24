@@ -15,6 +15,9 @@ def solve_stresses(Gen, Pos):
     x = Pos["x"].reshape(-1)
     y = Pos["y"].reshape(-1)
 
+    #Predefine for strain
+    Eps = np.zeros((Gen["Ne"], 3))
+
     # =============================================================================
     # Decide plane strain or plane stress
     # =============================================================================
@@ -52,8 +55,6 @@ def solve_stresses(Gen, Pos):
     # =============================================================================
     # Element extraction loop
     # =============================================================================
-
-    Nx = Gen["Nx"]
 
     for i in range(Ne):
         nodes = Gen["Ref"][i]
@@ -125,6 +126,16 @@ def solve_stresses(Gen, Pos):
             B[2, 2 * a + 1] = deriv[0, a]
 
         strain = B @ disp
+        Eps[i, :] = strain
         Sigma[i, :] = D @ strain
 
-    return Sigma
+    # =============================================================================
+    # Stress loop
+    # =============================================================================
+
+    Eps_xx = Eps[:, 0].reshape(Gen["Ny"], Gen["Nx"])
+    Eps_yy = Eps[:, 1].reshape(Gen["Ny"], Gen["Nx"])
+
+    eps_vol = Eps_xx + Eps_yy
+
+    return Sigma, eps_vol

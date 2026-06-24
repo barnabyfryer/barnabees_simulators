@@ -68,14 +68,14 @@ Pos["x_new"] = Pos["x"] + Pos["du"]
 Pos["y_new"] = Pos["y"] + Pos["dv"]
 
 # =============================================================================
-# Solve for stresses
+# Solve for stresses and volumetric strain
 # =============================================================================
 
-Sigma = solve_stresses(Gen, Pos)
+Sigma, e_vol = solve_stresses(Gen, Pos)
 
 # =============================================================================
 # Plotting
 # =============================================================================
 
-plotting_sim(f, Gen, Plotting, Pos, Sigma)
+plotting_sim(f, Gen, Plotting, Pos, Sigma, e_vol)
 

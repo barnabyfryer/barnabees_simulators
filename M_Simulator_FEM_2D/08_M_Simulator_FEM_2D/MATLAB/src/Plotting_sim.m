@@ -1,4 +1,4 @@
-function [] = Plotting_sim(F,Gen,Plotting, Pos,Sig)
+function [] = Plotting_sim(e_vol,F,Gen,Plotting, Pos,Sig)
 
 %% - Unpack
 Sigx = reshape(Sig(:,1),Gen.Nx,Gen.Ny);                     %[Nx,Ny]
@@ -169,6 +169,22 @@ surf(xc,yc,Sigxy)
 xlab = xlabel('x-Location [m]');
 ylab = ylabel('y-Location [m]');
 zlab = zlabel('$$\sigma_{xy}$$ [Pa]');
+set(xlab,'Interpreter','latex','fontsize',fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',fsize_1col)
+set(zlab,'Interpreter','latex','fontsize',fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+
+%% - Plot shear stresses
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
+surf(xc,yc,e_vol)
+xlab = xlabel('x-Location [m]');
+ylab = ylabel('y-Location [m]');
+zlab = zlabel('$$\epsilon_{v}$$ [-]');
 set(xlab,'Interpreter','latex','fontsize',fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',fsize_1col)
 set(zlab,'Interpreter','latex','fontsize',fsize_1col)

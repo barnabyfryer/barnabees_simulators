@@ -1,4 +1,4 @@
-function [Sigma] = Solve_Stresses(Gen,Pos)
+function [Sigma,e_vol] = Solve_Stresses(Gen,Pos)
 %% - FEM code that takes displacements and turns them into stresses
 %Barnaby Fryer 27.04.17
 
@@ -202,6 +202,9 @@ for i = 1:Gen.Ne
         Sigma(i,:) = (D*Strain(i,:)')';                         %[Ne,3]
     end
     
+    %Find volumetric strain
+    e_vol = reshape(Strain(:,1),Gen.Nx,Gen.Ny) + reshape(Strain(:,2),Gen.Nx,Gen.Ny);
+
 end
 
 end
