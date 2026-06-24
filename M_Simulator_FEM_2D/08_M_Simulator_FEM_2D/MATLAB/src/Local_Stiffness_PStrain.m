@@ -7,7 +7,7 @@ b = Gen.dy;                                 %[1,1]
 %Poisson's ratio
 v = Gen.v;                                  %[1,1]
 
-%Define constants specific to plane stress
+%Define constants specific to plane strain
 A = (Gen.E/((1+v)*(1-2*v)));                %[1,1]
 B = 1-v;                                    %[1,1]
 C = v;                                      %[1,1]

@@ -3,15 +3,16 @@ function [k_global] = Global_Stiffness_Builder(Gen)
 %Predefine memory of global stiffness matrix
 k_global = zeros(2*Gen.Nn,2*Gen.Nn);                        %[2*Nn,2*Nn]
 
+%Prepare local stiffness matrix of element (only need to do once since elements same size)
+%Plane strain
+[kl] = Local_Stiffness_PStrain(Gen);              %[8,8]
+%Plane stress
+%[kl] = Local_Stiffness_PStress(Gen);              %[8,8] 
+
 %Build global stiffness matrix
 for i = 1:Gen.Ne
     %Find nodes in element
     Nodes = find(Gen.Ref(i,:),4);                           %[1,4]
-    %Prepare local stiffness matrix of element
-    %Plane strain
-    [kl] = Local_Stiffness_PStrain(Gen);              %[8,8]
-    %Plane stress
-    %[kl] = Local_Stiffness_PStress(Gen);              %[8,8] 
     
     %Add element stiffness matrix to global stiffness matrix
     %Apply local stiffness matrix contribution to each node of the element

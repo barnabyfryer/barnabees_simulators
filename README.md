@@ -59,7 +59,7 @@ represents a:
 | 05_H_Simulator_FVM_1D_Neumann_Wells | Hydraulic | ✓ | ✓ |  | ✓ |
 | 06_H_Simulator_FVM_1D_CompressibleRock | Hydraulic | ✓ | ✓ |  | ✓ |
 | 07_H_Simulator_FVM_2D | Hydraulic | ✓ | ✓ |  | ✓ |
-| 08_M_Simulator_FEM_2D | Mechanical | ✓ |  |  | ✓ |
+| 08_M_Simulator_FEM_2D | Mechanical | ✓ | ✓ |  | ✓ |
 | 09_HM_Simulator_FEM_FVM_2D | Hydro-Mechanical |  |  |  | ✓ |
 
 ## Recommended Learning Order

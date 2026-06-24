@@ -17,7 +17,9 @@ def input_data():
     #Young's modulus [Pa]
     Gen["E"] = 1e9
     #Poisson's ratio
-    Gen["v"] = 0.3
+    Gen["nu"] = 0.3
+    #Choose plane strain ("plane") or plane stress ("stress")
+    Gen["plane"] = "strain"
 
     # =============================================================================
     # Basic calculations
@@ -45,19 +47,26 @@ def input_data():
     # Fixed displacement nodes
     # =============================================================================
 
-    #Fix x-direction
-    #Fix left nodes
-    Gen["nodesx"] = np.arange(0, Gen["Nn"], Gen["Nx"] + 1)
-    #Fix right nodes
-    # Gen["nodesx"] = np.arange(Gen["Nx"], Gen["Nn"], Gen["Nx"] + 1)
+    #Get nodes for fixing later
+    #Left nodes
+    Gen["nodes_left"] = np.arange(0, Gen["Nn"], Gen["Nx"] + 1)
+    #Right nodes
+    Gen["nodes_right"] = np.arange(Gen["Nx"], Gen["Nn"], Gen["Nx"] + 1)
+    #Top nodes
+    Gen["nodes_top"] = np.arange(Gen["Ny"]*(Gen["Nx"]+1), (Gen["Ny"]+1)*(Gen["Nx"]+1))
+    #Bottom nodes
+    Gen["nodes_bottom"] = np.arange(0, Gen["Nx"] + 1, 1)
 
-    #Fix y-direction
-    #Fix bottom nodes
-    Gen["nodesy"] = np.arange(0, Gen["Nx"] + 1, 1)
-    #Fix top nodes
-    Gen["nodesy"] = np.arange(Gen["Nn"] - Gen["Nx"] - 1, Gen["Nn"], 1)
+    # =============================================================================
+    # Plotting parameters
+    # =============================================================================
 
-    return Gen, Pos
+    Plotting = {}
+    Plotting["lwidth_1col"] = 0.75
+    Plotting["Position_1col_matrix"] = [2.2, 1.8, 6, 4.5]
+    Plotting["fsize_1col"] = 7
+
+    return Gen, Plotting, Pos
 
 # =============================================================================
 # Connectivity function

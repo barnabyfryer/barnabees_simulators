@@ -10,7 +10,7 @@ v = Gen.v;                                  %[1,1]
 %Define constants specific to plane stress
 A = (Gen.E/(1-(v)^2));                      %[1,1]
 B = 1;                                      %[1,1]
-C = 1;                                      %[1,1]
+C = v;                                      %[1,1]
 D = ((1-v)/2);                              %[1,1]
 
 
