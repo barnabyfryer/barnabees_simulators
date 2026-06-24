@@ -1,12 +1,13 @@
 import numpy as np
 
-from src.phiCalc import phiCalc
-from src.trans_rock import trans_rock
-from src.trans_fluid import trans_fluid
-from src.upwind import upwind
-from src.perm import perm
-from src.build_jacobian import build_jacobian
-from src.build_residual import build_residual
+from src.src_flow.phiCalc import phiCalc
+from src.src_flow.trans_rock import trans_rock
+from src.src_flow.trans_fluid import trans_fluid
+from src.src_flow.upwind import upwind
+from src.src_flow.perm import perm
+from src.src_flow.build_jacobian import build_jacobian
+from src.src_flow.build_residual import build_residual
+
 from scipy.sparse.linalg import spsolve
 
 
