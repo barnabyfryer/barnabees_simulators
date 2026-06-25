@@ -9,7 +9,7 @@ def perm(Flow,State):
     keff = (kx * ky) ** 0.5
     #Find derivative wrt Pressure
     dkx_dP = Flow["ck"] * kx
-    dky_dP = Flow["ck"] * kx
+    dky_dP = Flow["ck"] * ky
     #Derivative wrt pressure for effective permeability
     dkeff_dP = 0.5 * (kx * ky) ** (-0.5) * (kx * dky_dP + ky * dkx_dP)
 

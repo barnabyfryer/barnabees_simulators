@@ -1,6 +1,6 @@
 import numpy as np
-from src.local_stiffness_pstrain import local_stiffness_pstrain
-from src.local_stiffness_pstress import local_stiffness_pstress
+from src.src_mech.local_stiffness_pstrain import local_stiffness_pstrain
+from src.src_mech.local_stiffness_pstress import local_stiffness_pstress
 
 def global_stiffness_builder(Gen):
 

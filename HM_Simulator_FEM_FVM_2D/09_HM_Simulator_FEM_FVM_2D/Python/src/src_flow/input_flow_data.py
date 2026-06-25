@@ -11,12 +11,13 @@ def input_flow_data():
 
     Gen = {}
 
-    Gen["tf"] = 1000.0  # Final time [sec]
+    Gen["tf"] = 10.0  # Final time [sec]
     Gen["tstep"] = 10.0  # Time step [sec]
-    Gen["tol"] = 1e-5  # Tolerance [-]
+    Gen["tol"] = 1e-5  # Tolerance of flow simulator [-]
+    Gen["tol_all"] = 1e-2  # Tolerance of coupled system [-]
 
     Gen["Nx"] = 31  # Number of cells in x direction [-]
-    Gen["Ny"] = 31  # Number of cells in y direction [-]
+    Gen["Ny"] = 33  # Number of cells in y direction [-]
 
     Gen["Lx"] = 10.0  # Reservoir length x [m]
     Gen["Ly"] = 10.0  # Reservoir length y [m]
@@ -71,6 +72,8 @@ def input_flow_data():
 
     #"Compressibility" of permeability
     Flow["ck"] = 1e-8
+    #Dependence of permeability on volumetric strain
+    Flow["ckv"] = 0
     #Reference pressure [Pa]
     Flow["kP0"] = 1e5
 
@@ -129,7 +132,9 @@ def input_flow_data():
 
     State["t"] = 0.0
 
-    State["P"] = np.full(Gen["Nx"]*Gen["Ny"],1e5)
+    State["P"] = np.full(Gen["Nx"]*Gen["Ny"],1e6)
+
+    State["e_vol"] = np.full(Gen["Nx"] * Gen["Ny"], 0)
 
     State["step"] = 0
 
@@ -141,7 +146,7 @@ def input_flow_data():
     # Storage Matrices
     # ------------------------------------------------------------------
 
-    TStore = 1
+    TStore = 5
 
     Storage["TStorage"] = np.arange(
         0,
@@ -171,5 +176,8 @@ def input_flow_data():
 
     #Store the initial flux (assumed zero) and prepare storage space
     Storage["flux"] = np.zeros((TStore+1, Gen["Nx"]*Gen["Ny"]))
+
+    #Store the initial volumetric strain (assumed zero) and prepare storage space
+    Storage["e_vol"] = np.zeros((TStore + 1, Gen["Nx"] * Gen["Ny"]))
 
     return Flow, Gen, State, Storage, Wells

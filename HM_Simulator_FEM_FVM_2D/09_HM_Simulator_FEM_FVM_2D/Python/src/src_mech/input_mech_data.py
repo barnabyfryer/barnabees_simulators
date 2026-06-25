@@ -1,18 +1,11 @@
 import numpy as np
 
-def input_mech_data(Gen):
+def input_mech_data(Gen, State):
 
     # =============================================================================
     # General inputs
     # =============================================================================
 
-    #Elements in x direction
-    Gen["Nx"] = 21
-    #Elements in y direction
-    Gen["Ny"] = 21
-    #Reservoir length [m]
-    Gen["Lx"] = 30
-    Gen["Ly"] = 10
     #Young's modulus [Pa]
     Gen["E"] = 1e9
     #Poisson's ratio
@@ -23,10 +16,6 @@ def input_mech_data(Gen):
     # =============================================================================
     # Basic calculations
     # =============================================================================
-
-    #Element edge lengths
-    Gen["dx"] = Gen["Lx"] / Gen["Nx"]
-    Gen["dy"] = Gen["Ly"] / Gen["Ny"]
 
     #Number of elements
     Gen["Ne"] = Gen["Nx"] * Gen["Ny"]
@@ -40,7 +29,7 @@ def input_mech_data(Gen):
     y = np.linspace(0, Gen["Ly"], Gen["Ny"] + 1)
 
     Pos = {}
-    Pos["x"], Pos["y"] = np.meshgrid(x, y, indexing="xy")
+    Pos["x"], Pos["y"] = np.meshgrid(x, y, indexing="ij")
 
     # =============================================================================
     # Fixed displacement nodes
@@ -65,7 +54,7 @@ def input_mech_data(Gen):
     Plotting["Position_1col_matrix"] = [2.2, 1.8, 6, 4.5]
     Plotting["fsize_1col"] = 7
 
-    return Gen, Pos
+    return Gen, Plotting, Pos, State
 
 # =============================================================================
 # Connectivity function

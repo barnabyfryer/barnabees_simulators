@@ -1,6 +1,6 @@
 import numpy as np
 
-def solve_stresses(Gen, Pos):
+def solve_stresses(Gen, Pos, State):
 
     # =============================================================================
     # Unpack
@@ -14,6 +14,8 @@ def solve_stresses(Gen, Pos):
     #Original node locations but in vector form
     x = Pos["x"].reshape(-1)
     y = Pos["y"].reshape(-1)
+    #Pressure field
+    P = State["P"]
 
     #Predefine for strain
     Eps = np.zeros((Gen["Ne"], 3))
@@ -128,13 +130,15 @@ def solve_stresses(Gen, Pos):
         strain = B @ disp
         Eps[i, :] = strain
         Sigma[i, :] = D @ strain
+        # Sigma[i, 0] -= P[i]
+        # Sigma[i, 1] -= P[i]
 
     # =============================================================================
     # Stress loop
     # =============================================================================
 
-    Eps_xx = Eps[:, 0].reshape(Gen["Ny"], Gen["Nx"])
-    Eps_yy = Eps[:, 1].reshape(Gen["Ny"], Gen["Nx"])
+    Eps_xx = Eps[:, 0].reshape(Gen["Nx"], Gen["Ny"])
+    Eps_yy = Eps[:, 1].reshape(Gen["Nx"], Gen["Ny"])
 
     eps_vol = Eps_xx + Eps_yy
 

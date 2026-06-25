@@ -18,7 +18,7 @@ def Plotting_file(Flow,Gen,Storage):
     kx_2D = Storage["kx"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
     ky_2D = Storage["ky"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
     phi_2D = Storage["phi"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
-
+    e_vol = Storage["e_vol"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
 
     # =============================================================================
     # Plotting pressure
@@ -148,6 +148,33 @@ def Plotting_file(Flow,Gen,Storage):
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     fig.savefig('../Verification/Pp_Python.jpg',
+                dpi=300,
+                bbox_inches='tight')
+    plt.show()
+
+    # =============================================================================
+    # Plotting volumetric strain
+    # =============================================================================
+
+    fig, ax = plt.subplots()
+    # Figure size
+    fig.set_size_inches(6, 4.5)
+    # Plot
+    pcm = ax.pcolormesh(X, Y, e_vol, shading='nearest')
+    # Labels
+    ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
+    ax.set_ylabel(r'Position, $y$ [m]', fontsize=10)
+    # Font size
+    ax.tick_params(labelsize=7)
+    # Tick direction
+    ax.tick_params(direction='out')
+    # Colorbar
+    cbar = plt.colorbar(pcm, ax=ax)
+    cbar.set_label(r'$\epsilon_{v}$ [-]')
+    # Box off
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    fig.savefig('../Verification/e_vol_Python.jpg',
                 dpi=300,
                 bbox_inches='tight')
     plt.show()
