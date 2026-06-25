@@ -3,7 +3,7 @@ function [f] = add_pressure(f,Gen,P)
     for i = 1:Gen.Ne
 
         %Grab pressure of this element
-        p = P(i);
+        p = Gen.biot*P(i);
 
         %Find force to be applied to element edge, note only valid for
         %constnat pressure in element

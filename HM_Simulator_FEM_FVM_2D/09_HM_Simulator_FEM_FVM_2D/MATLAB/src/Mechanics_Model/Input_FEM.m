@@ -3,9 +3,11 @@ function [Gen, Pos, State, Storage] = Input_FEM(Flow, Gen, State, Storage)
 
 %% - General Inputs
 %Young's Modulus [Pa]
-Gen.E = 50e9;                                            %[1,1]
+Gen.E = 50e9;                                           %[1,1]
 %Poisson's Ratio [-]
 Gen.v = .3;                                             %[1,1]
+%Biot's coefficient [-]
+Gen.biot = 1;                                           %[1,1]
 
 %% - Basic Calculations
 % Cell center coordinates
