@@ -8,6 +8,8 @@ Gen.E = 1e9;                                           %[1,1]
 Gen.v = .3;                                             %[1,1]
 %Biot's coefficient [-]
 Gen.biot = 1;                                           %[1,1]
+%Select plane stress (stress) or plane strain (strain)
+Gen.plane = "strain";
 
 %% - Basic Calculations
 % Cell center coordinates
@@ -91,7 +93,7 @@ State.e_vol = zeros(Gen.Nx*Gen.Ny,1);                           %[N,1]
 
 %% - Storage matrices
 %Number of points to store
-TStore = 20;                                                     %[1,1]
+TStore = min([200,floor(Gen.tf/Gen.tstep)]);                    %[1,1]
 %Get storage times
 Storage.TStorage = 0:Gen.tf/TStore:Gen.tf;                      %[1,TStore]
 Storage.TStorage = floor(Storage.TStorage/Gen.tstep)*Gen.tstep; %[1,TStore]
