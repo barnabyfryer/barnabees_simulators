@@ -72,6 +72,7 @@ represents a:
 6. 06_H_Simulator_FVM_1D_CompressibleRock
 7. 07_H_Simulator_FVM_2D
 8. 08_M_Simulator_FEM_2D
+9. 09_HM_Simulator_FEM_FVM_2D
 
 ---
 
@@ -271,6 +272,11 @@ Fluid
 - No-flow (Neumann) boundary conditions
 - Source terms in domain (wells)
 
+Coupling
+- Fluid pressure affects mechanics
+- Volumetric strain affects porosity and permeability
+- Models are iterated until convergence
+
 ---
 
 ## Planned Future Simulators
@@ -280,12 +286,6 @@ Fluid
 - Variable viscosity
 - Gravity-driven flow
 - Multiphase flow
-
-### Hydro-Mechanical (HM)
-
-- 1D poroelasticity
-- Biot consolidation
-- Coupled pressure-displacement formulations
 
 ### Hydro-Thermal (HT)
 
