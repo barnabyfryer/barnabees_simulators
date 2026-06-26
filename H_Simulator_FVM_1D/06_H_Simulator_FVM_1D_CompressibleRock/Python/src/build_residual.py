@@ -12,6 +12,9 @@ def build_residual(Flow,Gen,State,State0,trans,Wells):
     RhoOld,_ = density(Flow,State0["P"])
     #Current iteration density
     Rho,_ = density(Flow,State["P"])
+    
+    #Old time step porosity
+    phiOld, _ = phiCalc(Flow, State0)
     # Find porosity and derivative
     phi, _ = phiCalc(Flow, State)
 
@@ -27,7 +30,7 @@ def build_residual(Flow,Gen,State,State0,trans,Wells):
     # Accumulation terms
     # =============================================================================
 
-    Acc = (Rho - RhoOld) * phi * (V/Gen["tstep"])
+    Acc = (Rho*phi - RhoOld*phiOld) * (V/Gen["tstep"])
 
     # =============================================================================
     # Convection terms
