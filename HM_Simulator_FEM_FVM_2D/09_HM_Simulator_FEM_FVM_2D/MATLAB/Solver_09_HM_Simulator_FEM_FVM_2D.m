@@ -64,6 +64,9 @@ while State.t < Gen.tf
         Storage.e_vol(State.step,:) = State.e_vol;
         Storage.errP(State.step,:) = State.errP;
         Storage.erre(State.step,:) = State.erre;
+		Storage.Sig_xx(State.step,:) = State.Sig_xx;
+        Storage.Sig_yy(State.step,:) = State.Sig_yy;
+        Storage.Sig_xy(State.step,:) = State.Sig_xy;
     end
 
     State.t = State.t + Gen.tstep;

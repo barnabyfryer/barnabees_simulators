@@ -107,6 +107,11 @@ def input_mech_data(Flow, Gen, State, Storage):
     Storage["fx"] = np.zeros((TStore + 1, Gen["Nn"]))
     Storage["fy"] = np.zeros((TStore + 1, Gen["Nn"]))
 
+    # Initialize effective stresses
+    Storage["s_xx"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["s_yy"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["s_xy"] = np.zeros((TStore + 1, Gen["Ne"]))
+
     return Gen, Pos, State, Storage
 
 # =============================================================================

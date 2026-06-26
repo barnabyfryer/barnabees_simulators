@@ -122,6 +122,15 @@ Storage.e_vol = zeros(TStore,Gen.Nx*Gen.Ny);                    %[TStore,N]
 %Store initial volumetric strain
 Storage.e_vol(1,:) = State.e_vol;                               %[TStore,N]
 
+%Predefine memory for saved stresses
+Storage.Sig_xx = zeros(TStore,Gen.Nx*Gen.Ny);                   %[TStore,N]
+Storage.Sig_yy = zeros(TStore,Gen.Nx*Gen.Ny);                   %[TStore,N]
+Storage.Sig_xy = zeros(TStore,Gen.Nx*Gen.Ny);                   %[TStore,N]
+%Store initial volumetric strain
+Storage.Sig_xx(1,:) = State.Sig_xx;                             %[TStore,N]
+Storage.Sig_yy(1,:) = State.Sig_xx;                             %[TStore,N]
+Storage.Sig_xy(1,:) = State.Sig_xx;                             %[TStore,N]
+
 %% - Plotting inputs
 Plotting.lwidth_1col = 0.75;
 Plotting.Position_1col_matrix = [2.2 1.8 6 4.5];

@@ -127,9 +127,9 @@ def solve_stresses(Gen, Pos, State):
             B[2, 2 * a] = deriv[1, a]
             B[2, 2 * a + 1] = deriv[0, a]
 
-        strain = B @ disp
+        strain = -B @ disp #Positive in compression
         Eps[i, :] = strain
-        Sigma[i, :] = D @ strain
+        Sigma[i, :] = D @ strain    #Solve for effective stress
         # Sigma[i, 0] -= P[i]
         # Sigma[i, 1] -= P[i]
 
@@ -140,6 +140,12 @@ def solve_stresses(Gen, Pos, State):
     Eps_xx = Eps[:, 0].reshape(Gen["Ny"], Gen["Nx"])
     Eps_yy = Eps[:, 1].reshape(Gen["Ny"], Gen["Nx"])
 
+    #Effective stress changes
+    stress_e = {}
+    stress_e["s_xx"] = Sigma[:, 0].reshape(Gen["Ny"], Gen["Nx"])
+    stress_e["s_yy"] = Sigma[:, 1].reshape(Gen["Ny"], Gen["Nx"])
+    stress_e["s_xy"] = Sigma[:, 2].reshape(Gen["Ny"], Gen["Nx"])
+
     eps_vol = Eps_xx + Eps_yy
 
-    return Sigma, eps_vol
+    return stress_e, eps_vol

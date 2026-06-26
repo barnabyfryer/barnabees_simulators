@@ -118,6 +118,63 @@ c.Label.String = 'Volumetric strain, $$\epsilon_v$$ [-]';
 set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
 c.FontSize = Plotting.fsize_1col;
 
+%% - Plotting sigma_xx
+sig_xx = reshape(Storage.Sig_xx(end,:)+Storage.P(end,:),Gen.Nx,Gen.Ny)';
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+imagesc(Storage.x,Storage.y,sig_xx/1e6)
+xlab = xlabel('Position, $$x$$ [m]');
+ylab = ylabel('Position, $$y$$ [m]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = 'Total stress change, $$\Delta S_{xx}$$ [MPa]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
+%% - Plotting sigma_yy
+sig_yy = reshape(Storage.Sig_yy(end,:)+Storage.P(end,:),Gen.Nx,Gen.Ny)';
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+imagesc(Storage.x,Storage.y,sig_yy/1e6)
+xlab = xlabel('Position, $$x$$ [m]');
+ylab = ylabel('Position, $$y$$ [m]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = 'Total stress change, $$\Delta S_{yy}$$ [MPa]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
+%% - Plotting sigma_xy
+sig_xy = reshape(Storage.Sig_xy(end,:),Gen.Nx,Gen.Ny)';
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+imagesc(Storage.x,Storage.y,sig_xy/1e6)
+xlab = xlabel('Position, $$x$$ [m]');
+ylab = ylabel('Position, $$y$$ [m]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\Delta S_{xy}$$ [MPa]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
 %% - Plotting volumetric strain error
 errP = reshape(Storage.errP(end,:),Gen.Nx,Gen.Ny)';
 fh = figure;

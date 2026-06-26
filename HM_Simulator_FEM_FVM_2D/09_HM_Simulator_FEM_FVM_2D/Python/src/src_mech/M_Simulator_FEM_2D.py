@@ -78,11 +78,17 @@ def M_Simulator_FEM_2D(Gen,Pos,State):
     # Solve for stresses and volumetric strain
     # =============================================================================
 
-    Sigma, State["e_vol"] = solve_stresses(Gen, Pos, State)
+    stress_e, State["e_vol"] = solve_stresses(Gen, Pos, State)
 
     #Reshape to vector, note that mechanics model is Ny, Nx while flow is Nx, Ny
     State["e_vol"] = State["e_vol"].T
     State["e_vol"] = State["e_vol"].reshape(-1, order="F")
+    State["s_xx"] = stress_e["s_xx"].T
+    State["s_xx"] = State["s_xx"].reshape(-1, order="F")
+    State["s_yy"] = stress_e["s_yy"].T
+    State["s_yy"] = State["s_yy"].reshape(-1, order="F")
+    State["s_xy"] = stress_e["s_xy"].T
+    State["s_xy"] = State["s_xy"].reshape(-1, order="F")
 
     return State
 

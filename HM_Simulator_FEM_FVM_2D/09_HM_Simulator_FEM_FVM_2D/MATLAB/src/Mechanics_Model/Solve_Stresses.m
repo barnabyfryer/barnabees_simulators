@@ -1,4 +1,4 @@
-function [Sigma,e_vol] = Solve_Stresses(Gen,Pos)
+function [stress_e,e_vol] = Solve_Stresses(Gen,Pos)
 %% - FEM code that takes displacements and turns them into stresses
 %Barnaby Fryer 27.04.17
 
@@ -196,14 +196,19 @@ for i = 1:Gen.Ne
         B(3,8) = deriv(1,4);                                    %[3,8]
         
         %% - Strain and Stress calculations
-        %Calculate the strains of the element
-        Strain(i,:) = (B*transpose(disp(1,:)))';                %[Ne,3]
-        %Calculate the stresses of the element
+        %Calculate the strains of the element, positive in compression
+        Strain(i,:) = -(B*transpose(disp(1,:)))';               %[Ne,3]
+        %Calculate the effective stresses of the element
         Sigma(i,:) = (D*Strain(i,:)')';                         %[Ne,3]
     end
     
     %Find volumetric strain
     e_vol = reshape(Strain(:,1),Gen.Nx,Gen.Ny) + reshape(Strain(:,2),Gen.Nx,Gen.Ny);
+	
+	%Effective stress changes
+    stress_e.s_xx = reshape(Sigma(:,1),Gen.Nx,Gen.Ny);
+    stress_e.s_yy = reshape(Sigma(:,2),Gen.Nx,Gen.Ny);
+    stress_e.s_xy = reshape(Sigma(:,3),Gen.Nx,Gen.Ny);
 
 end
 

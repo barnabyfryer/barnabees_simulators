@@ -79,6 +79,9 @@ while State["t"] < Gen["tf"]:
         Storage["erre"][State["step"], :] = State["erre"]
         Storage["fx"][State["step"], :] = State["fx"]
         Storage["fy"][State["step"], :] = State["fy"]
+        Storage["s_xx"][State["step"], :] = State["s_xx"]
+        Storage["s_yy"][State["step"], :] = State["s_yy"]
+        Storage["s_xy"][State["step"], :] = State["s_xy"]
 
 # =============================================================================
 # Plotting
