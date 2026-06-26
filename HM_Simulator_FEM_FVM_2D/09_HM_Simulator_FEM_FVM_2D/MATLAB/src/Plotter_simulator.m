@@ -119,7 +119,7 @@ set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
 c.FontSize = Plotting.fsize_1col;
 
 %% - Plotting sigma_xx
-sig_xx = reshape(Storage.Sig_xx(end,:)+Storage.P(end,:),Gen.Nx,Gen.Ny)';
+sig_xx = reshape(Storage.Sig_xx(end,:)+Gen.biot*Storage.P(end,:),Gen.Nx,Gen.Ny)';
 fh = figure;
 ax = axes;
 set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
@@ -138,7 +138,7 @@ set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
 c.FontSize = Plotting.fsize_1col;
 
 %% - Plotting sigma_yy
-sig_yy = reshape(Storage.Sig_yy(end,:)+Storage.P(end,:),Gen.Nx,Gen.Ny)';
+sig_yy = reshape(Storage.Sig_yy(end,:)+Gen.biot*Storage.P(end,:),Gen.Nx,Gen.Ny)';
 fh = figure;
 ax = axes;
 set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)

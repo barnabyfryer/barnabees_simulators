@@ -17,8 +17,8 @@ def Plotting_file(Gen,Pos,Storage):
     e_vol = Storage["e_vol"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
     fx = Storage["fx"][-1, :].reshape((Gen["Nx"]+1, Gen["Ny"]+1), order='F').T
     fy = Storage["fy"][-1, :].reshape((Gen["Nx"]+1, Gen["Ny"]+1), order='F').T
-    s_xx = Storage["s_xx"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T + P2D
-    s_yy = Storage["s_yy"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T + P2D
+    s_xx = Storage["s_xx"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T + Gen["biot"]*P2D
+    s_yy = Storage["s_yy"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T + Gen["biot"]*P2D
     s_xy = Storage["s_xy"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
 
     # =============================================================================
