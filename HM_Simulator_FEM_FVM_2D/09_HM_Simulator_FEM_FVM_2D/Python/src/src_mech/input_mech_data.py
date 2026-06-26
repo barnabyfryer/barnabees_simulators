@@ -10,7 +10,7 @@ def input_mech_data(Flow, Gen, State, Storage):
     # =============================================================================
 
     #Young's modulus [Pa]
-    Gen["E"] = 50e7
+    Gen["E"] = 50e9
     #Poisson's ratio
     Gen["nu"] = 0.3
     #Choose plane strain ("plane") or plane stress ("stress")

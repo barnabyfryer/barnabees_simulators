@@ -39,7 +39,7 @@ while State["t"] < Gen["tf"]:
     #Initialize number of iterations
     it = 0
     # Store the state variable from previous time step for use in residual
-    State0 = {"P": State["P"].copy()}
+    State0 = {"P": State["P"].copy(),"e_vol": State["e_vol"].copy()}
     # Store the state variable from previous iteration for density update
     State_phi = State.copy()
     while err > Gen["tol_all"]:

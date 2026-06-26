@@ -14,6 +14,8 @@ function [Res] = BuildResidual(Flow,Gen,State,State0,Trans,Wells)
 %Current iteration density [kg/m^3]
 [Rho,~] = Density(Flow,State.P);                                %[N,1]
 
+%Calculate porosity of last time step
+[phiOld,~] = PhiCalc(Flow,State0);                	            %[N,1]
 %Calculate porosity and derivative
 [phi,~] = PhiCalc(Flow,State);                	                %[N,1]
 
@@ -30,7 +32,7 @@ Ax = dy*Gen.Lz;                                                 %[1,1]
 V = Ax*dx;                                                      %[1,1]
 
 %% - Accumulation Term [kg/sec]
-Acc = (Rho - RhoOld).*phi*(V/Gen.tstep);                        %[N,1]
+Acc = (Rho.*phi - RhoOld.*phiOld)*(V/Gen.tstep);                %[N,1]
 
 %% - Convection Term [kg/sec]
 Conv = FTrans*State.P;                                          %[N,1]
