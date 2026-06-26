@@ -20,14 +20,24 @@ close all
 %% - Run Simulation
 while State.t < Gen.tf
 
+    %Store current iteration
+    it = 0;
+    %Initialize error
     err = 1;
+    %Store the previous time step for use in residual
+    State0 = State;
+    %Store the previous iteration for density update after mechanical model
+    State_phi = State;
     while err > Gen.tol_all
         %Save state prior to iteration
         P0 = State.P;
         e_vol0 = State.e_vol;
 
         %% - Solve For Pressure
-        [State] = FIMPressure2D_1Phase(Flow,Gen,State,Wells);
+        [State] = FIMPressure2D_1Phase(Flow,Gen,State,State0,State_phi,Wells);
+
+        %Store the previous iteration for density update after mechanical model
+        State_phi = State;
 
         %% - Solve for stresses and volumetric strain
         [State] = M_Simulator_FEM_2D(Gen,Pos,State);
@@ -36,8 +46,10 @@ while State.t < Gen.tf
         dP = State.P - P0;
         State.errP = abs(dP) / max(max(abs(State.P)),1e5);
         State.erre = abs((State.e_vol - e_vol0))./max(max(abs(State.e_vol)),1e-12);
-
+        %Find error
         err = max([max(State.errP), max(State.erre)]);
+        %Update iteration
+        it = it + 1;
 
     end
 
@@ -56,6 +68,8 @@ while State.t < Gen.tf
 
     State.t = State.t + Gen.tstep;
 
+    fprintf('\rIterations = %d | t = %.3f s', it, State.t);
+    drawnow;
 end
 
 %% - Plotting

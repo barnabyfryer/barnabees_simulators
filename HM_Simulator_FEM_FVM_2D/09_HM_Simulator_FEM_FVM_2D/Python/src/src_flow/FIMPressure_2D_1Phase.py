@@ -7,14 +7,18 @@ from src.src_flow.upwind import upwind
 from src.src_flow.perm import perm
 from src.src_flow.build_jacobian import build_jacobian
 from src.src_flow.build_residual import build_residual
+from src.src_flow.PStrainUpdate import PStrainUpdate
 
 from scipy.sparse.linalg import spsolve
 
 
-def FIMPressure_2D_1Phase(Flow,Gen,State,Wells):
+def FIMPressure_2D_1Phase(Flow,Gen,State,State0,State_phi,Wells):
 
-    #Store the state variable from previous time step for use in residual
-    State0 = {"P": State["P"].copy()}
+    # =============================================================================
+    # Update pressure based on volumetric strain from mechanics model, conserve mass
+    # =============================================================================
+
+    State = PStrainUpdate(Flow,Gen,State,State_phi)
 
     # =============================================================================
     # Solve flow model

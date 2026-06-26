@@ -1,17 +1,22 @@
 import numpy as np
+from src.src_mech.M_Simulator_FEM_2D import M_Simulator_FEM_2D
+from src.src_flow.perm import perm
+from src.src_flow.phiCalc import phiCalc
 
-def input_mech_data(Gen, State):
+def input_mech_data(Flow, Gen, State, Storage):
 
     # =============================================================================
     # General inputs
     # =============================================================================
 
     #Young's modulus [Pa]
-    Gen["E"] = 1e9
+    Gen["E"] = 50e7
     #Poisson's ratio
     Gen["nu"] = 0.3
     #Choose plane strain ("plane") or plane stress ("stress")
     Gen["plane"] = "strain"
+    #Biot coefficient
+    Gen["biot"] = 1
 
     # =============================================================================
     # Basic calculations
@@ -29,7 +34,7 @@ def input_mech_data(Gen, State):
     y = np.linspace(0, Gen["Ly"], Gen["Ny"] + 1)
 
     Pos = {}
-    Pos["x"], Pos["y"] = np.meshgrid(x, y, indexing="ij")
+    Pos["x"], Pos["y"] = np.meshgrid(x, y, indexing="xy")
 
     # =============================================================================
     # Fixed displacement nodes
@@ -41,20 +46,68 @@ def input_mech_data(Gen, State):
     #Right nodes
     Gen["nodes_right"] = np.arange(Gen["Nx"], Gen["Nn"], Gen["Nx"] + 1)
     #Top nodes
-    Gen["nodes_top"] = np.arange(Gen["Ny"]*(Gen["Nx"]+1), (Gen["Ny"]+1)*(Gen["Nx"]+1))
+    Gen["nodes_top"] = np.arange(Gen["Ny"]*(Gen["Nx"]+1), Gen["Nn"])
     #Bottom nodes
     Gen["nodes_bottom"] = np.arange(0, Gen["Nx"] + 1, 1)
 
-    # =============================================================================
-    # Plotting parameters
-    # =============================================================================
+    # ------------------------------------------------------------------
+    # Initialize phi and e_vol
+    # ------------------------------------------------------------------
 
-    Plotting = {}
-    Plotting["lwidth_1col"] = 0.75
-    Plotting["Position_1col_matrix"] = [2.2, 1.8, 6, 4.5]
-    Plotting["fsize_1col"] = 7
+    #Initialize e_vol
+    State = M_Simulator_FEM_2D(Gen, Pos, State)
+    #Initialize permeability
+    State["kx"], State["ky"], _, _, _, _ = perm(Flow, State)
+    #Initialize porosity
+    State["phi"], _ = phiCalc(Flow, State)
 
-    return Gen, Plotting, Pos, State
+    # ------------------------------------------------------------------
+    # Storage Matrices
+    # ------------------------------------------------------------------
+
+    TStore = min(20, int(np.floor(Gen["tf"] / Gen["tstep"])))
+
+    Storage["TStorage"] = np.arange(
+        0,
+        Gen["tf"] + Gen["tf"] / TStore,
+        Gen["tf"] / TStore
+    )
+
+    Storage["TStorage"] = (
+            np.floor(Storage["TStorage"] / Gen["tstep"])
+            * Gen["tstep"]
+    )
+
+    # Store the initial pressure and prepare storage space
+    Storage["P"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["P"][0, :] = State["P"]
+
+    # Store the initial porosity
+    Storage["phi"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["phi"][0, :] = State["phi"]
+
+    # Store the initial permeability
+    Storage["kx"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["kx"][0, :] = State["kx"]
+    Storage["ky"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["ky"][0, :] = State["ky"]
+
+    # Store the initial flux (assumed zero) and prepare storage space
+    Storage["flux"] = np.zeros((TStore + 1, Gen["Ne"]))
+
+    # Store the initial volumetric strain (assumed zero) and prepare storage space
+    Storage["e_vol"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["e_vol"][0, :] = State["e_vol"]
+
+    #Initialize errors
+    Storage["errP"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["erre"] = np.zeros((TStore + 1, Gen["Ne"]))
+
+    # Initialize forces
+    Storage["fx"] = np.zeros((TStore + 1, Gen["Nn"]))
+    Storage["fy"] = np.zeros((TStore + 1, Gen["Nn"]))
+
+    return Gen, Pos, State, Storage
 
 # =============================================================================
 # Connectivity function

@@ -16,7 +16,7 @@ from src.src_mech.fix_y import fix_y
 from src.src_mech.solve_stresses import solve_stresses
 from src.src_mech.add_pressure import add_pressure
 
-def M_Simulator_FEM_FVM_2D(Gen,Pos,State):
+def M_Simulator_FEM_2D(Gen,Pos,State):
 
     # =============================================================================
     # Force vector, determine where to apply body forces here
@@ -39,11 +39,16 @@ def M_Simulator_FEM_FVM_2D(Gen,Pos,State):
     # =============================================================================
     # Boundary conditions
     # =============================================================================
-    x_fixes = np.concatenate((Gen["nodes_left"],Gen["nodes_right"]),axis=0)
-    y_fixes = np.concatenate((Gen["nodes_bottom"], Gen["nodes_top"]),axis=0)
+    # x_fixes = np.concatenate((Gen["nodes_left"],Gen["nodes_right"]),axis=0)
+    # y_fixes = np.concatenate((Gen["nodes_bottom"],Gen["nodes_top"]),axis=0)
+    x_fixes = Gen["nodes_left"]
+    y_fixes = Gen["nodes_bottom"]
     #Apply fixes to global matrix
     f, k_global = fix_x(f, k_global, x_fixes)
     f, k_global = fix_y(f, k_global, y_fixes)
+
+    State["fx"] = f[0::2]
+    State["fy"] = f[1::2]
 
     # =============================================================================
     # Solve
@@ -62,8 +67,8 @@ def M_Simulator_FEM_FVM_2D(Gen,Pos,State):
     Pos["v"] = Pos["dx"][1::2]
 
     # Reshape to grid form
-    Pos["du"] = Pos["u"].reshape((Gen["Nx"] + 1, Gen["Ny"] + 1))
-    Pos["dv"] = Pos["v"].reshape((Gen["Nx"] + 1, Gen["Ny"] + 1))
+    Pos["du"] = Pos["u"].reshape((Gen["Ny"] + 1, Gen["Nx"] + 1))
+    Pos["dv"] = Pos["v"].reshape((Gen["Ny"] + 1, Gen["Nx"] + 1))
 
     # New node locations
     Pos["x_new"] = Pos["x"] + Pos["du"]
@@ -75,7 +80,8 @@ def M_Simulator_FEM_FVM_2D(Gen,Pos,State):
 
     Sigma, State["e_vol"] = solve_stresses(Gen, Pos, State)
 
-    #Reshape to vector
+    #Reshape to vector, note that mechanics model is Ny, Nx while flow is Nx, Ny
+    State["e_vol"] = State["e_vol"].T
     State["e_vol"] = State["e_vol"].reshape(-1, order="F")
 
     return State

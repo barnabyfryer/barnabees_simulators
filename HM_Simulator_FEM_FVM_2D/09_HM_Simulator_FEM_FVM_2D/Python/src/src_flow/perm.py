@@ -6,8 +6,8 @@ def perm(Flow,State):
     kx = Flow["kx0"] * np.exp(Flow["ck"] * (State["P"] - Flow["kP0"]))
     ky = Flow["ky0"] * np.exp(Flow["ck"] * (State["P"] - Flow["kP0"]))
     #Add mechanical coupling
-    kx *= np.exp(Flow["ckv"] * State["e_vol"])
-    ky *= np.exp(Flow["ckv"] * State["e_vol"])
+    kx *= np.exp(-Flow["ckv"] * State["e_vol"])
+    ky *= np.exp(-Flow["ckv"] * State["e_vol"])
     #Find an effective permeability of the cell for use in wells
     keff = (kx * ky) ** 0.5
     #Find derivative wrt Pressure

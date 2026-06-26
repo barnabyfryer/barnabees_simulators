@@ -1,10 +1,6 @@
 import matplotlib.pyplot as plt
-from scipy.special import erfc
-import numpy as np
-from src.src_flow.perm import perm
-from src.src_flow.phiCalc import phiCalc
 
-def Plotting_file(Flow,Gen,Storage):
+def Plotting_file(Gen,Pos,Storage):
 
     # =============================================================================
     # Basic calculations
@@ -13,12 +9,14 @@ def Plotting_file(Flow,Gen,Storage):
     X = Storage["x"].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
     Y = Storage["y"].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
 
-    P2D = Storage["P"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
-    flux_2D = Storage["flux"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
-    kx_2D = Storage["kx"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
-    ky_2D = Storage["ky"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
-    phi_2D = Storage["phi"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
-    e_vol = Storage["e_vol"][1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    P2D = Storage["P"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    flux_2D = Storage["flux"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    kx_2D = Storage["kx"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    ky_2D = Storage["ky"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    phi_2D = Storage["phi"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    e_vol = Storage["e_vol"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    fx = Storage["fx"][-1, :].reshape((Gen["Nx"]+1, Gen["Ny"]+1), order='F').T
+    fy = Storage["fy"][-1, :].reshape((Gen["Nx"]+1, Gen["Ny"]+1), order='F').T
 
     # =============================================================================
     # Plotting pressure
@@ -175,6 +173,60 @@ def Plotting_file(Flow,Gen,Storage):
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     fig.savefig('../Verification/e_vol_Python.jpg',
+                dpi=300,
+                bbox_inches='tight')
+    plt.show()
+
+    # =============================================================================
+    # Plotting force in x direction
+    # =============================================================================
+
+    fig, ax = plt.subplots()
+    # Figure size
+    fig.set_size_inches(6, 4.5)
+    # Plot
+    pcm = ax.pcolormesh(Pos["x"], Pos["y"], fx, shading='nearest')
+    # Labels
+    ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
+    ax.set_ylabel(r'Position, $y$ [m]', fontsize=10)
+    # Font size
+    ax.tick_params(labelsize=7)
+    # Tick direction
+    ax.tick_params(direction='out')
+    # Colorbar
+    cbar = plt.colorbar(pcm, ax=ax)
+    cbar.set_label(r'$f_{x}$ [N/m]')
+    # Box off
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    fig.savefig('../Verification/fx_Python.jpg',
+                dpi=300,
+                bbox_inches='tight')
+    plt.show()
+
+    # =============================================================================
+    # Plotting force in x direction
+    # =============================================================================
+
+    fig, ax = plt.subplots()
+    # Figure size
+    fig.set_size_inches(6, 4.5)
+    # Plot
+    pcm = ax.pcolormesh(Pos["x"], Pos["y"], fy, shading='nearest')
+    # Labels
+    ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
+    ax.set_ylabel(r'Position, $y$ [m]', fontsize=10)
+    # Font size
+    ax.tick_params(labelsize=7)
+    # Tick direction
+    ax.tick_params(direction='out')
+    # Colorbar
+    cbar = plt.colorbar(pcm, ax=ax)
+    cbar.set_label(r'$f_{y}$ [N/m]')
+    # Box off
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    fig.savefig('../Verification/fy_Python.jpg',
                 dpi=300,
                 bbox_inches='tight')
     plt.show()

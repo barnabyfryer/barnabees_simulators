@@ -11,7 +11,7 @@ def phiCalc(Flow,State):
     P = State["P"]
 
     #Porosity change from deformation
-    phi_mech = phi0 + (1 - phi0) * e_vol
+    phi_mech = phi0 - (1 - phi0) * e_vol
 
     #Find permeability using slightly compressible formulation
     phi = phi_mech * np.exp(Flow["cphi"] * (P - Flow["phiP0"]))

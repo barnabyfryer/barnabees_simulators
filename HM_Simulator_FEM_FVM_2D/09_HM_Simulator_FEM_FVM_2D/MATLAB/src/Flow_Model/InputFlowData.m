@@ -2,17 +2,17 @@
 function [Flow, Gen, Plotting, State, Storage, Wells] = InputFlowData()
 %% - General Parameters
 %Final time [sec]
-Gen.tf = 200;                                                 %[1,1]    
+Gen.tf = 200;                                                   %[1,1]    
 %Time step [sec]
-Gen.tstep = 5;                                                 %[1,1]    
+Gen.tstep = 5;                                                  %[1,1]    
 %Tolerance [-]
 Gen.tol = 1e-5;                                                 %[1,1]   
 %Tolerance of sequential coupling [-]
-Gen.tol_all = 1e-2;                                             %[1,1]
+Gen.tol_all = 1e-3;                                             %[1,1]
 %Number of cells in x-direction [-]
-Gen.Nx = 41;                                                   %[1,1]  
+Gen.Nx = 41;                                                    %[1,1]  
 %Number of cells in y-direction [-]
-Gen.Ny = 41;                                                   %[1,1]  
+Gen.Ny = 41;                                                    %[1,1]  
 %Reservoir length in x-direction [m]
 Gen.Lx = 10;                                                    %[1,1]   
 %Reservoir length in y-direction [m]
@@ -29,6 +29,8 @@ Gen.N = Gen.Nx*Gen.Ny;                                          %[1,1]
 Gen.dx = Gen.Lx/Gen.Nx;                                         %[1,1]
 %Element edge lengths
 Gen.dy = Gen.Ly/Gen.Ny;                                         %[1,1]
+%Element edge lengths
+Gen.dz = 1;                                                     %[1,1]
 
 % Cell center coordinates
 xc = linspace(Gen.dx/2, Gen.Lx-Gen.dx/2, Gen.Nx);
@@ -85,7 +87,6 @@ Flow.cphi = 1e-9;                                               %[1,1]
 Flow.phiP0 = 1e5;                                               %[1,1] 
 
 
-
 %Fluid compressibility [1/Pa]
 Flow.cf = 1e-8;                                                 %[1,1]          
 %Fluid viscosity [Pa sec]
@@ -98,12 +99,12 @@ Flow.RhoP = 1e5;                                                %[1,1]
 %% - Wells
 % Constant pressure wells
 %Row vector of well pressures [Pa]
-Wells.P = [3.5e7];                                            %[1,Nwells]
+Wells.P = [3.5e7];                                              %[1,Nwells]
 %Well indexes [m]
-Wells.WI = [1000];                                               %[1,Nwells]
+Wells.WI = [1000];                                              %[1,Nwells]
 % Well locations [m]
-Wells.xP = [5];                                              %[1,Nwells]
-Wells.yP = [5];                                              %[1,Nwells]
+Wells.xP = [5];                                                 %[1,Nwells]
+Wells.yP = [5];                                                 %[1,Nwells]
 
     
 %Find the cells of these wells
@@ -133,9 +134,6 @@ State.P = zeros(Gen.Nx*Gen.Ny,1) + Gen.Pi;                      %[N,1]
 
 %Time step counter
 State.step = 1;                                                 %[1,1]
-
-
-
 
 %% - Plotting inputs
 Plotting.lwidth_1col = 0.75;

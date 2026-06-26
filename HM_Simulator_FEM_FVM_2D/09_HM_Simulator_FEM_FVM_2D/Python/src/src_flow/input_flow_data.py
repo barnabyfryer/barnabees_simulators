@@ -11,17 +11,19 @@ def input_flow_data():
 
     Gen = {}
 
-    Gen["tf"] = 10.0  # Final time [sec]
-    Gen["tstep"] = 10.0  # Time step [sec]
+    Gen["tf"] = 20.0  # Final time [sec]
+    Gen["tstep"] = 5.0  # Time step [sec]
     Gen["tol"] = 1e-5  # Tolerance of flow simulator [-]
-    Gen["tol_all"] = 1e-2  # Tolerance of coupled system [-]
+    Gen["tol_all"] = 1e-4  # Tolerance of coupled system [-]
 
-    Gen["Nx"] = 31  # Number of cells in x direction [-]
-    Gen["Ny"] = 33  # Number of cells in y direction [-]
+    Gen["Nx"] = 41  # Number of cells in x direction [-]
+    Gen["Ny"] = 41  # Number of cells in y direction [-]
 
     Gen["Lx"] = 10.0  # Reservoir length x [m]
     Gen["Ly"] = 10.0  # Reservoir length y [m]
     Gen["Lz"] = 1.0  # Reservoir height [m]
+
+    Gen["Pi"] = 1e7 #Initial pressure [Pa]
 
     # ------------------------------------------------------------------
     # Basic Calculations
@@ -52,7 +54,7 @@ def input_flow_data():
     #Permeability on left side
     kx_left = 1e-12
     #Permeability on right side
-    kx_right = 1e-13
+    kx_right = 1e-12
     #Permeability band size on left side
     Lx_k = 0
     #Reference permeability
@@ -63,9 +65,9 @@ def input_flow_data():
     # Permeability on top side
     ky_top = 1e-12
     # Permeability on bot side
-    ky_bot = 1e-13
+    ky_bot = 1e-12
     # Permeability band size on left side
-    Ly_k = 0
+    Ly_k = 2
     # Reference permeability
     Flow["ky0"] = np.zeros(Gen["Nx"]*Gen["Ny"]) + ky_bot  # Permeability [m²]
     Flow["ky0"][Storage["y"] < Ly_k] = ky_top
@@ -73,16 +75,16 @@ def input_flow_data():
     #"Compressibility" of permeability
     Flow["ck"] = 1e-8
     #Dependence of permeability on volumetric strain
-    Flow["ckv"] = 0
+    Flow["ckv"] = 1e-8
     #Reference pressure [Pa]
     Flow["kP0"] = 1e5
 
     #Porosity on the left side
-    phi_left = 0.3
+    phi_left = 0.2
     #Porosity on the right side
     phi_right = 0.2
     #Porosity band size on left side
-    L_phi = 0
+    L_phi = 2
     #Reference porosity
     Flow["phi0"] = np.zeros(Gen["Nx"]*Gen["Ny"]) + phi_right  # Porosity [-]
     Flow["phi0"][Storage["x"] < L_phi] = phi_left
@@ -103,10 +105,10 @@ def input_flow_data():
 
     #Constant pressure wells
     Wells = {}
-    Wells["P"] = [5e7, 1e7] #Row vector of well pressurese [Pa]
-    Wells["WI"] = [0, 0]    #Well indices [m]
-    Wells["xP"] = [10, 0]   #Well locations in x [m]
-    Wells["yP"] = [10, 0]  #Well locations in y [m]
+    Wells["P"] = [3.5e7] #Row vector of well pressurese [Pa]
+    Wells["WI"] = [1000]    #Well indices [m]
+    Wells["xP"] = [5]   #Well locations in x [m]
+    Wells["yP"] = [5]  #Well locations in y [m]
 
     #Find the cells for these wells
     Wells["Loc_P"] = np.zeros(np.size(Wells["P"]), dtype=int)
@@ -114,7 +116,7 @@ def input_flow_data():
         Wells["Loc_P"][i] = np.argmin((Storage["x"] - Wells["xP"][i])**2 + (Storage["y"] - Wells["yP"][i])**2)
 
     # Constant rate wells
-    Wells["Q"] = [1]  # Row vector of well rates [kg/sec]
+    Wells["Q"] = [0]  # Row vector of well rates [kg/sec]
     Wells["xQ"] = [5]  # Well locations in x [m]
     Wells["yQ"] = [5]  # Well locations in y [m]
 
@@ -132,7 +134,7 @@ def input_flow_data():
 
     State["t"] = 0.0
 
-    State["P"] = np.full(Gen["Nx"]*Gen["Ny"],1e6)
+    State["P"] = np.full(Gen["Nx"]*Gen["Ny"],Gen["Pi"])
 
     State["e_vol"] = np.full(Gen["Nx"] * Gen["Ny"], 0)
 
@@ -142,42 +144,15 @@ def input_flow_data():
 
     State["phi"],_ = phiCalc(Flow,State)
 
-    # ------------------------------------------------------------------
-    # Storage Matrices
-    # ------------------------------------------------------------------
-
-    TStore = 5
-
-    Storage["TStorage"] = np.arange(
-        0,
-        Gen["tf"] + Gen["tf"] / TStore,
-        Gen["tf"] / TStore
-    )
-
-    Storage["TStorage"] = (
-            np.floor(Storage["TStorage"] / Gen["tstep"])
-            * Gen["tstep"]
-    )
 
 
-    #Store the initial pressure and prepare storage space
-    Storage["P"] = np.zeros((TStore+1, Gen["Nx"]*Gen["Ny"]))
-    Storage["P"][0, :] = State["P"]
+    # =============================================================================
+    # Plotting parameters
+    # =============================================================================
 
-    # Store the initial porosity
-    Storage["phi"] = np.zeros((TStore + 1, Gen["Nx"]*Gen["Ny"]))
-    Storage["phi"][0, :] = State["phi"]
+    Plotting = {}
+    Plotting["lwidth_1col"] = 0.75
+    Plotting["Position_1col_matrix"] = [2.2, 1.8, 6, 4.5]
+    Plotting["fsize_1col"] = 7
 
-    # Store the initial permeability
-    Storage["kx"] = np.zeros((TStore + 1, Gen["Nx"]*Gen["Ny"]))
-    Storage["kx"][0, :] = State["kx"]
-    Storage["ky"] = np.zeros((TStore + 1, Gen["Nx"] * Gen["Ny"]))
-    Storage["ky"][0, :] = State["ky"]
-
-    #Store the initial flux (assumed zero) and prepare storage space
-    Storage["flux"] = np.zeros((TStore+1, Gen["Nx"]*Gen["Ny"]))
-
-    #Store the initial volumetric strain (assumed zero) and prepare storage space
-    Storage["e_vol"] = np.zeros((TStore + 1, Gen["Nx"] * Gen["Ny"]))
-
-    return Flow, Gen, State, Storage, Wells
+    return Flow, Gen, Plotting, State, Storage, Wells

@@ -3,7 +3,7 @@ function [Gen, Pos, State, Storage] = Input_FEM(Flow, Gen, State, Storage)
 
 %% - General Inputs
 %Young's Modulus [Pa]
-Gen.E = 50e9;                                           %[1,1]
+Gen.E = 1e9;                                           %[1,1]
 %Poisson's Ratio [-]
 Gen.v = .3;                                             %[1,1]
 %Biot's coefficient [-]
@@ -111,6 +111,9 @@ Storage.ky(1,:) = State.kx;                                     %[TStore,N]
 Storage.phi = zeros(TStore,Gen.Nx*Gen.Ny);                      %[TStore,N]
 %Store initial pressure
 Storage.phi(1,:) = State.phi;                                   %[TStore,N]
+
+%Predefine memory for saved flux
+Storage.flux = zeros(TStore,Gen.Nx*Gen.Ny);                     %[TStore,N]
 
 %Predefine memory for saved volumetric strain
 Storage.e_vol = zeros(TStore,Gen.Nx*Gen.Ny);                    %[TStore,N]

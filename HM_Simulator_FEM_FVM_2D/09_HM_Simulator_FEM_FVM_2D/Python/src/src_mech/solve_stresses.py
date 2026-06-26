@@ -137,8 +137,8 @@ def solve_stresses(Gen, Pos, State):
     # Stress loop
     # =============================================================================
 
-    Eps_xx = Eps[:, 0].reshape(Gen["Nx"], Gen["Ny"])
-    Eps_yy = Eps[:, 1].reshape(Gen["Nx"], Gen["Ny"])
+    Eps_xx = Eps[:, 0].reshape(Gen["Ny"], Gen["Nx"])
+    Eps_yy = Eps[:, 1].reshape(Gen["Ny"], Gen["Nx"])
 
     eps_vol = Eps_xx + Eps_yy
 
