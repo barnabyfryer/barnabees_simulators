@@ -6,6 +6,8 @@
 ########################################################################
 #
 # Author: Mathias Lebihain
+# Model used in [Fryer et al., JGR: Solid Earth, 2023]
+# doi: 10.1029/2022JB025443
 
 ##Scientific packages
 import numpy as np
