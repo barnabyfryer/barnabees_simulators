@@ -262,6 +262,10 @@ A two-dimensional mechanics simulator based on the Finite Element Method (FEM) w
 
 **Description**
 
+**Notes**
+
+This model is used in the publications Fryer et al., 2018 JGR: Solid Earth and Fryer et al., 2019, PAGEOPH.
+
 A two-dimensional mechanics simulator based on the Finite Element Method (FEM) with linear elasticity and small strains. The simulator is sequentially coupled to a FVM flow model (simulator 07).
 
 **Assumptions**
@@ -269,6 +273,15 @@ A two-dimensional mechanics simulator based on the Finite Element Method (FEM) w
 Mechanics
 - Linear elasticity
 - Small strains
+
+Fluid flow
+- Single-phase fluid
+- Slightly compressible fluid
+- Heterogeneous permeability and porosity which depends on fluid pressure
+- Constant permeability within each cell
+- No gravity
+- No-flow (Neumann) boundary conditions
+- Source terms in domain (wells)
 
 ---
 
@@ -285,6 +298,8 @@ A one-dimensional crack propagation model based on linear slip weakening and por
 **Notes**
 
 Mathias Lebihain is credited with the writing of the first version of the Python simulator.
+
+This model is used in the publication Fryer et al., 2023 JGR: Solid Earth.
 
 **Assumptions**
 

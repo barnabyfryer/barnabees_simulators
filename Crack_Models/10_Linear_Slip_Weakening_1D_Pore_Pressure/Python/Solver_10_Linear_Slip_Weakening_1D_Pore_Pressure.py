@@ -57,18 +57,18 @@ if not(os.path.isdir('figures')) :
 # P: Pressure is normalized by sigma_0 = sigma_n - p_0
 # D: Slip is normalized by delta_w = f_p / w
 # X: Distance is normalized by a_w = mu_star / tau_p * delta_w
-# T: Time is normalized by alpha / a_w
+# T: Time is normalized by alpha / a_w^2
 
 ## Information
 # We use the Piecewise Constant Slip Method (Appendix A2) to consider the influence of a residual friction
 
 ##Production phase
-#Decrease of pore pressure during to production
+#Decrease of pore pressure due to production
 Delta_p_prod = -0.7
 #Duration of the production phase
 dt_prod = 30.
 ##Injection phase
-#Increase of pore pressure during to injection
+#Increase of pore pressure due to injection
 Delta_p_inj = 0.075
 
 #Pressure profile evolution (results from the fluid problem)
