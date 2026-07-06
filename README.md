@@ -62,6 +62,8 @@ represents a:
 | 08_M_Simulator_FEM_2D | Mechanical | ✓ | ✓ |  | ✓ |
 | 09_HM_Simulator_FEM_FVM_2D | Hydro-Mechanical | ✓ | ✓ |  |  |
 | 10_Linear_Slip_Weakening_1D_Pore_Pressure | Linear Slip Weakening |  | ✓ |  | ✓ |
+| 11_Rate_and_State_Griffith | Rate-and-State Griffith |  | ✓ |  | ✓ |
+
 
 ## Recommended Learning Order
 
@@ -80,6 +82,7 @@ represents a:
 ### Crack propagation
 
 1. 10_Linear_Slip_Weakening_1D_Pore_Pressure
+2. 11_Rate_and_State_Griffith
 
 ---
 
@@ -315,6 +318,31 @@ Fluid flow
 - Pore pressure diffusion applicable
 - Constant homogeneous permeability
 - Small fluid compressibility
+
+---
+
+## 11_Rate_and_State_Griffith
+
+**Directory**
+
+`Crack_Models/11_Rate_and_State_Griffith`
+
+**Description**
+
+A one-dimensional Griffith-like crack propagation model with rate-and-state friction.
+
+**Notes**
+
+This model is used in the publication Fryer et al., 2026 Nature.
+
+**Assumptions**
+
+Friction and fracture
+- Linear elastic surrounding medium
+- Homogeneous initial stress
+- Localized fault perturbation
+- A LEFM framework with a localized frictional process zone whose dissipation is homogenized into a velocity-dependent fracture energy
+- Rate-and-state friction governs fault strength
 
 ---
 
