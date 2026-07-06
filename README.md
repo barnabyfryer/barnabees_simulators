@@ -61,8 +61,11 @@ represents a:
 | 07_H_Simulator_FVM_2D | Hydraulic | ✓ | ✓ |  | ✓ |
 | 08_M_Simulator_FEM_2D | Mechanical | ✓ | ✓ |  | ✓ |
 | 09_HM_Simulator_FEM_FVM_2D | Hydro-Mechanical | ✓ | ✓ |  |  |
+| 10_Linear_Slip_Weakening_1D_Pore_Pressure | Linear Slip Weakening |  | ✓ |  |  |
 
 ## Recommended Learning Order
+
+### Fluid flow and thermo- poro-elasticity
 
 1. 01_H_FVM_1D_Incompressible_Homogeneous
 2. 02_H_FVM_1D_Incompressible_Heterogeneous
@@ -73,6 +76,10 @@ represents a:
 7. 07_H_Simulator_FVM_2D
 8. 08_M_Simulator_FEM_2D
 9. 09_HM_Simulator_FEM_FVM_2D
+
+### Crack propagation
+
+1. 10_Linear_Slip_Weakening_1D_Pore_Pressure
 
 ---
 
@@ -263,19 +270,32 @@ Mechanics
 - Linear elasticity
 - Small strains
 
-Fluid
-- Single-phase fluid
-- Slightly compressible fluid
-- Heterogeneous permeability and porosity which depends on fluid pressure
-- Constant permeability within each cell
-- No gravity
-- No-flow (Neumann) boundary conditions
-- Source terms in domain (wells)
+---
 
-Coupling
-- Fluid pressure affects mechanics
-- Volumetric strain affects porosity and permeability
-- Models are iterated until convergence
+## 10_Linear_Slip_Weakening_1D_Pore_Pressure
+
+**Directory**
+
+`Crack_Models/10_Linear_Slip_Weakening_1D_Pore_Pressure`
+
+**Description**
+
+A one-dimensional crack propagation model based on linear slip weakening and pore pressure diffusion.
+
+**Assumptions**
+
+Friction and fracture
+- Rate-independent linear slip weakening
+- Uniform friction properties across fault
+- Uniform initial stress profile
+- Negligible poroelastic and inelastic effects
+- Quasi-static deformation (inertial effects neglected)
+- No healing or restrengthening
+
+Fluid flow
+- Pore pressure diffusion applicable
+- Constant homogeneous permeability
+- Small fluid compressibility
 
 ---
 
