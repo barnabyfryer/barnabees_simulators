@@ -61,11 +61,11 @@ represents a:
 | 07_H_Simulator_FVM_2D | Hydraulic | ✓ | ✓ |  | ✓ |
 | 08_M_Simulator_FEM_2D | Mechanical | ✓ | ✓ |  | ✓ |
 | 09_HM_Simulator_FEM_FVM_2D | Hydro-Mechanical | ✓ | ✓ |  |  |
-| 10_Linear_Slip_Weakening_1D_Pore_Pressure | Linear Slip Weakening |  | ✓ |  |  |
+| 10_Linear_Slip_Weakening_1D_Pore_Pressure | Linear Slip Weakening |  | ✓ |  | ✓ |
 
 ## Recommended Learning Order
 
-### Fluid flow and thermo- poro-elasticity
+### Fluid flow and thermo-poro-elasticity
 
 1. 01_H_FVM_1D_Incompressible_Homogeneous
 2. 02_H_FVM_1D_Incompressible_Heterogeneous
@@ -281,6 +281,10 @@ Mechanics
 **Description**
 
 A one-dimensional crack propagation model based on linear slip weakening and pore pressure diffusion.
+
+**Notes**
+
+Mathias Lebihain is credited with the writing of the first version of the Python simulator.
 
 **Assumptions**
 
