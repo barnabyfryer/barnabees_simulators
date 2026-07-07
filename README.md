@@ -62,7 +62,7 @@ represents a:
 | 08_M_Simulator_FEM_2D | Mechanical | ✓ | ✓ |  | ✓ |
 | 09_HM_Simulator_FEM_FVM_2D | Hydro-Mechanical | ✓ | ✓ |  |  |
 | 10_Linear_Slip_Weakening_1D_Pore_Pressure | Linear Slip Weakening |  | ✓ |  | ✓ |
-| 11_Rate_and_State_Griffith | Rate-and-State Griffith |  | ✓ |  | ✓ |
+| 11_Rate_and_State_Griffith | Rate-and-State Griffith | ✓ | ✓ |  | ✓ |
 
 
 ## Recommended Learning Order
@@ -340,7 +340,7 @@ This model is used in the publication Fryer et al., 2026 Nature.
 Friction and fracture
 - Linear elastic surrounding medium
 - Homogeneous initial stress
-- Localized fault perturbation
+- Localized fault perturbation (foreshock)
 - A LEFM framework with a localized frictional process zone whose dissipation is homogenized into a velocity-dependent fracture energy
 - Rate-and-state friction governs fault strength
 
