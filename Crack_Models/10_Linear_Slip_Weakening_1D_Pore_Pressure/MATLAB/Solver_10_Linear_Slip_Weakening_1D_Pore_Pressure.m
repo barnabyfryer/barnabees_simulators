@@ -54,22 +54,52 @@ dP_prod = -0.7;
 %Duration of production phase
 dt_prod = 30;
 %Increase of pore pressure due to injection
-dP_inj = 0.075;
+dP_inj = 0.475;
 %Residual friction
 f_r = 0.6;
 %Background stress
-tau_b = 0.975;
+tau_b = 0.575;
 %Number of points along each crack, discretization
 N = 101;
 
+%% - Plotting inputs
+Plotting.Position_3col = [2.2 1.8 5 4.2];
+Plotting.Position_1col = [2.2 1.8 7.0 5.5];
+Plotting.Position_1col_matrix = [2.2 1.8 6 4.5];
+Plotting.Position_1col_cbar = [2.2 1.8 6.0 5.5];
+Plotting.Position_1col_inset = [2.2 1.8 2.0 5.5/3];
+Plotting.Position_4col_cbar = [2.2 1.8 3.5 3.5];
+Plotting.fsize_3col = 7;
+Plotting.fsize_1col = 7;
+Plotting.fsize_1col_inset = 5;
+Plotting.lwidth_1col_inset = 0.5;
+Plotting.lwidth_1col = 0.75;
+Plotting.lwidth_1col_big = 1;
+Plotting.msize_1col = 5;
+Plotting.msize_1col_big = 8;
+Plotting.cb_width = 0.3;   % cm
+Plotting.cb_width2 = 0.2;   % cm
+Plotting.gap = 0.2;        % space between axes and colorbar
+Plotting.gap2 = -0.6;        % space between axes and colorbar
+
 %% - Computed crack lengths
 aa = linspace(0,2,843);
-bb = linspace(2,30,843);
+bb = linspace(2,10,843);
 %Crack lengths to evaluate
 a = [aa bb];
 
 %Remove duplicates
-a = unique(sort(a));
+a = unique(sort(a(2:end)));
+
+%Small scale yielding crack lengths to evaluate
+a_ssy = [ ...
+    a, ...
+    linspace(max(a),100,751), ...
+    logspace(log10(100),log10(1000),251) ...
+];
+
+% Remove duplicate points
+a_ssy = unique(sort(a_ssy));
 
 %% - Basic calculations
 %Critical slip
@@ -89,7 +119,7 @@ disp('Preliminary computations for Piecewise Method')
 i = (0:N-1)';                   %[N,1]
 j = (0:N)';                     %[N+1,1]
 
-%Cell size  
+%Cell size
 dX = 1/N;                       %[1,1]
 
 %Evaluation points
@@ -120,9 +150,30 @@ for m = 1:length(a_over_t)
     end
 end
 
+k_diff  = zeros(size(a_over_t));
+dk_diff = zeros(size(a_over_t));
+
+for m = 1:length(a_over_t)
+
+    integrand = @(X) Pi(a_over_t(m).*abs(X))./sqrt(1-X.^2);
+
+    k_diff(m) = (2/pi)*integral(integrand,0,1);
+
+    integrand2 = @(X) ...
+        Pi_prime(a_over_t(m).*abs(X)).*abs(X)./sqrt(1-X.^2);
+
+    dk_diff(m) = (2/pi)*integral(integrand2,0,1);
+
+end
+
+
+
 %% - Define interpolations
 interp_k_diff_j = @(aot) interp1(a_over_t, k_diff_j, aot, 'pchip', 'extrap').';
 interp_dk_diff_j = @(aot) interp1(a_over_t, dk_diff_j, aot, 'pchip', 'extrap').';
+
+interp_k_diff  = @(x) interp1(a_over_t,k_diff ,x,'pchip','extrap');
+interp_dk_diff = @(x) interp1(a_over_t,dk_diff,x,'pchip','extrap');
 
 
 %% - Elastic influence matrix
@@ -239,23 +290,23 @@ for n = 1:length(a)
 
         [x,~,exitflag] = fsolve(...
             @(x) Piecewise_in_t(...
-                x,...
-                a(n),...
-                tau_b,...
-                dP_inj,...
-                dP_prod,...
-                dt_prod,...
-                K_ij,...
-                k_const_j,...
-                interp_k_diff_j,...
-                interp_dk_diff_j,...
-                X_j,...
-                D_r,...
-                f_r,...
-                Pi,...
-                Pi_prime),...
-                x_guess,...
-                options);
+            x,...
+            a(n),...
+            tau_b,...
+            dP_inj,...
+            dP_prod,...
+            dt_prod,...
+            K_ij,...
+            k_const_j,...
+            interp_k_diff_j,...
+            interp_dk_diff_j,...
+            X_j,...
+            D_r,...
+            f_r,...
+            Pi,...
+            Pi_prime),...
+            x_guess,...
+            options);
 
         success = exitflag > 0;
 
@@ -288,6 +339,165 @@ for n = 1:length(a)
 end
 
 fprintf('Computing Piecewise Method: SUCCESS\n');
+
+%% - SSY model with production
+
+time_ssy = nan(size(a_ssy));
+
+t_bounds = [1e-12, 1e12];
+
+% First index where a >= 3
+n_start = find(a >= 3, 1, 'first');
+
+for n = n_start:length(a_ssy)
+
+    fprintf('Computing SSY model with production: %3.0f %%\r', ...
+        100*n/length(time_ssy));
+
+    %% Initial guess
+
+    if n <= length(a)
+        % First guess from Piecewise method
+        t_guess = time(n);
+    else
+        % First guess based on last valid point computed
+        if isnan(time_ssy(n-1))
+            valid = find(~isnan(time_ssy),1,'last');
+            n_guess = valid;
+        else
+            n_guess = n-1;
+        end
+
+        t_guess = time_ssy(n_guess);
+    end
+
+    %% Termination condition
+
+    if n > n_start + 20
+
+        idx = max(n_start,n-10):n-1;
+
+        if all(isnan(time_ssy(idx)))
+            break
+        end
+
+    end
+
+    %% Solve static problem
+
+    options = optimset( ...
+        'Display','off', ...
+        'TolX',1e-12);
+
+    try
+        time_ssy(n) = fzero( ...
+            @(t) SSY_in_t(t,a_ssy(n),tau_b,dP_inj,dP_prod,dt_prod,...
+                          f_r,Pi,Pi_prime,interp_k_diff,interp_dk_diff), ...
+            t_guess, ...
+            options);
+
+    catch
+        time_ssy(n) = NaN;
+    end
+
+end
+
+fprintf('Computing SSY model with production: SUCCESS\n');
+
+%% - Plotting
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+plot(a,time,'LineWidth',Plotting.lwidth_1col)
+plot(a_ssy,time_ssy,'LineWidth',Plotting.lwidth_1col)
+
+xlab = xlabel('Crack length, $$\tilde{a}$$ [-]');
+ylab = ylabel('Time, $$\tilde{t}$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+
+lgd = legend('Piecewise solution','Small scale yielding','Location','northwest');
+set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+legend box off
+
+
+%% - Small scale yielding function
+
+function [F,J] = SSY_in_t(t,a,tau_b,dP_inj,dP_prod,dt_prod,...
+                          f_r,Pi,Pi_prime,interp_k_diff,interp_dk_diff)
+
+%% - Overpressure
+
+P = (dP_inj-dP_prod) * Pi(a/t) ...
+  + dP_prod * Pi(a/sqrt(t^2+dt_prod^2));
+
+dP_dt = ...
+    -(dP_inj-dP_prod) * a/t^2 * Pi_prime(a/t) ...
+    - dP_prod * a*t/(t^2+dt_prod^2)^(3/2) ...
+      * Pi_prime(a/sqrt(t^2+dt_prod^2));
+
+%% - Effective crack length
+
+a_eff = a - (pi/2*0.466^2)/(1-P);
+
+da_eff_dt = ...
+    -(pi/2*0.466^2) * dP_dt/(1-P)^2;
+
+%% - Mode II stress intensity factor
+
+% Diffusive contribution
+k_II_diff = ...
+    (dP_inj-dP_prod) * interp_k_diff(a_eff/t) ...
+    + dP_prod * interp_k_diff(a_eff/sqrt(t^2+dt_prod^2));
+
+dk_II_diff_da_eff = ...
+    (dP_inj-dP_prod)/t ...
+    * interp_dk_diff(a_eff/t) ...
+    + dP_prod/sqrt(t^2+dt_prod^2) ...
+    * interp_dk_diff(a_eff/sqrt(t^2+dt_prod^2));
+
+dk_II_diff_dt = ...
+    -(dP_inj-dP_prod) * a/t^2 ...
+    * interp_dk_diff(a_eff/t) ...
+    - dP_prod * a*t/(t^2+dt_prod^2)^(3/2) ...
+    * interp_dk_diff(a_eff/sqrt(t^2+dt_prod^2));
+
+%% - Total stress intensity factor
+
+K_II = sqrt(pi*a_eff) * ...
+       (tau_b - f_r + f_r*k_II_diff);
+
+dK_II_da_eff = ...
+    0.5*K_II/a_eff ...
+    + sqrt(pi*a_eff)*f_r*dk_II_diff_da_eff;
+
+dK_II_dt = ...
+    dK_II_da_eff*da_eff_dt ...
+    + sqrt(pi*a_eff)*f_r*dk_II_diff_dt;
+
+%% - Local fracture toughness
+
+K_IIc = (1-f_r)*sqrt(1-P);
+
+dK_IIc_dt = ...
+    -(1-f_r)*0.5*dP_dt/sqrt(1-P);
+
+%% - Objective function
+
+F = K_II - K_IIc;
+
+%% - Jacobian
+
+J = dK_II_dt - dK_IIc_dt;
+
+end
 
 
 %% - Function Piecewise_in_t

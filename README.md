@@ -61,7 +61,7 @@ represents a:
 | 07_H_Simulator_FVM_2D | Hydraulic | ✓ | ✓ |  | ✓ |
 | 08_M_Simulator_FEM_2D | Mechanical | ✓ | ✓ |  | ✓ |
 | 09_HM_Simulator_FEM_FVM_2D | Hydro-Mechanical | ✓ | ✓ |  |  |
-| 10_Linear_Slip_Weakening_1D_Pore_Pressure | Linear Slip Weakening |  | ✓ |  | ✓ |
+| 10_Linear_Slip_Weakening_1D_Pore_Pressure | Linear Slip Weakening | ✓ | ✓ |  | ✓ |
 | 11_Rate_and_State_Griffith | Rate-and-State Griffith | ✓ | ✓ |  | ✓ |
 
 
