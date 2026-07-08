@@ -52,13 +52,13 @@ close all
 %Decrease of pore pressure during production
 dP_prod = -0.7;
 %Duration of production phase
-dt_prod = 30;
+dt_prod = 0.000001;
 %Increase of pore pressure due to injection
-dP_inj = 0.475;
+dP_inj = 0.75;
 %Residual friction
 f_r = 0.6;
 %Background stress
-tau_b = 0.575;
+tau_b = 0.7;
 %Number of points along each crack, discretization
 N = 101;
 
@@ -443,6 +443,8 @@ writematrix(A,Export_file_name)
 writematrix(A_ssy,Export_file_name_ssy)
 
 %% - Plotting
+
+%Crack length
 fh = figure;
 
 ax = axes;
@@ -451,11 +453,11 @@ set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 
 hold on
-plot(a,time,'LineWidth',Plotting.lwidth_1col)
-plot(a_ssy,time_ssy,'LineWidth',Plotting.lwidth_1col)
+plot(time,a,'LineWidth',Plotting.lwidth_1col,'Color','k')
+plot(time_ssy,a_ssy,'LineWidth',Plotting.lwidth_1col,'Color',[0.5 0.5 0.5])
 
-xlab = xlabel('Crack length, $$\tilde{a}$$ [-]');
-ylab = ylabel('Time, $$\tilde{t}$$ [-]');
+xlab = xlabel('Sqrt. of time, $$\tilde{t}^{\frac{1}{2}}$$ [-]');
+ylab = ylabel('Crack length, $$\tilde{a}$$ [-]');
 set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(fh, 'Color','white')
@@ -464,6 +466,30 @@ set(gca, 'Box','off', 'TickDir','out');
 lgd = legend('Piecewise solution','Small scale yielding','Location','northwest');
 set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 legend box off
+
+axis([0 20 0 7])
+
+
+
+%Slip
+fh2 = figure;
+
+ax2 = axes;
+set(ax2,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax2,'ActivePositionProperty','position')
+set(ax2,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold(ax2,'on')
+plot(time,slip_center,'LineWidth',Plotting.lwidth_1col,'Color','k')
+
+xlab = xlabel('Sqrt. of time, $$\tilde{t}^{\frac{1}{2}}$$ [-]');
+ylab = ylabel('Peak slip, $$\tilde{\delta}$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh2, 'Color','white')
+set(ax2, 'Box','off', 'TickDir','out');
+
+axis([0 20 0 2])
 
 
 %% - Small scale yielding function
