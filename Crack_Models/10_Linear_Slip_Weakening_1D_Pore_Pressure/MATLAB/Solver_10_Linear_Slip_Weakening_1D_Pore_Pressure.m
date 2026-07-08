@@ -404,6 +404,44 @@ end
 
 fprintf('Computing SSY model with production: SUCCESS\n');
 
+%% - Export
+%Prepare output variables
+A = [time a' slip_center];
+A_ssy = [time_ssy' a_ssy'];
+
+%Replace decimal
+dPprod_str = strrep(num2str(dP_prod,'%g'),'.','p');
+dPinj_str  = strrep(num2str(dP_inj,'%g'),'.','p');
+taub_str   = strrep(num2str(tau_b,'%g'),'.','p');
+fr_str     = strrep(num2str(f_r,'%g'),'.','p');
+
+% Replace minus sign
+dPprod_str = strrep(dPprod_str,'-','m');
+dPinj_str  = strrep(dPinj_str,'-','m');
+taub_str   = strrep(taub_str,'-','m');
+fr_str     = strrep(fr_str,'-','m');
+
+%Export file name
+Export_file_name = sprintf( ...
+    'Output/Sim10_dPprod_%s_dtprod_%g_dPinj_%s_taub_%s_fr_%s.csv', ...
+    dPprod_str,...
+    dt_prod,...
+    dPinj_str,...
+    taub_str,...
+    fr_str);
+
+Export_file_name_ssy = sprintf( ...
+    'Output/Sim10_dPprod_%s_dtprod_%g_dPinj_%s_taub_%s_fr_%s_ssy.csv', ...
+    dPprod_str,...
+    dt_prod,...
+    dPinj_str,...
+    taub_str,...
+    fr_str);
+
+%Write csv file
+writematrix(A,Export_file_name)
+writematrix(A_ssy,Export_file_name_ssy)
+
 %% - Plotting
 fh = figure;
 
