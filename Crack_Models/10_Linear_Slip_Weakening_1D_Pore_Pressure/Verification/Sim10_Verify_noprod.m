@@ -57,7 +57,7 @@ for k = 1:length(sheets)
 end
 
 %% - Read in MATLAB data
-folder = '..\MATLAB\Output';
+folder = 'MATLAB_noprod';
 
 files = dir(fullfile(folder,'*.csv'));
 
@@ -113,6 +113,81 @@ for k = 1:length(files)
 
 end
 
+%% - Read in Python data
+
+folder = 'Python_noprod';
+
+files_Python = dir(fullfile(folder,'*.csv'));
+
+ResultsPython = struct([]);
+
+for k = 1:length(files_Python)
+
+    filename = files_Python(k).name;
+    filepath = fullfile(folder,filename);
+
+    %% Read data
+    data = readmatrix(filepath,...
+        'Delimiter',';',...
+        'NumHeaderLines',2);
+
+    %% Determine solution type
+
+    isSSY = contains(filename,'_ssy');
+
+    %% Extract parameters from filename
+
+    tokens = regexp(filename,...
+        ['FaultPressurization_' ...
+         'Pinj([0-9\.]+)_' ...
+         'Pprod([0-9\.]+)_' ...
+         'Tprod([0-9\.]+)_' ...
+         'fr([0-9\.]+)_' ...
+         'Taubmin([0-9\.]+)_' ...
+         '(piecewise|ssy)'],...
+         'tokens','once');
+
+    ResultsPython(k).filename = filename;
+
+    ResultsPython(k).dPinj  = str2double(tokens{1});
+    ResultsPython(k).dPprod = -str2double(tokens{2});   % minus omitted in filename
+    ResultsPython(k).dtprod = str2double(tokens{3});
+    ResultsPython(k).fr     = str2double(tokens{4});
+    ResultsPython(k).taub   = str2double(tokens{5});
+
+    ResultsPython(k).ssy = isSSY;
+
+    %% Store data
+
+    if isSSY
+
+        % Columns:
+        % 1 = crack length
+        % 2 = sqrt(time)
+
+        ResultsPython(k).a    = data(:,1);
+        ResultsPython(k).time = data(:,2);
+
+    else
+
+        % Columns:
+        % 1 = tau_b
+        % 2 = crack length
+        % 3 = sqrt(time)
+        % 4 = sqrt(time)_SSY
+        % 5 = center slip
+
+        ResultsPython(k).tau_b_file    = data(:,1);
+        ResultsPython(k).a             = data(:,2);
+        ResultsPython(k).time          = data(:,3);
+        ResultsPython(k).time_ssy      = data(:,4);
+        ResultsPython(k).slip_center   = data(:,5);
+
+    end
+
+end
+
+
 %% - Plot data for crack length
 fh = figure;
 
@@ -127,6 +202,14 @@ for i = 1:length(files)
         plot(Results(i).time,Results(i).a,'LineWidth',Plotting.lwidth_1col,'Color','k')
     else
         plot(Results(i).time,Results(i).a,'LineWidth',Plotting.lwidth_1col,'Color',[0.5 0.5 0.5])
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ssy == 0
+        plot(ResultsPython(i).time,ResultsPython(i).a,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+    else
+        % plot(ResultsPython(i).time,ResultsPython(i).a,'--','LineWidth',Plotting.lwidth_1col,'Color',[0.5 0.5 0.5])
     end
 end
 
@@ -155,6 +238,14 @@ hold on
 for i = 1:length(files)
     if Results(i).ssy == 0
         plot(Results(i).time,Results(i).slip_center,'LineWidth',Plotting.lwidth_1col,'Color','k')
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ssy == 0
+        plot(ResultsPython(i).time,ResultsPython(i).slip_center,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+    else
+        % plot(ResultsPython(i).time,ResultsPython(i).a,'--','LineWidth',Plotting.lwidth_1col,'Color',[0.5 0.5 0.5])
     end
 end
 

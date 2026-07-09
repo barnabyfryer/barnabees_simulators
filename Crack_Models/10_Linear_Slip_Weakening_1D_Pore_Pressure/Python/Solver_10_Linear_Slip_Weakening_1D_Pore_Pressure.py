@@ -66,10 +66,10 @@ if not(os.path.isdir('figures')) :
 #Decrease of pore pressure due to production
 Delta_p_prod = -0.7
 #Duration of the production phase
-dt_prod = 30.
+dt_prod = 0.000001
 ##Injection phase
 #Increase of pore pressure due to injection
-Delta_p_inj = 0.075
+Delta_p_inj = 0.75
 
 #Pressure profile evolution (results from the fluid problem)
 Pi = lambda xi : erfc(xi)
@@ -85,7 +85,7 @@ D_r = (1.-f_r)
 #tau_b = np.array([0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, .95])
 #tau_b = np.array([0.075, 0.125, 0.175, 0.225, 0.275, 0.325, 0.375, 0.425, 0.475, 0.525, 0.575, 0.625, 0.675, 0.725, 0.775, 0.825, 0.875, 0.925, 0.975])
 
-tau_b = .975
+tau_b = 0.275
 
 tau_b_min = tau_b
 #tau_b_min = min(tau_b)
