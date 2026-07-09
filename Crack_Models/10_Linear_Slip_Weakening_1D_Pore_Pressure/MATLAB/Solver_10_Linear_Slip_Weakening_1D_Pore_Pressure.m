@@ -58,7 +58,7 @@ dP_inj = 0.75;
 %Residual friction
 f_r = 0.6;
 %Background stress
-tau_b = 0.7;
+tau_b = 0.6;
 %Number of points along each crack, discretization
 N = 101;
 
