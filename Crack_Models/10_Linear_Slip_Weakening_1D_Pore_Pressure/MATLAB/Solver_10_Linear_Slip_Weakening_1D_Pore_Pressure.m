@@ -50,17 +50,17 @@ close all
 
 %% - Inputs
 %Decrease of pore pressure during production
-dP_prod = -0.7;
+dP_prod = -0.2;
 %Duration of production phase
-dt_prod = 0.000001;
+dt_prod = 1e10;
 %Increase of pore pressure due to injection
-dP_inj = 0.75;
+dP_inj = 0.7;
 %Residual friction
 f_r = 0.6;
 %Background stress
-tau_b = 0.6;
+tau_b = 0.744;
 %Number of points along each crack, discretization
-N = 101;
+N = 301;
 
 %% - Plotting inputs
 Plotting.Position_3col = [2.2 1.8 5 4.2];
@@ -83,8 +83,8 @@ Plotting.gap = 0.2;        % space between axes and colorbar
 Plotting.gap2 = -0.6;        % space between axes and colorbar
 
 %% - Computed crack lengths
-aa = linspace(0,2,843);
-bb = linspace(2,10,843);
+aa = linspace(0,2,843*3);
+bb = linspace(2,30,843*3);
 %Crack lengths to evaluate
 a = [aa bb];
 
@@ -454,7 +454,7 @@ set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 
 hold on
 plot(time,a,'LineWidth',Plotting.lwidth_1col,'Color','k')
-plot(time_ssy,a_ssy,'LineWidth',Plotting.lwidth_1col,'Color',[0.5 0.5 0.5])
+% plot(time_ssy,a_ssy,'LineWidth',Plotting.lwidth_1col,'Color',[0.5 0.5 0.5])
 
 xlab = xlabel('Sqrt. of time, $$\tilde{t}^{\frac{1}{2}}$$ [-]');
 ylab = ylabel('Crack length, $$\tilde{a}$$ [-]');

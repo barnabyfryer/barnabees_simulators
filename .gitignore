@@ -12,6 +12,8 @@ __pycache__/
 *.jpg
 *.sty
 *.bib
+*.blg
+*.bbl
 
 # MATLAB files
 *.asv
