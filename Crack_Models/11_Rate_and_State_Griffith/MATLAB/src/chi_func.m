@@ -31,6 +31,6 @@ end
 
 %Cube root allowing negatives
 function root = my_cube_root(x)
-    root = sign(x).*abs(x).^(1/3);
+root = sign(x).*abs(x).^(1/3);
 end
 

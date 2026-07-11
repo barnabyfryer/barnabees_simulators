@@ -17,17 +17,26 @@ import matplotlib.pyplot as plt
 # use double-precision in JAX
 jax.config.update("jax_enable_x64", True)
 
+#Function to help with file naming for outputs
+def fmt(x):
+    return (f"{x:g}"
+            .replace(".", "p")
+            .replace("-", "m")
+            .replace("+", ""))
+
 ########################################################################################
 # Unwrap parameters
 
 # Direct-to-state friction parameters ratio
-a_over_b = 0.55
+a_over_b = 0.9
 # Scaled slip within the foreshock (m)
 δ_a_over_L = 0.60E-6 / 0.192E-6
 # Scaled ambiant sliding velocity
 V0_over_Vs = 5.1503149729886135e-05
+V0_over_Vs = 1e-10
+
 # Scaled overstress
-Δf0_over_b = -1
+Δf0_over_b = 0
 # Type of R&S law: "slip" or "aging"
 rs_type = "aging"
 
@@ -38,6 +47,7 @@ rs_type = "aging"
 C = 0.3
 # Scaled hypocentral force
 ΔT = C * δ_a_over_L
+ΔT = 2
 # Scaled ambient rupture velocity
 v0_over_cs = V0_over_Vs
 # Scaled \bar{v}_0
@@ -49,7 +59,7 @@ bar_v0_over_cs = jnp.exp(-Δf0_over_b) * v0_over_cs
 # Safe ellipe for small rupture velocities - E is not differentiable near 1
 def safe_m(v):
     # m = 1 - v^2, but never let it hit exactly 1.0
-    return jnp.clip(1.0 - v**2, a_min=0.0, a_max=1.0-1E-14)
+    return jnp.clip(1.0 - v ** 2, 0.0, 1.0 - 1e-14)
 
 # Function g for mode III
 g = lambda vr_over_cs : jnp.sqrt(1 - vr_over_cs**2)
@@ -305,30 +315,39 @@ l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
 t_over_ts, l_over_lb, vr_over_cs, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT)
 
 # Export file
-filename = f"EoM_{rs_type:s}_Df_{Δf0_over_b:.0f}_Da_{0.192 * δ_a_over_L:.2f}microns.csv"
+filename = (
+    f"Output/EoM_{rs_type}"
+    f"_Df_{fmt(Δf0_over_b)}"
+    f"_DT_{fmt(ΔT)}"
+    f"_V0_{fmt(V0_over_Vs)}"
+    f"_ab_{fmt(a_over_b)}.csv"
+)
+#filename = f"Output/EoM_{rs_type:s}_Df_{Δf0_over_b:.0f}_DT_{ΔT:.2f}_V0_{V0_over_Vs:.2f}_ab_{a_over_b:.2f}.csv"
 header = "t_over_ts; l_over_lb; vr_over_cs"
 data = np.column_stack((t_over_ts, l_over_lb, vr_over_cs))
 np.savetxt(filename, data, delimiter="; ", header=header, comments='')
 
-# # Plot crack velocity versus crack length
-# plt.plot(l_over_lb, vr_over_cs, color='black')
-# plt.xlabel(r'Crack length $\ell/\ell_b$', fontsize=20)
-# plt.ylabel(r'Crack velocity $v_r/c_s$', fontsize=20)
-# plt.xscale('log')
-# plt.yscale('log')
-# plt.xlim(1E-4, 1E2)
-# plt.ylim(bar_v0_over_cs, 1.2)
-# plt.tight_layout()
-# plt.show()
-# # Plot time versus rupture velocity
-# plt.plot(t_over_ts[1:], vr_over_cs[1:], color='black')
-# plt.xlabel(r'Time $t/t_s$', fontsize=20)
-# plt.ylabel(r'Rupture velocity $v_r/c_s$', fontsize=20)
-# plt.xscale('log')
-# plt.yscale('log')
-# plt.ylim(bar_v0_over_cs, 1.2)
-# plt.tight_layout()
-# plt.show()
+# Plot crack velocity versus crack length
+plt.plot(l_over_lb, vr_over_cs/v0_over_cs, color='black')
+plt.xlabel(r'Crack length $\ell/\ell_b$', fontsize=20)
+plt.ylabel(r'Crack velocity $v_r/v_0$', fontsize=20)
+plt.xscale('log')
+plt.yscale('log')
+plt.xlim(1E-1, 1E4)
+plt.ylim(0.5, 2e10)
+plt.tight_layout()
+plt.show()
+
+# Plot time versus rupture velocity
+plt.plot(t_over_ts[1:], vr_over_cs[1:], color='black')
+plt.xlabel(r'Time $t/t_s$', fontsize=20)
+plt.ylabel(r'Rupture velocity $v_r/c_s$', fontsize=20)
+plt.xscale('log')
+plt.yscale('log')
+plt.ylim(bar_v0_over_cs, 1.2)
+plt.tight_layout()
+plt.show()
+
 # Plot time versus rupture velocity
 plt.plot(7.32489240602825e-03 * t_over_ts[1:], 1345 * vr_over_cs[1:], color='black')
 plt.xlabel(r'Time $t$ (s)', fontsize=20)
@@ -339,3 +358,4 @@ plt.xlim(0.03, 20)
 plt.ylim(0.01, 1000)
 plt.tight_layout()
 plt.show()
+

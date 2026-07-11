@@ -1,4 +1,4 @@
-function [t_over_ts, l_over_lb, vr_over_cs, V_eff, reason] = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, V_min, Param)
+function [t_over_ts, l_over_lb, vr_over_cs, V_eff, reason] = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, Param)
 % SOLVE_ODE_IN_L
 % Solve for the time evolution of rupture along a crack using second-order ODE
 %
@@ -23,7 +23,7 @@ function [t_over_ts, l_over_lb, vr_over_cs, V_eff, reason] = solve_ode_in_l(l_in
 t_ini_over_ts = 0;
 
 % Find initial rupture velocity using initialize.m
-vr_ini_over_cs = initialize(l_ini_over_lb, V_min, Param);
+vr_ini_over_cs = initialize(l_ini_over_lb, Param);
 
 % Set initial ODE state: y = [t, dt/dl]'
 y0 = [t_ini_over_ts; 1 / vr_ini_over_cs];
@@ -56,7 +56,7 @@ y0 = [t_ini_over_ts; 1 / vr_ini_over_cs];
     end
 
 %% Event function to stop if rupture velocity drops below or above threshold
-v_thres = V_min * Param.bar_v0_over_cs;
+v_thres = Param.V_min * Param.bar_v0_over_cs;
 %Combined function with both conditions
     function [value, isterminal, direction] = combined_events(l, y)
         [v1, t1, d1] = event_stop(l, y);

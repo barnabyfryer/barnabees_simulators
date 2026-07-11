@@ -333,6 +333,8 @@ A one-dimensional Griffith-like crack propagation model with rate-and-state fric
 
 **Notes**
 
+This model was written co-jointly with Mathias Lebihain.
+
 This model is used in the publication Fryer et al., 2026 Nature.
 
 **Assumptions**

@@ -12,17 +12,19 @@ lwidth = 1.4;
 
 %% -------------------- Parameters --------------------
 % Friction parameters
-Param.a_over_b = 0.55;            %a/b
-Param.Delta_f0_over_b = -1;       %Overstress
+Param.a_over_b = 0.9;            %a/b
+Param.Delta_f0_over_b = 1;       %Overstress
 Param.rs_type = "aging";          %'slip' or 'aging'
 
 % Foreshock and rupture parameters
 delta_a_over_L = 1.25e-6 / 0.192e-6;       %Foreshock slip divided by L
 Param.V0_over_Vs = 5.1503149729886135e-05; %Ambient sliding velocity
+Param.V0_over_Vs = 1e-10; %Ambient sliding velocity
+
 C = 0.3;                                   %Coefficient for hypocentral force
 
 % Approximate minimum of 𝒱 from G21
-V_min = 2.138;
+Param.V_min = 2.138;
 
 % Shear wave speed [m/s], for post processing only
 cs = 1800;
@@ -33,14 +35,15 @@ l_fin_over_lb = 1e4;     % final crack length
 
 %% -------------------- Solver tolerances --------------------
 % Recommended both 1e-9 for aging law, 1e-10 for slip law
-Param.RelTol = 1e-7;
-Param.AbsTol = 1e-7;
+Param.RelTol = 1e-8;
+Param.AbsTol = 1e-8;
 
 %% -------------------- Run solver for all foreshocks --------------------
 for i = 1:length(delta_a_over_L)
     %% -------------------- Basic calculations --------------------
     % Scaled hypocentral force
     Param.Delta_T = C * delta_a_over_L(i);
+    Param.Delta_T = 2
     % Scaled ambient rupture velocity
     Param.v0_over_cs = Param.V0_over_Vs;
     % Scaled \bar{v}_0
@@ -48,7 +51,7 @@ for i = 1:length(delta_a_over_L)
 
     %% -------------------- Solve ODE --------------------
     [t_over_ts, l_over_lb, vr_over_cs, V_eff, reason] = solve_ode_in_l( ...
-        l_ini_over_lb, l_fin_over_lb, V_min, Param);
+        l_ini_over_lb, l_fin_over_lb, Param);
 
 
     %% - Export data
@@ -84,7 +87,7 @@ for i = 1:length(delta_a_over_L)
     fprintf(fid, '# V0_over_Vs = %.6e\n', Param.V0_over_Vs);
     fprintf(fid, '# bar_v0_over_cs = %.6e\n', Param.bar_v0_over_cs);
     fprintf(fid, '# Delta_T = %.6e\n', Param.Delta_T);
-    fprintf(fid, '# V_min = %.6g\n', V_min);
+    fprintf(fid, '# V_min = %.6g\n', Param.V_min);
     fprintf(fid, '# l_ini_over_lb = %.6e\n', l_ini_over_lb);
     fprintf(fid, '# l_fin_over_lb = %.6e\n', l_fin_over_lb);
     fprintf(fid, '# stop_reason = %d\n', reason);
@@ -158,3 +161,18 @@ set(xlab,'Interpreter','latex','fontsize',fsize)
 set(ylab,'Interpreter','latex','fontsize',fsize)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+%Plot rupture velocity in crack length
+fh = figure;
+hold on
+plot(l_over_lb,vr_over_cs,'k','LineWidth',lwidth)
+if reason > 0
+    plot(l_over_lb(ind_nuc),vr_over_cs(ind_nuc),'ko','LineWidth',lwidth,'MarkerFaceColor','w')
+end
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/c_{\mathrm{s}}$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',fsize)
+set(ylab,'Interpreter','latex','fontsize',fsize)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+axis([1e-1 1e4 5e-11 2e0])

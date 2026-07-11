@@ -1,4 +1,4 @@
-function vr_over_cs = initialize(l_over_lb, V_min, Param)
+function vr_over_cs = initialize(l_over_lb, Param)
 % INITIALIZE
 % Find the initial rupture velocity v_r/c_s for a given crack length l/l_b
 %
@@ -19,7 +19,7 @@ function vr_over_cs = initialize(l_over_lb, V_min, Param)
     res_func = @(vr) EoM_objective_func(l_over_lb, vr, Param);
 
     % Bounds for rupture velocity
-    vmin_over_cs = V_min * Param.bar_v0_over_cs;       % small positive number
+    vmin_over_cs = Param.V_min * Param.bar_v0_over_cs;       % small positive number
     vmax_over_cs = 1 - 1e-12;   % slightly below 1
 
     % Check if root exists in interval
