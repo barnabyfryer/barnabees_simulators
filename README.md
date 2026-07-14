@@ -300,7 +300,7 @@ A one-dimensional crack propagation model based on linear slip weakening and por
 
 **Notes**
 
-Mathias Lebihain is credited with the writing of the first version of the Python simulator.
+Mathias Lebihain is credited with the writing of the first version of the simulator, which was done in Python.
 
 This model is used in the publication Fryer et al., 2023 JGR: Solid Earth.
 
@@ -367,6 +367,10 @@ Friction and fracture
 - Fully coupled THM reservoir simulators
 - Geothermal reservoir models
 - Fault slip and earthquake simulations
+
+### Crack models
+
+- Linear slip weakening injection only
 
 ---
 
