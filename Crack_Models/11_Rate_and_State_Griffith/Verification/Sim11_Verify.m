@@ -23,6 +23,24 @@ Plotting.gap = 0.2;        % space between axes and colorbar
 Plotting.gap2 = -0.6;        % space between axes and colorbar
 
 %% - Read in digitized G&G 12 data
+filename = 'G21_FigS5a.xlsx';
+
+sheets_FigS5a = sheetnames(filename);
+
+Digitized_G21_FigS5a = struct([]);
+
+for k = 1:length(sheets_FigS5a)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5a{k});
+
+    Digitized_G21_FigS5a(k).name = sheets_FigS5a{k};
+    Digitized_G21_FigS5a(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5a(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5a{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5a(k).df0_over_b = str2double(token{1});
+end
+
 filename = 'G21_FigS5d.xlsx';
 
 sheets_FigS5d = sheetnames(filename);
@@ -42,62 +60,157 @@ for k = 1:length(sheets_FigS5d)
 end
 
 
+filename = 'G21_FigS5e.xlsx';
+
+sheets_FigS5e = sheetnames(filename);
+
+Digitized_G21_FigS5e = struct([]);
+
+for k = 1:length(sheets_FigS5e)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5e{k});
+
+    Digitized_G21_FigS5e(k).name = sheets_FigS5e{k};
+    Digitized_G21_FigS5e(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5e(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5e{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5e(k).df0_over_b = str2double(token{1});
+end
+
+
+filename = 'G21_FigS5f.xlsx';
+
+sheets_FigS5f = sheetnames(filename);
+
+Digitized_G21_FigS5f = struct([]);
+
+for k = 1:length(sheets_FigS5f)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5f{k});
+
+    Digitized_G21_FigS5f(k).name = sheets_FigS5f{k};
+    Digitized_G21_FigS5f(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5f(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5f{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5f(k).df0_over_b = str2double(token{1});
+end
+
+filename = 'G21_FigS5g.xlsx';
+
+sheets_FigS5g = sheetnames(filename);
+
+Digitized_G21_FigS5g = struct([]);
+
+for k = 1:length(sheets_FigS5g)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5g{k});
+
+    Digitized_G21_FigS5g(k).name = sheets_FigS5g{k};
+    Digitized_G21_FigS5g(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5g(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5g{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5g(k).df0_over_b = str2double(token{1});
+end
+
+
 %% - Read in MATLAB data
-% folder = 'MATLAB_noprod';
-% 
-% files = dir(fullfile(folder,'*.csv'));
-% 
-% Results = struct([]);
-% 
-% for k = 1:length(files)
-% 
-%     filename = files(k).name;
-%     filepath = fullfile(folder,filename);
-% 
-%     %% Determine file type
-% 
-%     isSSY = contains(filename,'_ssy');
-% 
-%     %% Read data
-% 
-%     data = readmatrix(filepath);
-% 
-%     %% Extract parameters from filename
-% 
-%     tokens = regexp(filename,...
-%         ['Sim10_dPprod_(.*?)_dtprod_(.*?)_dPinj_(.*?)_' ...
-%          'taub_(.*?)_fr_(.*?)' ...
-%          '(_ssy)?\.csv'],...
-%          'tokens','once');
-% 
-%     dPprod = str2double(strrep(strrep(tokens{1},'m','-'),'p','.'));
-%     dtprod = str2double(strrep(tokens{2},'p','.'));
-%     dPinj  = str2double(strrep(tokens{3},'p','.'));
-%     taub   = str2double(strrep(tokens{4},'p','.'));
-%     fr     = str2double(strrep(tokens{5},'p','.'));
-% 
-%     %% Store
-% 
-%     Results(k).filename = filename;
-% 
-%     Results(k).dPprod = dPprod;
-%     Results(k).dtprod = dtprod;
-%     Results(k).dPinj  = dPinj;
-%     Results(k).taub   = taub;
-%     Results(k).fr     = fr;
-% 
-%     if isSSY
-%         Results(k).time = data(:,1);
-%         Results(k).a    = data(:,2);
-%         Results(k).ssy = 1;
-%     else
-%         Results(k).time        = data(:,1);
-%         Results(k).a           = data(:,2);
-%         Results(k).slip_center = data(:,3);
-%         Results(k).ssy = 0;
-%     end
-% 
-% end
+
+folder = 'MATLAB_outputs';
+
+files_MATLAB = dir(fullfile(folder,'*.csv'));
+
+ResultsMATLAB = struct([]);
+
+for k = 1:length(files_MATLAB)
+
+    filename = files_MATLAB(k).name;
+    filepath = fullfile(folder,filename);
+
+    %% Read file as text to extract header information
+
+    fid = fopen(filepath,'r');
+
+    headerLines = {};
+    lineNumber = 0;
+
+    while true
+        line = fgetl(fid);
+        lineNumber = lineNumber + 1;
+
+        if ~ischar(line)
+            break
+        end
+
+        if startsWith(line,'#')
+            headerLines{end+1} = line;
+        else
+            break
+        end
+    end
+
+    fclose(fid);
+
+    %% Read numerical data
+    %
+    % lineNumber is now the line containing the column names,
+    % so skip it
+
+    data = readmatrix(filepath,...
+        'FileType','text',...
+        'Delimiter',',',...
+        'NumHeaderLines',lineNumber,...
+        'ConsecutiveDelimitersRule','join');
+
+    %% Store filename
+
+    ResultsMATLAB(k).filename = filename;
+
+    %% Extract parameters from header
+
+    ResultsMATLAB(k).a_over_b = NaN;
+    ResultsMATLAB(k).Df       = NaN;
+    ResultsMATLAB(k).rs_type  = '';
+    ResultsMATLAB(k).V0       = NaN;
+    ResultsMATLAB(k).DT       = NaN;
+
+    for i = 1:length(headerLines)
+
+        line = headerLines{i};
+
+        if contains(line,'a_over_b')
+            ResultsMATLAB(k).a_over_b = sscanf(line,'# a_over_b = %f');
+
+        elseif contains(line,'Delta_f0_over_b')
+            ResultsMATLAB(k).Df = sscanf(line,'# Delta_f0_over_b = %f');
+
+        elseif contains(line,'rs_type')
+            ResultsMATLAB(k).rs_type = strtrim(extractAfter(line,'='));
+
+        elseif contains(line,'V0_over_Vs')
+            ResultsMATLAB(k).V0 = sscanf(line,'# V0_over_Vs = %f');
+
+        elseif contains(line,'Delta_T')
+            ResultsMATLAB(k).DT = sscanf(line,'# Delta_T = %f');
+
+        end
+
+    end
+
+    %% Store solution
+
+    ResultsMATLAB(k).t_over_ts  = data(:,1);
+    ResultsMATLAB(k).l_over_lb  = data(:,2);
+    ResultsMATLAB(k).vr_over_cs = data(:,3);
+
+    % optional fourth column
+    if size(data,2) >= 4
+        ResultsMATLAB(k).Veff_over_V0 = data(:,4);
+    end
+
+end
 
 %% - Read in Python data
 
@@ -151,7 +264,7 @@ for k = 1:length(files_Python)
 end
 
 
-%% - Plot data for crack length, Fig. S5c, a/b = 0.9, DT = 2, aging
+%% - Plot data for crack length, Fig. S5a, a/b = 0.9, DT = 0, aging
 fh = figure;
 
 ax = axes;
@@ -160,6 +273,56 @@ set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 
 hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 0.9
+        if ResultsMATLAB(i).DT == 0
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 0.9
+        if ResultsPython(i).DT == 0
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5a)
+    plot(Digitized_G21_FigS5a(k).l_over_lb,Digitized_G21_FigS5a(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5a.pdf','ContentType','vector')
+
+
+%% - Plot data for crack length, Fig. S5d, a/b = 0.9, DT = 2, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 0.9
+        if ResultsMATLAB(i).DT == 2
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
 
 for i = 1:length(files_Python)
     if ResultsPython(i).ab == 0.9
@@ -182,7 +345,134 @@ set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
 
 axis([1e-1 1e4 5e-1 2e10])
 
+exportgraphics(fh,'FigS5d.pdf','ContentType','vector')
 
+
+%% - Plot data for crack length, Fig. S5e, a/b = 1.0, DT = 2, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 1.0
+        if ResultsMATLAB(i).DT == 2
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 1.0
+        if ResultsPython(i).DT == 2
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5e)
+    plot(Digitized_G21_FigS5e(k).l_over_lb,Digitized_G21_FigS5e(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5e.pdf','ContentType','vector')
+
+
+%% - Plot data for crack length, Fig. S5f, a/b = 1.1, DT = 2, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 1.1
+        if ResultsMATLAB(i).DT == 2
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 1.1
+        if ResultsPython(i).DT == 2
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5f)
+    plot(Digitized_G21_FigS5f(k).l_over_lb,Digitized_G21_FigS5f(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5f.pdf','ContentType','vector')
+
+
+
+%% - Plot data for crack length, Fig. S5g, a/b = 0.9, DT = 10, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 0.9
+        if ResultsMATLAB(i).DT == 10
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 0.9
+        if ResultsPython(i).DT == 10
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5g)
+    plot(Digitized_G21_FigS5g(k).l_over_lb,Digitized_G21_FigS5g(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5g.pdf','ContentType','vector')
 
 
 %% - For reading in file data

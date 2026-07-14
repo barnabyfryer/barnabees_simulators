@@ -23,7 +23,7 @@ function [t_over_ts, l_over_lb, vr_over_cs, V_eff, reason] = solve_ode_in_l(l_in
 t_ini_over_ts = 0;
 
 % Find initial rupture velocity using initialize.m
-vr_ini_over_cs = initialize(l_ini_over_lb, Param);
+[vr_ini_over_cs, l_ini_over_lb] = initialize(l_ini_over_lb, Param);
 
 % Set initial ODE state: y = [t, dt/dl]'
 y0 = [t_ini_over_ts; 1 / vr_ini_over_cs];
@@ -46,6 +46,9 @@ y0 = [t_ini_over_ts; 1 / vr_ini_over_cs];
         % Compute derivatives using modular functions
         num = EoM_dl(l, vr, Param);
         den = EoM_dv(l, vr, Param);
+
+        %dt_dl = 1/v
+        %d2t_dl2 = (1/v^2)(dF/dl)/(dF/dv)
 
         d2t_dl2 = (1 / vr^2) * (num / den);
         dy = [dt_dl; d2t_dl2];
@@ -80,11 +83,10 @@ v_thres = Param.V_min * Param.bar_v0_over_cs;
     end
 
 %% Solve ODE using ode45
-options = odeset('RelTol',Param.RelTol, 'AbsTol',Param.AbsTol,'Events', @combined_events);
-% l_span = logspace(log10(l_ini_over_lb), log10(l_fin_over_lb), 20);
+options = odeset('RelTol',Param.RelTol, 'AbsTol',Param.AbsTol,'Events', @combined_events,'InitialStep',1e-6,'MaxStep',1e-4);
+options = odeset('RelTol',Param.RelTol, 'AbsTol',Param.AbsTol,'Events', @combined_events,'InitialStep',1e-6);
 
 [l_sol, y_sol, te, ye, ie] = ode45(@ode_rhs, [l_ini_over_lb, l_fin_over_lb], y0, options);
-% [l_sol, y_sol, te, ye, ie] = ode45(@ode_rhs, l_span, y0, options);
 
 %% Extract outputs
 l_over_lb = l_sol;

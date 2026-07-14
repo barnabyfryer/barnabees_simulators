@@ -1,6 +1,6 @@
 %% - Main file to run
 % Script solving the EoM of (Garagash, Phil. Trans. Roy. Soc, 2021)
-% Used in Fryer et al., 2026
+% Used in Fryer et al., 2026, Nature
 % Authors: Barnaby Fryer, Mathias Lebihain, Dmitry Garagash, François Passelègue
 % Contact: barnaby.fryer@geoazur.unice.fr
 
@@ -18,7 +18,6 @@ Param.rs_type = "aging";          %'slip' or 'aging'
 
 % Foreshock and rupture parameters
 delta_a_over_L = 1.25e-6 / 0.192e-6;       %Foreshock slip divided by L
-Param.V0_over_Vs = 5.1503149729886135e-05; %Ambient sliding velocity
 Param.V0_over_Vs = 1e-10; %Ambient sliding velocity
 
 C = 0.3;                                   %Coefficient for hypocentral force
@@ -43,7 +42,7 @@ for i = 1:length(delta_a_over_L)
     %% -------------------- Basic calculations --------------------
     % Scaled hypocentral force
     Param.Delta_T = C * delta_a_over_L(i);
-    Param.Delta_T = 2
+    Param.Delta_T = 50
     % Scaled ambient rupture velocity
     Param.v0_over_cs = Param.V0_over_Vs;
     % Scaled \bar{v}_0

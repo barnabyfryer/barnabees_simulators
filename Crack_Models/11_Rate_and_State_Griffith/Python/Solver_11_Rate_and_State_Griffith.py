@@ -47,7 +47,7 @@ rs_type = "aging"
 C = 0.3
 # Scaled hypocentral force
 ΔT = C * δ_a_over_L
-ΔT = 2
+ΔT = 10
 # Scaled ambient rupture velocity
 v0_over_cs = V0_over_Vs
 # Scaled \bar{v}_0

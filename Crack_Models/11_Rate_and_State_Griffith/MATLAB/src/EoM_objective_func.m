@@ -23,4 +23,5 @@ function res = EoM_objective_func(l_over_lb, vr_over_cs, Param)
     
     % Residual of EoM
     res = K_Delta_tau + K_Delta_T - Kc;
+
 end
