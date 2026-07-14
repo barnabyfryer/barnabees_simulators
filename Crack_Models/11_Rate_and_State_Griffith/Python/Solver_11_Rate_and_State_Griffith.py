@@ -36,9 +36,9 @@ V0_over_Vs = 5.1503149729886135e-05
 V0_over_Vs = 1e-10
 
 # Scaled overstress
-Δf0_over_b = 0
+Δf0_over_b = 1
 # Type of R&S law: "slip" or "aging"
-rs_type = "aging"
+rs_type = "slip"
 
 ########################################################################################
 # Compute associated parameters
@@ -47,7 +47,7 @@ rs_type = "aging"
 C = 0.3
 # Scaled hypocentral force
 ΔT = C * δ_a_over_L
-ΔT = 10
+ΔT = 50
 # Scaled ambient rupture velocity
 v0_over_cs = V0_over_Vs
 # Scaled \bar{v}_0
@@ -312,6 +312,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
 
 # Solve
 l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
+l_ini_over_lb, l_fin_over_lb = .01, 1E4
 t_over_ts, l_over_lb, vr_over_cs, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT)
 
 # Export file

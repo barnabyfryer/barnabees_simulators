@@ -41,6 +41,46 @@ for k = 1:length(sheets_FigS5a)
     Digitized_G21_FigS5a(k).df0_over_b = str2double(token{1});
 end
 
+
+filename = 'G21_FigS5b.xlsx';
+
+sheets_FigS5b = sheetnames(filename);
+
+Digitized_G21_FigS5b = struct([]);
+
+for k = 1:length(sheets_FigS5b)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5b{k});
+
+    Digitized_G21_FigS5b(k).name = sheets_FigS5b{k};
+    Digitized_G21_FigS5b(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5b(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5b{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5b(k).df0_over_b = str2double(token{1});
+end
+
+
+filename = 'G21_FigS5c.xlsx';
+
+sheets_FigS5c = sheetnames(filename);
+
+Digitized_G21_FigS5c = struct([]);
+
+for k = 1:length(sheets_FigS5c)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5c{k});
+
+    Digitized_G21_FigS5c(k).name = sheets_FigS5c{k};
+    Digitized_G21_FigS5c(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5c(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5c{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5c(k).df0_over_b = str2double(token{1});
+end
+
+
+
 filename = 'G21_FigS5d.xlsx';
 
 sheets_FigS5d = sheetnames(filename);
@@ -115,6 +155,96 @@ for k = 1:length(sheets_FigS5g)
     Digitized_G21_FigS5g(k).df0_over_b = str2double(token{1});
 end
 
+filename = 'G21_FigS5h.xlsx';
+
+sheets_FigS5h = sheetnames(filename);
+
+Digitized_G21_FigS5h = struct([]);
+
+for k = 1:length(sheets_FigS5h)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5h{k});
+
+    Digitized_G21_FigS5h(k).name = sheets_FigS5h{k};
+    Digitized_G21_FigS5h(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5h(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5h{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5h(k).df0_over_b = str2double(token{1});
+end
+
+
+filename = 'G21_FigS5i.xlsx';
+
+sheets_FigS5i = sheetnames(filename);
+
+Digitized_G21_FigS5i = struct([]);
+
+for k = 1:length(sheets_FigS5i)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5i{k});
+
+    Digitized_G21_FigS5i(k).name = sheets_FigS5i{k};
+    Digitized_G21_FigS5i(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5i(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5i{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5i(k).df0_over_b = str2double(token{1});
+end
+
+filename = 'G21_FigS5j.xlsx';
+
+sheets_FigS5j = sheetnames(filename);
+
+Digitized_G21_FigS5j = struct([]);
+
+for k = 1:length(sheets_FigS5j)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5j{k});
+
+    Digitized_G21_FigS5j(k).name = sheets_FigS5j{k};
+    Digitized_G21_FigS5j(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5j(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5j{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5j(k).df0_over_b = str2double(token{1});
+end
+
+filename = 'G21_FigS5k.xlsx';
+
+sheets_FigS5k = sheetnames(filename);
+
+Digitized_G21_FigS5k = struct([]);
+
+for k = 1:length(sheets_FigS5k)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5k{k});
+
+    Digitized_G21_FigS5k(k).name = sheets_FigS5k{k};
+    Digitized_G21_FigS5k(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5k(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5k{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5k(k).df0_over_b = str2double(token{1});
+end
+
+filename = 'G21_FigS5l.xlsx';
+
+sheets_FigS5l = sheetnames(filename);
+
+Digitized_G21_FigS5l = struct([]);
+
+for k = 1:length(sheets_FigS5l)
+
+    data = readmatrix(filename,'Sheet',sheets_FigS5l{k});
+
+    Digitized_G21_FigS5l(k).name = sheets_FigS5l{k};
+    Digitized_G21_FigS5l(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5l(k).vr_over_v0 = data(:,2);
+
+    token = regexp(sheets_FigS5l{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5l(k).df0_over_b = str2double(token{1});
+end
 
 %% - Read in MATLAB data
 
@@ -306,6 +436,91 @@ axis([1e-1 1e4 5e-1 2e10])
 exportgraphics(fh,'FigS5a.pdf','ContentType','vector')
 
 
+%% - Plot data for crack length, Fig. S5b, a/b = 1.0, DT = 0, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 1.0
+        if ResultsMATLAB(i).DT == 0
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 1.0
+        if ResultsPython(i).DT == 0
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5b)
+    plot(Digitized_G21_FigS5b(k).l_over_lb,Digitized_G21_FigS5b(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5b.pdf','ContentType','vector')
+
+%% - Plot data for crack length, Fig. S5c, a/b = 1.1, DT = 0, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 1.1
+        if ResultsMATLAB(i).DT == 0
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 1.1
+        if ResultsPython(i).DT == 0
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5c)
+    plot(Digitized_G21_FigS5c(k).l_over_lb,Digitized_G21_FigS5c(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5c.pdf','ContentType','vector')
+
+
+
+
 %% - Plot data for crack length, Fig. S5d, a/b = 0.9, DT = 2, aging
 fh = figure;
 
@@ -473,6 +688,212 @@ set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
 axis([1e-1 1e4 5e-1 2e10])
 
 exportgraphics(fh,'FigS5g.pdf','ContentType','vector')
+
+%% - Plot data for crack length, Fig. S5h, a/b = 1.0, DT = 10, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 1.0
+        if ResultsMATLAB(i).DT == 10
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 1.0
+        if ResultsPython(i).DT == 10
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5h)
+    plot(Digitized_G21_FigS5h(k).l_over_lb,Digitized_G21_FigS5h(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5h.pdf','ContentType','vector')
+
+%% - Plot data for crack length, Fig. S5i, a/b = 1.1, DT = 10, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 1.1
+        if ResultsMATLAB(i).DT == 10
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 1.1
+        if ResultsPython(i).DT == 10
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5i)
+    plot(Digitized_G21_FigS5i(k).l_over_lb,Digitized_G21_FigS5i(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5i.pdf','ContentType','vector')
+
+%% - Plot data for crack length, Fig. S5j, a/b = 0.9, DT = 50, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 0.9
+        if ResultsMATLAB(i).DT == 50
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 0.9
+        if ResultsPython(i).DT == 50
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5j)
+    plot(Digitized_G21_FigS5j(k).l_over_lb,Digitized_G21_FigS5j(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5j.pdf','ContentType','vector')
+
+%% - Plot data for crack length, Fig. S5k, a/b = 1.0, DT = 50, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 1.0
+        if ResultsMATLAB(i).DT == 50
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 1.0
+        if ResultsPython(i).DT == 50
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5k)
+    plot(Digitized_G21_FigS5k(k).l_over_lb,Digitized_G21_FigS5k(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5k.pdf','ContentType','vector')
+
+
+%% - Plot data for crack length, Fig. S5l, a/b = 1.1, DT = 50, aging
+fh = figure;
+
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+
+hold on
+
+for i = 1:length(files_MATLAB)
+    if ResultsMATLAB(i).a_over_b == 1.1
+        if ResultsMATLAB(i).DT == 50
+            plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
+        end
+    end
+end
+
+for i = 1:length(files_Python)
+    if ResultsPython(i).ab == 1.1
+        if ResultsPython(i).DT == 50
+            plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
+        end
+    end
+end
+
+for k = 1:length(sheets_FigS5l)
+    plot(Digitized_G21_FigS5l(k).l_over_lb,Digitized_G21_FigS5l(k).vr_over_v0,'r.')
+end
+
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$v_{\mathrm{r}}/v_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+axis([1e-1 1e4 5e-1 2e10])
+
+exportgraphics(fh,'FigS5l.pdf','ContentType','vector')
 
 
 %% - For reading in file data

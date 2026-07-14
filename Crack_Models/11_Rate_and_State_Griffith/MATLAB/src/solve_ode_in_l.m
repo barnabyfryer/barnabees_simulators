@@ -83,7 +83,7 @@ v_thres = Param.V_min * Param.bar_v0_over_cs;
     end
 
 %% Solve ODE using ode45
-options = odeset('RelTol',Param.RelTol, 'AbsTol',Param.AbsTol,'Events', @combined_events,'InitialStep',1e-6,'MaxStep',1e-4);
+% options = odeset('RelTol',Param.RelTol, 'AbsTol',Param.AbsTol,'Events', @combined_events,'InitialStep',1e-6,'MaxStep',1e-2);
 options = odeset('RelTol',Param.RelTol, 'AbsTol',Param.AbsTol,'Events', @combined_events,'InitialStep',1e-6);
 
 [l_sol, y_sol, te, ye, ie] = ode45(@ode_rhs, [l_ini_over_lb, l_fin_over_lb], y0, options);
@@ -92,12 +92,6 @@ options = odeset('RelTol',Param.RelTol, 'AbsTol',Param.AbsTol,'Events', @combine
 l_over_lb = l_sol;
 t_over_ts = y_sol(:,1);
 vr_over_cs = 1 ./ y_sol(:,2);
-
-%Solve for effective slip velocity
-V_eff = zeros(size(l_over_lb));
-for i = 1:length(l_over_lb)
-    V_eff(i) = Veff_func(l_over_lb(i), vr_over_cs(i), Param);
-end
 
 %% Determine stopping reason
 if ~isempty(ie)
@@ -110,7 +104,25 @@ elseif l_over_lb(end) >= l_fin_over_lb
     reason = 1; % reached final crack length
 else
     reason = 2; % integration incomplete
-    warning('ODE solver did not reach final crack length.');
+    warning('ODE explicit solver did not reach final crack length.');
+
+        [t_imp,l_imp,v_imp] = implicit_continuation( ...
+            t_over_ts(end),...
+            l_over_lb(end),...
+            vr_over_cs(end),...
+            Param);
+
+        t_over_ts = [t_over_ts; t_imp(2:end)'];
+
+        l_over_lb = [l_over_lb; l_imp(2:end)'];
+
+        vr_over_cs = [vr_over_cs; v_imp(2:end)'];
+end
+
+%% - Solve for effective slip velocity
+V_eff = zeros(size(l_over_lb));
+for i = 1:length(l_over_lb)
+    V_eff(i) = Veff_func(l_over_lb(i), vr_over_cs(i), Param);
 end
 
 end

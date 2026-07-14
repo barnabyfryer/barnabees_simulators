@@ -43,7 +43,7 @@ it = 0;
 %Updates to initial crack length if too small
 l_in_updates_allowed = 3;
 l_updates_count = 0;
-while F > 1e-15
+while F > Param.Init_tol
     %Use new velocity
     v = vnew;
     %Find residual
