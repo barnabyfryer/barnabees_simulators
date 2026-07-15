@@ -1,11 +1,10 @@
-function [t_over_ts, l_over_lb, vr_over_cs, V_eff, reason] = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, Param)
+function [t_over_ts, l_over_lb, vr_over_cs, V_eff, reason, df0_over_b] = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, Param)
 % SOLVE_ODE_IN_L
 % Solve for the time evolution of rupture along a crack using second-order ODE
 %
 % Inputs:
 %   l_ini_over_lb   - initial crack length (l/l_b)
 %   l_fin_over_lb   - final crack length (l/l_b)
-%   Delta_T         - scaled hypocentral force
 %   V_min           - approximate minimum of 𝒱 function
 %   bar_v0_over_cs  - scaled ambient rupture velocity
 %   a_over_b        - friction parameter ratio
@@ -21,6 +20,9 @@ function [t_over_ts, l_over_lb, vr_over_cs, V_eff, reason] = solve_ode_in_l(l_in
 
 %% Initial conditions
 t_ini_over_ts = 0;
+
+%Initial overstress
+Param.Delta_f0_over_b = Param.Delta_f0_over_b_in;
 
 % Find initial rupture velocity using initialize.m
 [vr_ini_over_cs, l_ini_over_lb] = initialize(l_ini_over_lb, Param);
@@ -43,9 +45,14 @@ y0 = [t_ini_over_ts; 1 / vr_ini_over_cs];
         dt_dl = y(2);
         vr = 1 / dt_dl;
 
+        %Copy Param
+        Param_local = Param;
+        %Find overstress
+        Param_local.Delta_f0_over_b = Param_local.Delta_f0_over_b_in + Param_local.Loading_rate * t_val * Param_local.v0_over_cs;
+
         % Compute derivatives using modular functions
-        num = EoM_dl(l, vr, Param);
-        den = EoM_dv(l, vr, Param);
+        num = EoM_dl(l, vr, Param_local);
+        den = EoM_dv(l, vr, Param_local);
 
         %dt_dl = 1/v
         %d2t_dl2 = (1/v^2)(dF/dl)/(dF/dv)
@@ -92,6 +99,7 @@ options = odeset('RelTol',Param.RelTol, 'AbsTol',Param.AbsTol,'Events', @combine
 l_over_lb = l_sol;
 t_over_ts = y_sol(:,1);
 vr_over_cs = 1 ./ y_sol(:,2);
+df0_over_b = Param.Delta_f0_over_b_in + Param.Loading_rate * t_over_ts * Param.v0_over_cs;
 
 %% Determine stopping reason
 if ~isempty(ie)
@@ -106,7 +114,7 @@ else
     reason = 2; % integration incomplete
     warning('ODE explicit solver did not reach final crack length.');
 
-        [t_imp,l_imp,v_imp] = implicit_continuation( ...
+        [t_imp,l_imp,v_imp,dfdt_imp] = implicit_continuation( ...
             t_over_ts(end),...
             l_over_lb(end),...
             vr_over_cs(end),...
@@ -117,6 +125,8 @@ else
         l_over_lb = [l_over_lb; l_imp(2:end)'];
 
         vr_over_cs = [vr_over_cs; v_imp(2:end)'];
+
+        df0_over_b = [df0_over_b; dfdt_imp(2:end)'];
 end
 
 %% - Solve for effective slip velocity

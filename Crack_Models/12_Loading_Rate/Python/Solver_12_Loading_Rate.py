@@ -29,29 +29,23 @@ def fmt(x):
 
 # Direct-to-state friction parameters ratio
 a_over_b = 0.9
-# Scaled slip within the foreshock (m)
-δ_a_over_L = 0.60E-6 / 0.192E-6
 # Scaled ambiant sliding velocity
-V0_over_Vs = 5.1503149729886135e-05
 V0_over_Vs = 1e-10
 
 # Scaled overstress
-Δf0_over_b = 1
+Δf0_over_b_i = 1
+#Loading rate [friction/ts or d(df0/b)/d(ts), ts = L/V0]
+Loading_rate = 1
 # Type of R&S law: "slip" or "aging"
-rs_type = "slip"
+rs_type = "aging"
 
 ########################################################################################
 # Compute associated parameters
 
-# Coefficient between slip within the foreshock and hypocentral force
-C = 0.3
-# Scaled hypocentral force
-ΔT = C * δ_a_over_L
-ΔT = 50
 # Scaled ambient rupture velocity
 v0_over_cs = V0_over_Vs
 # Scaled \bar{v}_0
-bar_v0_over_cs = jnp.exp(-Δf0_over_b) * v0_over_cs
+bar_v0_over_cs = jnp.exp(-Δf0_over_b_i) * v0_over_cs
 
 ########################################################################################
 # EoM functionals
@@ -115,33 +109,33 @@ Kc = lambda vr_over_cs : jnp.sqrt(2 * Gc(vr_over_cs) * g(vr_over_cs) / k(vr_over
 # Scaled effective velocity
 Veff_over_V0 = lambda l_over_lb, vr_over_cs : k(vr_over_cs)/g(vr_over_cs) * 4*Kc(vr_over_cs) * vr_over_cs/v0_over_cs / jnp.sqrt(jnp.pi * l_over_lb) * 𝓕
 # Scaled effective stress
-Δτ_eff = lambda l_over_lb, vr_over_cs : Δf0_over_b - (a_over_b - 1) * jnp.log(Veff_over_V0(l_over_lb, vr_over_cs))
+Δτ_eff = lambda l_over_lb, vr_over_cs, Δf0_over_b : Δf0_over_b - (a_over_b - 1) * jnp.log(Veff_over_V0(l_over_lb, vr_over_cs))
 # Background SIF
-K_Δτ = lambda l_over_lb, vr_over_cs : Δτ_eff(l_over_lb, vr_over_cs) * jnp.sqrt(jnp.pi * l_over_lb)
-# Foreshock SIF
-K_ΔT = lambda l_over_lb, ΔT : ΔT / jnp.sqrt(jnp.pi * l_over_lb)
+K_Δτ = lambda l_over_lb, vr_over_cs, Δf0_over_b : Δτ_eff(l_over_lb, vr_over_cs, Δf0_over_b) * jnp.sqrt(jnp.pi * l_over_lb)
 
 ########################################################################################
 # EoM solution
 
 # Residue
-EoM_objective = lambda l_over_lb, vr_over_cs, ΔT : K_Δτ(l_over_lb, vr_over_cs) + K_ΔT(l_over_lb, ΔT) - Kc(vr_over_cs)
+EoM_objective = lambda l_over_lb, vr_over_cs, Δf0_over_b : K_Δτ(l_over_lb, vr_over_cs, Δf0_over_b) - Kc(vr_over_cs)
 EoM_dl = jax.jit(jax.grad(EoM_objective, argnums=0))
 EoM_dv = jax.jit(jax.grad(EoM_objective, argnums=1))
 
 # Find rupture velocity for v_r/c_s for any crack length l/l_b - used only to initialize the ODE
-def initialize(l_over_lb, ΔT, method='brentq'):
+def initialize(l_over_lb, method='brentq'):
     # Bounds on tested velocities
     vmin_over_cs = 𝒱_min * bar_v0_over_cs
     vmax_over_cs = 1-1E-12
-    # First guess on the velocity - This is usually quite high due to foreshock
-    v_guess_over_cs = 0.9
+    # Initial guess for the rupture velocity
+    v_guess_over_cs = 0.001
+    #Initialize Δf0_over_b at time zero
+    Δf0_over_b = Δf0_over_b_i
     # Find root if possible
-    if (EoM_objective(l_over_lb, vmin_over_cs, ΔT) * EoM_objective(l_over_lb, vmax_over_cs, ΔT) <= 0):
+    if (EoM_objective(l_over_lb, vmin_over_cs, Δf0_over_b) * EoM_objective(l_over_lb, vmax_over_cs, Δf0_over_b) <= 0):
         # Function
-        func = lambda vr_over_cs : EoM_objective(l_over_lb, vr_over_cs, ΔT)
+        func = lambda vr_over_cs : EoM_objective(l_over_lb, vr_over_cs, Δf0_over_b)
         # Gradient
-        grad = lambda vr_over_cs : EoM_dv(l_over_lb, vr_over_cs, ΔT)
+        grad = lambda vr_over_cs : EoM_dv(l_over_lb, vr_over_cs, Δf0_over_b)
         # Solve for root of the EoM
         results = root_scalar(func, method=method, fprime=grad, \
                                 x0=v_guess_over_cs, bracket=(vmin_over_cs, vmax_over_cs))
@@ -156,11 +150,11 @@ def initialize(l_over_lb, ΔT, method='brentq'):
 
 
 # Find rupture velocity for v_r/c_s for any crack length l/l_b - used only to initialize the ODE
-def solve_root_in_l(l_over_lb, ΔT, v_guess_over_cs):
+def solve_root_in_l(l_over_lb, v_guess_over_cs, Δf0_over_b):
     # Function
-    func = lambda vr_over_cs : EoM_objective(l_over_lb, vr_over_cs, ΔT)
+    func = lambda vr_over_cs : EoM_objective(l_over_lb, vr_over_cs, Δf0_over_b)
     # Gradient
-    grad = lambda vr_over_cs : EoM_dv(l_over_lb, vr_over_cs, ΔT)
+    grad = lambda vr_over_cs : EoM_dv(l_over_lb, vr_over_cs, Δf0_over_b)
     # Solve for root of the EoM
     results = root_scalar(func, fprime=grad, x0=v_guess_over_cs)
      
@@ -171,11 +165,11 @@ def solve_root_in_l(l_over_lb, ΔT, v_guess_over_cs):
         raise RuntimeError("The root-finding in v algorithm did not converge.")
 
 # Find crack length l/l_b for any rupture velocity for v_r/c_s - used to handle the stiff portion of the ODE
-def solve_root_in_v(vr_over_cs, ΔT, l_guess_over_lb):
+def solve_root_in_v(vr_over_cs, l_guess_over_lb, Δf0_over_b):
     # Function
-    func = lambda l_over_lb : EoM_objective(l_over_lb, vr_over_cs, ΔT)
+    func = lambda l_over_lb : EoM_objective(l_over_lb, vr_over_cs, Δf0_over_b)
     # Gradient
-    grad = lambda l_over_lb : EoM_dl(l_over_lb, vr_over_cs, ΔT)
+    grad = lambda l_over_lb : EoM_dl(l_over_lb, vr_over_cs, Δf0_over_b)
     # Solve for root of the EoM
     results = root_scalar(func, fprime=grad, x0=l_guess_over_lb)
     # Check convergence
@@ -185,19 +179,19 @@ def solve_root_in_v(vr_over_cs, ΔT, l_guess_over_lb):
         raise RuntimeError("The root-finding in v algorithm did not converge.")
 
 # Find time t/t_s for different crack length l/l_b - using the idea of Dmitry reformulating the fixed points equation into a second-order ODE
-def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb = 1E-6, rtol=1E-9, atol=1E-9, max_steps=10000):
+def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, N_steps=1000, Δl_over_lb = 1E-6, rtol=1E-9, atol=1E-9, max_steps=10000):
     # Right-hand side
-    def formulate_ode_in_l(l_over_lb, y, args):
+    def formulate_ode_in_l(l_over_lb, y, args=None):
         # Time t/t_s and its first derivative with respect to crack length l_over_lb
         t_over_ts, t_over_ts_prime = y
-        # Args
-        ΔT, = args
         # Rupture velocity
         vr_over_cs = 1/t_over_ts_prime
-        
+        #Update overstress
+        Δf0_over_b = Δf0_over_b_i + Loading_rate * t_over_ts * V0_over_Vs
+
         # Kill higher-order derivatives through EoM_dl / EoM_dv for the stiff version
-        num = EoM_dl(l_over_lb, vr_over_cs, ΔT)
-        den = EoM_dv(l_over_lb, vr_over_cs, ΔT)
+        num = EoM_dl(l_over_lb, vr_over_cs, Δf0_over_b)
+        den = EoM_dv(l_over_lb, vr_over_cs, Δf0_over_b)
         
         # Second derivative from the EoM
         t_over_ts_second = 1/vr_over_cs**2 * num / den
@@ -209,7 +203,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
     
     # Initial condition
     t_ini_over_ts = 0
-    v_ini_over_cs = initialize(l_ini_over_lb, ΔT)
+    v_ini_over_cs = initialize(l_ini_over_lb)
     
     # Start with an explicit solver for the non-stiff part
     solver = dfx.Tsit5()
@@ -236,7 +230,6 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
         (t_ini_over_ts, 1/v_ini_over_cs),
         saveat=saveat,
         stepsize_controller = stepsize_controller,
-        args = (ΔT, ),
         event = event_stop,
         max_steps = max_steps,
         throw = False
@@ -246,6 +239,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
     l_over_lb = sol.ts
     t_over_ts = sol.ys[0]
     vr_over_cs = 1/sol.ys[1]
+    Δf0_over_b = Δf0_over_b_i + Loading_rate * t_over_ts * V0_over_Vs
     
     # Heuristic stopping reasons
     # 0: v below threshold
@@ -268,18 +262,46 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
             # Log-spaced velocities
             N_cont = 100
             v_cont_over_cs = np.logspace(np.log10(v_min_over_cs), np.log10(v_max_over_cs), num=N_cont, endpoint=True, base=10.)
+            #Predefine crack length
             l_cont_over_lb = np.zeros(N_cont, dtype=float)
             l_cont_over_lb[0] = float(l_over_lb[i_restart])
-            # Compute them
-            for i in range(1, N_cont):
-                l_cont_over_lb[i] = solve_root_in_v(v_cont_over_cs[i], ΔT, l_cont_over_lb[i-1])
-            # Integrate for time
+            #Predefine overstress
+            Δf0_over_b_cont = np.zeros(N_cont, dtype=float)
+            Δf0_over_b_cont[0] = float(Δf0_over_b[i_restart])
+            #Predefine memory for time
             t_cont_over_ts = np.zeros(N_cont)
-            t_cont_over_ts[0] = t_over_ts[i_restart]
-            dl = np.diff(l_cont_over_lb)
-            v_ave = 0.5 * (v_cont_over_cs[:-1] + v_cont_over_cs[1:])
-            dt = dl / v_ave
-            t_cont_over_ts = t_over_ts[i_restart] + np.concatenate(([0.0], np.cumsum(dt)))
+            # Compute them
+            #Initialize time
+            t_i = t_over_ts[i_restart]
+            t_cont_over_ts[0] = t_i
+            for i in range(1, N_cont):
+                Err_l = 1
+                while Err_l > 1e-6:
+                    #Guess overstress
+                    Δf0_over_b_guess = Δf0_over_b_i + Loading_rate * t_i * V0_over_Vs
+                    #Solve for crack length
+                    l_guess_old = solve_root_in_v(v_cont_over_cs[i], l_cont_over_lb[i-1], Δf0_over_b_guess)
+                    #Amount of crack growth
+                    dl = l_guess_old - l_cont_over_lb[i-1]
+                    #Average velocity of step
+                    v_ave = (v_cont_over_cs[i] + v_cont_over_cs[i-1])/2
+                    #Time increment
+                    dt = dl / v_ave
+                    #Update time
+                    t_i = t_cont_over_ts[i-1] + dt
+                    #Update loading rate
+                    Δf0_over_b_guess = Δf0_over_b_i + Loading_rate * t_i * V0_over_Vs
+                    #Solve for crack length
+                    l_guess_new = solve_root_in_v(v_cont_over_cs[i], l_cont_over_lb[i-1], Δf0_over_b_guess)
+                    #Check error
+                    Err_l = abs(l_guess_old - l_guess_new)/np.max(np.abs(l_guess_new),1)
+                #Save time
+                t_cont_over_ts[i] = t_i
+                #Save crack length
+                l_cont_over_lb[i] = l_guess_new
+                #Save overstress
+                Δf0_over_b_cont[i] = Δf0_over_b_guess
+
             # Start again with ODE until maximum crack length
             l_end_over_lb = l_save_over_lb[l_save_over_lb>l_cont_over_lb[-1]]
             # Solve
@@ -293,7 +315,6 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
                 (t_cont_over_ts[-1], 1/v_cont_over_cs[-1]),
                 saveat=saveat,
                 stepsize_controller = stepsize_controller,
-                args = (ΔT, ),
                 event = event_stop,
                 max_steps = max_steps,
                 throw = False
@@ -302,29 +323,31 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
             l_end_over_lb = sol.ts
             t_end_over_ts = sol.ys[0]
             v_end_over_cs = 1/sol.ys[1]
+            Δf0_over_b_end =  + Loading_rate * t_end_over_ts * V0_over_Vs
             # Assemble solutions
             l_over_lb = np.concatenate([l_over_lb[:i_restart+1], l_cont_over_lb, l_end_over_lb])
             t_over_ts = np.concatenate([t_over_ts[:i_restart+1], t_cont_over_ts, t_end_over_ts])
             vr_over_cs = np.concatenate([vr_over_cs[:i_restart+1], v_cont_over_cs, v_end_over_cs])
+            Δf0_over_b = np.concatenate([Δf0_over_b[:i_restart+1], Δf0_over_b_cont, Δf0_over_b_end])
+
         else:
             raise RuntimeError("The solver stopped without handled reasons. Check it manually.")
     return t_over_ts, l_over_lb, vr_over_cs, reason
 
 # Solve
 l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
-l_ini_over_lb, l_fin_over_lb = .01, 1E4
-t_over_ts, l_over_lb, vr_over_cs, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT)
+l_ini_over_lb, l_fin_over_lb = 1, 1E4
+t_over_ts, l_over_lb, vr_over_cs, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb)
 
 # Export file
 filename = (
     f"Output/EoM_{rs_type}"
-    f"_Df_{fmt(Δf0_over_b)}"
-    f"_DT_{fmt(ΔT)}"
+    f"_Dfi_{fmt(Δf0_over_b_i)}"
+    f"_dDfdt_{fmt(Loading_rate)}"
     f"_V0_{fmt(V0_over_Vs)}"
     f"_ab_{fmt(a_over_b)}.csv"
 )
-#filename = f"Output/EoM_{rs_type:s}_Df_{Δf0_over_b:.0f}_DT_{ΔT:.2f}_V0_{V0_over_Vs:.2f}_ab_{a_over_b:.2f}.csv"
-header = "t_over_ts_times_cs_over_v0; l_over_lb; vr_over_cs"
+header = "t_over_ts; l_over_lb; vr_over_cs"
 data = np.column_stack((t_over_ts, l_over_lb, vr_over_cs))
 np.savetxt(filename, data, delimiter="; ", header=header, comments='')
 

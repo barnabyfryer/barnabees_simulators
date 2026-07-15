@@ -393,7 +393,6 @@ for k = 1:length(files_Python)
 
 end
 
-
 %% - Plot data for crack length, Fig. S5a, a/b = 0.9, DT = 0, slip
 fh = figure;
 
