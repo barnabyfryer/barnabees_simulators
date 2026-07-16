@@ -12,9 +12,9 @@ lwidth = 1.4;
 
 %% -------------------- Parameters --------------------
 % Friction parameters
-Param.a_over_b = 0.9;            %a/b
+Param.a_over_b = 1.1;            %a/b
 Param.Delta_f0_over_b_in = 1;       %Initial overstress
-Param.rs_type = "aging";          %'slip' or 'aging'
+Param.rs_type = "slip";          %'slip' or 'aging'
 
 Param.V0_over_Vs = 1e-10;       %Ambient sliding velocity
 
@@ -27,8 +27,8 @@ Param.V_min = 2.138;
 cs = 1800;
 
 %% -------------------- Crack-length domain --------------------
-l_ini_over_lb = 0.5;    % initial crack length
-l_fin_over_lb = 1e3;     % final crack length
+l_ini_over_lb = 1;    % initial crack length
+l_fin_over_lb = 1e4;     % final crack length
 
 %% -------------------- Solver tolerances --------------------
 % Recommended both 1e-9 for aging law, 1e-10 for slip law
@@ -38,7 +38,7 @@ Param.AbsTol = 1e-8;
 %reduce at your own risk. You may end up on the wrong solution manifold.
 Param.Init_tol = 1e-14;
 
-%% -------------------- Run solver for all foreshocks --------------------
+%% -------------------- Run solver for all loading rates --------------------
 for i = 1:length(Param.Loading_rate)
     %% -------------------- Basic calculations --------------------
     % Scaled ambient rupture velocity

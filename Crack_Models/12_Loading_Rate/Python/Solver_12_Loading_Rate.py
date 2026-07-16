@@ -28,7 +28,7 @@ def fmt(x):
 # Unwrap parameters
 
 # Direct-to-state friction parameters ratio
-a_over_b = 0.9
+a_over_b = 1.1
 # Scaled ambiant sliding velocity
 V0_over_Vs = 1e-10
 
@@ -38,6 +38,9 @@ V0_over_Vs = 1e-10
 Loading_rate = 1
 # Type of R&S law: "slip" or "aging"
 rs_type = "slip"
+#Crack lengths to evaluate
+l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
+l_ini_over_lb, l_fin_over_lb = 1, 1E4
 
 ########################################################################################
 # Compute associated parameters
@@ -120,6 +123,7 @@ K_Δτ = lambda l_over_lb, vr_over_cs, Δf0_over_b : Δτ_eff(l_over_lb, vr_over
 EoM_objective = lambda l_over_lb, vr_over_cs, Δf0_over_b : K_Δτ(l_over_lb, vr_over_cs, Δf0_over_b) - Kc(vr_over_cs)
 EoM_dl = jax.jit(jax.grad(EoM_objective, argnums=0))
 EoM_dv = jax.jit(jax.grad(EoM_objective, argnums=1))
+EoM_df = jax.jit(jax.grad(EoM_objective, argnums=2))
 
 # Find rupture velocity for v_r/c_s for any crack length l/l_b - used only to initialize the ODE
 def initialize(l_over_lb, method='brentq'):
@@ -190,11 +194,15 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, N_steps=1000, Δl_over_lb = 1E-
         Δf0_over_b = Δf0_over_b_i + Loading_rate * t_over_ts * V0_over_Vs
 
         # Kill higher-order derivatives through EoM_dl / EoM_dv for the stiff version
-        num = EoM_dl(l_over_lb, vr_over_cs, Δf0_over_b)
-        den = EoM_dv(l_over_lb, vr_over_cs, Δf0_over_b)
+        Fl = EoM_dl(l_over_lb, vr_over_cs, Δf0_over_b)
+        Fv = EoM_dv(l_over_lb, vr_over_cs, Δf0_over_b)
+        Fd = EoM_df(l_over_lb, vr_over_cs, Δf0_over_b)
+
+        #Derivative of df0/b wrt time_s
+        loading = Loading_rate * V0_over_Vs
         
         # Second derivative from the EoM
-        t_over_ts_second = 1/vr_over_cs**2 * num / den
+        t_over_ts_second = 1/vr_over_cs**2 * (Fl + Fd * loading/vr_over_cs) / Fv
         # Total derivative
         d_y = t_over_ts_prime, t_over_ts_second
         return d_y
@@ -336,8 +344,6 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, N_steps=1000, Δl_over_lb = 1E-
     return t_over_ts, l_over_lb, vr_over_cs, reason
 
 # Solve
-l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
-l_ini_over_lb, l_fin_over_lb = 0.5, 1E4
 t_over_ts, l_over_lb, vr_over_cs, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb)
 
 # Export file
