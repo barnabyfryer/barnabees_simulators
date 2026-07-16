@@ -112,11 +112,29 @@ else
             vr_over_cs(end),...
             Param);
 
-        t_over_ts = [t_over_ts; t_imp(2:end)'];
+        %Get solved indices
+		idx = find(isfinite(l_imp), 1, 'last');
+		%Get solved values 
+		l0 = l_imp(idx);
+		t0 = t_imp(idx);
+		v0 = v_imp(idx);
 
-        l_over_lb = [l_over_lb; l_imp(2:end)'];
+		%Get restart conditions
+		y0_restart = [t0; 1/v0];
 
-        vr_over_cs = [vr_over_cs; v_imp(2:end)'];
+		%Start using explicit method to finish
+		[l_sol, y_sol, te, ye, ie] = ode45(@ode_rhs, [l0, l_fin_over_lb], y0_restart, options);
+
+		%Extract end values for second explicit section
+		l_over_lb_end = l_sol;
+		t_over_ts_end = y_sol(:,1);
+		vr_over_cs_end = 1 ./ y_sol(:,2);
+
+		t_over_ts = [t_over_ts; t_imp(1:idx)'; t_over_ts_end];
+
+		l_over_lb = [l_over_lb; l_imp(1:idx)'; l_over_lb_end];
+
+		vr_over_cs = [vr_over_cs; v_imp(1:idx)'; vr_over_cs_end];
 end
 
 %% - Solve for effective slip velocity

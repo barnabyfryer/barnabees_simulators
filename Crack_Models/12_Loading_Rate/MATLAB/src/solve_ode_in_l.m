@@ -51,13 +51,19 @@ y0 = [t_ini_over_ts; 1 / vr_ini_over_cs];
         Param_local.Delta_f0_over_b = Param_local.Delta_f0_over_b_in + Param_local.Loading_rate * t_val * Param_local.v0_over_cs;
 
         % Compute derivatives using modular functions
-        num = EoM_dl(l, vr, Param_local);
-        den = EoM_dv(l, vr, Param_local);
+        Fl = EoM_dl(l, vr, Param_local);
+        Fv = EoM_dv(l, vr, Param_local);
+        Fd = EoM_dDelta(l);
+
+        %Derivative of df0/b wrt time_s
+        loading = Param_local.Loading_rate * Param_local.v0_over_cs;
 
         %dt_dl = 1/v
-        %d2t_dl2 = (1/v^2)(dF/dl)/(dF/dv)
 
-        d2t_dl2 = (1 / vr^2) * (num / den);
+        %For loading rate
+        d2t_dl2 = (1/vr^2) * (Fl + Fd*loading/vr) / Fv;
+
+        % d2t_dl2 = (1 / vr^2) * (num / den); Valid for no loading rate
         dy = [dt_dl; d2t_dl2];
 
         if rand < 1e-1
@@ -114,19 +120,62 @@ else
     reason = 2; % integration incomplete
     warning('ODE explicit solver did not reach final crack length.');
 
-        [t_imp,l_imp,v_imp,dfdt_imp] = implicit_continuation( ...
-            t_over_ts(end),...
-            l_over_lb(end),...
-            vr_over_cs(end),...
-            Param);
+    %Find last solution that was accurate
+    for idx = length(l_over_lb):-1:1
 
-        t_over_ts = [t_over_ts; t_imp(2:end)'];
+        Param_test = Param;
+        Param_test.Delta_f0_over_b = ...
+            Param.Delta_f0_over_b_in + ...
+            Param.Loading_rate*t_over_ts(idx)*Param.v0_over_cs;
 
-        l_over_lb = [l_over_lb; l_imp(2:end)'];
+        res = abs(EoM_objective_func(l_over_lb(idx), ...
+            vr_over_cs(idx), ...
+            Param_test));
 
-        vr_over_cs = [vr_over_cs; v_imp(2:end)'];
+        if res < Param.AbsTol
+            break
+        end
+    end
 
-        df0_over_b = [df0_over_b; dfdt_imp(2:end)'];
+    %Remove invalid solutions
+    t_over_ts = t_over_ts(1:idx);
+    l_over_lb = l_over_lb(1:idx);
+    vr_over_cs = vr_over_cs(1:idx);
+    df0_over_b = df0_over_b(1:idx);
+
+    %Continue using implicit method for stiff section
+    [t_imp,l_imp,v_imp,dfdt_imp] = implicit_continuation( ...
+        t_over_ts(idx),...
+        l_over_lb(idx),...
+        vr_over_cs(idx),...
+        Param);
+
+    %Get solved indices
+    idx = find(isfinite(l_imp), 1, 'last');
+    %Get solved values 
+    l0 = l_imp(idx);
+    t0 = t_imp(idx);
+    v0 = v_imp(idx);
+
+    %Get restart conditions
+    y0_restart = [t0; 1/v0];
+
+    %Start using explicit method to finish
+    [l_sol, y_sol, te, ye, ie] = ode45(@ode_rhs, [l0, l_fin_over_lb], y0_restart, options);
+
+    %Extract end values for second explicit section
+    l_over_lb_end = l_sol;
+    t_over_ts_end = y_sol(:,1);
+    vr_over_cs_end = 1 ./ y_sol(:,2);
+    df0_over_b_end = Param.Delta_f0_over_b_in + Param.Loading_rate * t_over_ts_end * Param.v0_over_cs;
+
+    t_over_ts = [t_over_ts; t_imp(2:idx)'; t_over_ts_end];
+
+    l_over_lb = [l_over_lb; l_imp(2:idx)'; l_over_lb_end];
+
+    vr_over_cs = [vr_over_cs; v_imp(2:idx)'; vr_over_cs_end];
+
+    df0_over_b = [df0_over_b; dfdt_imp(2:idx)'; df0_over_b_end];
 end
 
 %% - Solve for effective slip velocity

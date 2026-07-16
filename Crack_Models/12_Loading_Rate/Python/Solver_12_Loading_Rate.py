@@ -37,7 +37,7 @@ V0_over_Vs = 1e-10
 #Loading rate [friction/ts or d(df0/b)/d(ts), ts = L/V0]
 Loading_rate = 1
 # Type of R&S law: "slip" or "aging"
-rs_type = "aging"
+rs_type = "slip"
 
 ########################################################################################
 # Compute associated parameters
@@ -271,12 +271,13 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, N_steps=1000, Δl_over_lb = 1E-
             #Predefine memory for time
             t_cont_over_ts = np.zeros(N_cont)
             # Compute them
-            #Initialize time
-            t_i = t_over_ts[i_restart]
-            t_cont_over_ts[0] = t_i
+            #Initial time
+            t_cont_over_ts[0] = float(t_over_ts[i_restart])
             for i in range(1, N_cont):
+                # Initialize time
+                t_i = t_cont_over_ts[i-1]
                 Err_l = 1
-                while Err_l > 1e-6:
+                while Err_l > 1e-8:
                     #Guess overstress
                     Δf0_over_b_guess = Δf0_over_b_i + Loading_rate * t_i * V0_over_Vs
                     #Solve for crack length
@@ -294,7 +295,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, N_steps=1000, Δl_over_lb = 1E-
                     #Solve for crack length
                     l_guess_new = solve_root_in_v(v_cont_over_cs[i], l_cont_over_lb[i-1], Δf0_over_b_guess)
                     #Check error
-                    Err_l = abs(l_guess_old - l_guess_new)/np.max(np.abs(l_guess_new),1)
+                    Err_l = abs(l_guess_old - l_guess_new)/np.max([np.abs(l_guess_new),1])
                 #Save time
                 t_cont_over_ts[i] = t_i
                 #Save crack length
@@ -323,7 +324,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, N_steps=1000, Δl_over_lb = 1E-
             l_end_over_lb = sol.ts
             t_end_over_ts = sol.ys[0]
             v_end_over_cs = 1/sol.ys[1]
-            Δf0_over_b_end =  + Loading_rate * t_end_over_ts * V0_over_Vs
+            Δf0_over_b_end =  Δf0_over_b_i + Loading_rate * t_end_over_ts * V0_over_Vs
             # Assemble solutions
             l_over_lb = np.concatenate([l_over_lb[:i_restart+1], l_cont_over_lb, l_end_over_lb])
             t_over_ts = np.concatenate([t_over_ts[:i_restart+1], t_cont_over_ts, t_end_over_ts])
@@ -336,7 +337,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, N_steps=1000, Δl_over_lb = 1E-
 
 # Solve
 l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
-l_ini_over_lb, l_fin_over_lb = 1, 1E4
+l_ini_over_lb, l_fin_over_lb = 0.5, 1E4
 t_over_ts, l_over_lb, vr_over_cs, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb)
 
 # Export file

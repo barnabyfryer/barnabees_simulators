@@ -28,37 +28,22 @@ t(1)=t0;
 df0_over_b(1) = Param.Delta_f0_over_b_in + Param.Loading_rate * t0 * Param.v0_over_cs;
 
 for i=2:N
-    t_new = t(i-1);
-    error = 1;
-    while error > Param.RelTol
-        %Update overstress
-        Param.Delta_f0_over_b = Param.Delta_f0_over_b_in + Param.Loading_rate * t_new * Param.v0_over_cs;
-        %Set up function solver for l
-        fun = @(L) EoM_objective_func(L,v(i),Param);
-        %Solve for new l using previous l
-        l_old = fzero(fun,l(i-1));
-        
-        %Find average velocity of this step
-        vavg = 0.5*(v(i) + v(i-1));
-        %Time of step
-        dt = (l_old - l(i-1))/vavg;
-        %Update time
-        t_new = t(i-1) + dt;
-        %Update overstress
-        Param.Delta_f0_over_b = Param.Delta_f0_over_b_in + Param.Loading_rate * t_new * Param.v0_over_cs;
-        %Remake function solver for l
-        fun = @(L) EoM_objective_func(L,v(i),Param);
-        %New l
-        l_new = fzero(fun,l_old);
-        %Error 
-        error = abs(l_old - l_new)/max(abs(l_new),1);
-    end
-    %Save time
-    t(i) = t_new;
-    %Save crack length
-    l(i) = l_new;
+    %Average velocity
+    vavg = 0.5*(v(i) + v(i-1));
+    %Implicit residual which computes with updated df0
+    fun = @(L) implicitResidual(L, ...
+        l(i-1), ...
+        t(i-1), ...
+        vavg, ...
+        v(i), ...
+        Param);
+
+    %Evaluate crack length
+    l(i) = fzero(fun,l(i-1));
+    %Update time
+    t(i) = t(i-1) + (l(i)-l(i-1))/vavg;
     %Save overstress
-    df0_over_b(i) = Param.Delta_f0_over_b;
+    df0_over_b(i) = Param.Delta_f0_over_b_in + Param.Loading_rate * t(i) * Param.v0_over_cs;
 end
 
 end

@@ -18,7 +18,7 @@ Param.rs_type = "aging";          %'slip' or 'aging'
 
 Param.V0_over_Vs = 1e-10;       %Ambient sliding velocity
 
-Param.Loading_rate = 0*1;         %Loading rate df0/b per unit of t/ts where ts = L/V0
+Param.Loading_rate = 1;         %Loading rate df0/b per unit of t/ts where ts = L/V0
 
 % Approximate minimum of 𝒱 from G21
 Param.V_min = 2.138;
@@ -27,8 +27,8 @@ Param.V_min = 2.138;
 cs = 1800;
 
 %% -------------------- Crack-length domain --------------------
-l_ini_over_lb = 1;    % initial crack length
-l_fin_over_lb = 1e4;     % final crack length
+l_ini_over_lb = 0.5;    % initial crack length
+l_fin_over_lb = 1e3;     % final crack length
 
 %% -------------------- Solver tolerances --------------------
 % Recommended both 1e-9 for aging law, 1e-10 for slip law
@@ -156,6 +156,17 @@ if reason > 0
 end
 xlab = xlabel('$$t/t_{\mathrm{s}}$$ [-]');
 ylab = ylabel('$$V_{\mathrm{eff}}/V_0$$ [-]');
+set(xlab,'Interpreter','latex','fontsize',fsize)
+set(ylab,'Interpreter','latex','fontsize',fsize)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
+
+%Plot loading in crack length
+fh = figure;
+hold on
+plot(l_over_lb,df0_over_b,'k','LineWidth',lwidth)
+xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
+ylab = ylabel('$$\Delta f_0/b$$ [-]');
 set(xlab,'Interpreter','latex','fontsize',fsize)
 set(ylab,'Interpreter','latex','fontsize',fsize)
 set(fh, 'Color','white')
