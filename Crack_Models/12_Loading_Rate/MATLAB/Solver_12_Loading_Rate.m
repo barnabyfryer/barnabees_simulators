@@ -14,7 +14,7 @@ lwidth = 1.4;
 % Friction parameters
 Param.a_over_b = 1.1;            %a/b
 Param.Delta_f0_over_b_in = 1;       %Initial overstress
-Param.rs_type = "slip";          %'slip' or 'aging'
+Param.rs_type = "aging";          %'slip' or 'aging'
 
 Param.V0_over_Vs = 1e-10;       %Ambient sliding velocity
 

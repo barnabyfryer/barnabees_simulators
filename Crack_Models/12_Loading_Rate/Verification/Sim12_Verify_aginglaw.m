@@ -23,60 +23,60 @@ Plotting.gap = 0.2;        % space between axes and colorbar
 Plotting.gap2 = -0.6;        % space between axes and colorbar
 
 %% - Read in digitized G&G 12 data
-filename = 'G21_Fig5a_slip.xlsx';
+filename = 'G21_FigS5a.xlsx';
 
-sheets_Fig5a = sheetnames(filename);
+sheets_FigS5a = sheetnames(filename);
 
-Digitized_G21_Fig5a = struct([]);
+Digitized_G21_FigS5a = struct([]);
 
-for k = 1:length(sheets_Fig5a)
+for k = 1:length(sheets_FigS5a)
 
-    data = readmatrix(filename,'Sheet',sheets_Fig5a{k});
+    data = readmatrix(filename,'Sheet',sheets_FigS5a{k});
 
-    Digitized_G21_Fig5a(k).name = sheets_Fig5a{k};
-    Digitized_G21_Fig5a(k).l_over_lb = data(:,1);
-    Digitized_G21_Fig5a(k).vr_over_v0 = data(:,2);
+    Digitized_G21_FigS5a(k).name = sheets_FigS5a{k};
+    Digitized_G21_FigS5a(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5a(k).vr_over_v0 = data(:,2);
 
-    token = regexp(sheets_Fig5a{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
-    Digitized_G21_Fig5a(k).df0_over_b = str2double(token{1});
+    token = regexp(sheets_FigS5a{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5a(k).df0_over_b = str2double(token{1});
 end
 
 
-filename = 'G21_Fig5b_slip.xlsx';
+filename = 'G21_FigS5b.xlsx';
 
-sheets_Fig5b = sheetnames(filename);
+sheets_FigS5b = sheetnames(filename);
 
-Digitized_G21_Fig5b = struct([]);
+Digitized_G21_FigS5b = struct([]);
 
-for k = 1:length(sheets_Fig5b)
+for k = 1:length(sheets_FigS5b)
 
-    data = readmatrix(filename,'Sheet',sheets_Fig5b{k});
+    data = readmatrix(filename,'Sheet',sheets_FigS5b{k});
 
-    Digitized_G21_Fig5b(k).name = sheets_Fig5b{k};
-    Digitized_G21_Fig5b(k).l_over_lb = data(:,1);
-    Digitized_G21_Fig5b(k).vr_over_v0 = data(:,2);
+    Digitized_G21_FigS5b(k).name = sheets_FigS5b{k};
+    Digitized_G21_FigS5b(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5b(k).vr_over_v0 = data(:,2);
 
-    token = regexp(sheets_Fig5b{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
-    Digitized_G21_Fig5b(k).df0_over_b = str2double(token{1});
+    token = regexp(sheets_FigS5b{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5b(k).df0_over_b = str2double(token{1});
 end
 
 
-filename = 'G21_Fig5c_slip.xlsx';
+filename = 'G21_FigS5c.xlsx';
 
-sheets_Fig5c = sheetnames(filename);
+sheets_FigS5c = sheetnames(filename);
 
-Digitized_G21_Fig5c = struct([]);
+Digitized_G21_FigS5c = struct([]);
 
-for k = 1:length(sheets_Fig5c)
+for k = 1:length(sheets_FigS5c)
 
-    data = readmatrix(filename,'Sheet',sheets_Fig5c{k});
+    data = readmatrix(filename,'Sheet',sheets_FigS5c{k});
 
-    Digitized_G21_Fig5c(k).name = sheets_Fig5c{k};
-    Digitized_G21_Fig5c(k).l_over_lb = data(:,1);
-    Digitized_G21_Fig5c(k).vr_over_v0 = data(:,2);
+    Digitized_G21_FigS5c(k).name = sheets_FigS5c{k};
+    Digitized_G21_FigS5c(k).l_over_lb = data(:,1);
+    Digitized_G21_FigS5c(k).vr_over_v0 = data(:,2);
 
-    token = regexp(sheets_Fig5c{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
-    Digitized_G21_Fig5c(k).df0_over_b = str2double(token{1});
+    token = regexp(sheets_FigS5c{k}, 'f0=([-+]?\d*\.?\d+)', 'tokens', 'once');
+    Digitized_G21_FigS5c(k).df0_over_b = str2double(token{1});
 end
 
 
@@ -231,7 +231,7 @@ for k = 1:length(files_Python)
 
 end
 
-%% - Plot data for crack length, Fig. 5a, a/b = 0.9, DT = 0, slip
+%% - Plot data for time, Fig. S5a, a/b = 0.9, DT = 0, slip
 fh = figure;
 
 ax = axes;
@@ -242,7 +242,7 @@ set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 hold on
 
 for i = 1:length(files_MATLAB)
-    if strcmp(ResultsMATLAB(i).rs_type,'slip')
+    if strcmp(ResultsMATLAB(i).rs_type,'aging')
         if ResultsMATLAB(i).a_over_b == 0.9
             plot(ResultsMATLAB(i).t_over_ts,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
         end
@@ -250,7 +250,7 @@ for i = 1:length(files_MATLAB)
 end
 
 for i = 1:length(files_Python)
-    if strcmp(ResultsPython(i).rs_type,'slip')
+    if strcmp(ResultsPython(i).rs_type,'aging')
         if ResultsPython(i).ab == 0.9
             plot(ResultsPython(i).t_over_ts,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
         end
@@ -264,7 +264,7 @@ set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
 
-%% - Plot data for crack length, Fig. 5a, a/b = 0.9, DT = 0, slip
+%% - Plot data for crack length, Fig. S5a, a/b = 0.9, DT = 0, slip
 fh = figure;
 
 ax = axes;
@@ -275,7 +275,7 @@ set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 hold on
 
 for i = 1:length(files_MATLAB)
-    if strcmp(ResultsMATLAB(i).rs_type,'slip')
+    if strcmp(ResultsMATLAB(i).rs_type,'aging')
         if ResultsMATLAB(i).a_over_b == 0.9
             plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
         end
@@ -283,15 +283,15 @@ for i = 1:length(files_MATLAB)
 end
 
 for i = 1:length(files_Python)
-    if strcmp(ResultsPython(i).rs_type,'slip')
+    if strcmp(ResultsPython(i).rs_type,'aging')
         if ResultsPython(i).ab == 0.9
             plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
         end
     end
 end
 
-for k = 1:length(sheets_Fig5a)
-    plot(Digitized_G21_Fig5a(k).l_over_lb,Digitized_G21_Fig5a(k).vr_over_v0,'r.')
+for k = 1:length(sheets_FigS5a)
+    plot(Digitized_G21_FigS5a(k).l_over_lb,Digitized_G21_FigS5a(k).vr_over_v0,'r.')
 end
 
 xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
@@ -303,10 +303,10 @@ set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
 
 axis([1e-1 1e4 5e-1 2e10])
 
-exportgraphics(fh,'Fig5a.pdf','ContentType','vector')
+exportgraphics(fh,'FigS5a.pdf','ContentType','vector')
 
 
-%% - Plot data for crack length, Fig. 5b, a/b = 1.0, DT = 0, slip
+%% - Plot data for crack length, Fig. S5b, a/b = 1.0, DT = 0, slip
 fh = figure;
 
 ax = axes;
@@ -317,7 +317,7 @@ set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 hold on
 
 for i = 1:length(files_MATLAB)
-    if strcmp(ResultsMATLAB(i).rs_type,'slip')
+    if strcmp(ResultsMATLAB(i).rs_type,'aging')
         if ResultsMATLAB(i).a_over_b == 1.0
             plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
         end
@@ -325,15 +325,15 @@ for i = 1:length(files_MATLAB)
 end
 
 for i = 1:length(files_Python)
-    if strcmp(ResultsPython(i).rs_type,'slip')
+    if strcmp(ResultsPython(i).rs_type,'aging')
         if ResultsPython(i).ab == 1.0
             plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
         end
     end
 end
 
-for k = 1:length(sheets_Fig5b)
-    plot(Digitized_G21_Fig5b(k).l_over_lb,Digitized_G21_Fig5b(k).vr_over_v0,'r.')
+for k = 1:length(sheets_FigS5b)
+    plot(Digitized_G21_FigS5b(k).l_over_lb,Digitized_G21_FigS5b(k).vr_over_v0,'r.')
 end
 
 xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
@@ -345,9 +345,9 @@ set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
 
 axis([1e-1 1e4 5e-1 2e10])
 
-exportgraphics(fh,'Fig5b.pdf','ContentType','vector')
+exportgraphics(fh,'FigS5b.pdf','ContentType','vector')
 
-%% - Plot data for crack length, Fig. 5c, a/b = 1.1, DT = 0, slip
+%% - Plot data for crack length, Fig. S5c, a/b = 1.1, DT = 0, slip
 fh = figure;
 
 ax = axes;
@@ -358,7 +358,7 @@ set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 hold on
 
 for i = 1:length(files_MATLAB)
-    if strcmp(ResultsMATLAB(i).rs_type,'slip')
+    if strcmp(ResultsMATLAB(i).rs_type,'aging')
         if ResultsMATLAB(i).a_over_b == 1.1
             plot(ResultsMATLAB(i).l_over_lb,ResultsMATLAB(i).vr_over_cs/ResultsMATLAB(i).V0,'-','LineWidth',Plotting.lwidth_1col,'Color','k')
         end
@@ -366,15 +366,15 @@ for i = 1:length(files_MATLAB)
 end
 
 for i = 1:length(files_Python)
-    if strcmp(ResultsPython(i).rs_type,'slip')
+    if strcmp(ResultsPython(i).rs_type,'aging')
         if ResultsPython(i).ab == 1.1
             plot(ResultsPython(i).l_over_lb,ResultsPython(i).vr_over_cs/ResultsPython(i).V0,'--','LineWidth',Plotting.lwidth_1col,'Color','m')
         end
     end
 end
 
-for k = 1:length(sheets_Fig5c)
-    plot(Digitized_G21_Fig5c(k).l_over_lb,Digitized_G21_Fig5c(k).vr_over_v0,'r.')
+for k = 1:length(sheets_FigS5c)
+    plot(Digitized_G21_FigS5c(k).l_over_lb,Digitized_G21_FigS5c(k).vr_over_v0,'r.')
 end
 
 xlab = xlabel('$$\ell/\ell_{b}$$ [-]');
@@ -386,7 +386,7 @@ set(gca, 'Box','off', 'TickDir','out', 'XScale','log', 'YScale','log');
 
 axis([1e-1 1e4 5e-1 2e10])
 
-exportgraphics(fh,'Fig5c.pdf','ContentType','vector')
+exportgraphics(fh,'FigS5c.pdf','ContentType','vector')
 
 
 

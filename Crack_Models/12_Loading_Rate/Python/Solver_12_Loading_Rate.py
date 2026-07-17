@@ -37,7 +37,7 @@ V0_over_Vs = 1e-10
 #Loading rate [friction/ts or d(df0/b)/d(ts), ts = L/V0]
 Loading_rate = 1
 # Type of R&S law: "slip" or "aging"
-rs_type = "slip"
+rs_type = "aging"
 #Crack lengths to evaluate
 l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
 l_ini_over_lb, l_fin_over_lb = 1, 1E4
@@ -355,7 +355,7 @@ filename = (
     f"_ab_{fmt(a_over_b)}.csv"
 )
 header = "t_over_ts; l_over_lb; vr_over_cs"
-data = np.column_stack((t_over_ts, l_over_lb, vr_over_cs))
+data = np.column_stack((t_over_ts*V0_over_Vs, l_over_lb, vr_over_cs))
 np.savetxt(filename, data, delimiter="; ", header=header, comments='')
 
 # Plot crack velocity versus crack length
