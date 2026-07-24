@@ -307,7 +307,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
                     #Update loading rate
                     Δf0_over_b_guess = Δf0_over_b_i + Loading_rate * t_i * V0_over_Vs
                     #Solve for crack length
-                    l_guess_new = solve_root_in_v(v_cont_over_cs[i], l_cont_over_lb[i-1], Δf0_over_b_guess)
+                    l_guess_new = solve_root_in_v(v_cont_over_cs[i], l_cont_over_lb[i-1], Δf0_over_b_guess, ΔT)
                     #Check error
                     Err_l = abs(l_guess_old - l_guess_new)/np.max([np.abs(l_guess_new),1])
                 #Save time
