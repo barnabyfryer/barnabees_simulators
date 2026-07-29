@@ -2,14 +2,20 @@ import matplotlib.pyplot as plt
 from scipy.special import erfc
 import numpy as np
 
-def Plotting_file(Flow,Gen,Storage):
+def Plotting_file(Flow,Gen,Storage, Wells):
 
     # =============================================================================
     # Validation
     # =============================================================================
-    #Semi infinite solution, valid at early time
-    alpha = Flow["kx"] / (Flow["phi"] * Flow["muf"] * Flow["cf"])
-   # P_an = 1e5 + (Gen["PL"] - 1e5) * erfc(Storage["x"] / (2 * np.sqrt(alpha * Storage["TStorage"][1])))
+    #Steady state analytcal solution for different fixed pressure wells
+    # idx2 = Gen["x"] > Wells["xP"][1]
+    # P_an = Wells["P"][0] - (Wells["P"][0] - Wells["P"][1]) * Storage["x"]/Wells["xP"][1]
+    # P_an[idx2] = Wells["P"][1] - (Wells["P"][1] - Wells["P"][2]) * (Storage["x"][idx2] - Wells["xP"][1])/(Wells["xP"][2] - Wells["xP"][1])
+
+    #Steady state for the constant flow rate example given in verification file
+    P_an = 100e6 - 10e6*Gen["x"]
+
+
     #Error calculation
     #err = np.abs((Storage["P"][1, :] - P_an) / (Gen["PL"] - Gen["PR"]))
     #Ep = np.max(err)
@@ -24,7 +30,7 @@ def Plotting_file(Flow,Gen,Storage):
     fig.set_size_inches(6, 4.5)
     # Plot
     ax.plot(Gen["x"], Storage["P"][1, :] / 1e6, 'k-', linewidth=1, label='Simulation')
-    #ax.plot(Gen["x"], P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
+    ax.plot(Gen["x"], P_an/1e6, 'r--', linewidth=1, label='Analytical Soln.')
     # Labels
     ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
     ax.set_ylabel(r'Pressure, $P$ [MPa]', fontsize=10)
@@ -37,7 +43,7 @@ def Plotting_file(Flow,Gen,Storage):
     ax.spines['right'].set_visible(False)
     lgd = ax.legend(fontsize=7)
     lgd.set_frame_on(False)
-    fig.savefig('../Verification/Pp_Python.jpg',
+    fig.savefig('../Verification/Pp_Python_q.jpg',
     dpi=300,
     bbox_inches='tight')
     plt.show()
@@ -63,7 +69,7 @@ def Plotting_file(Flow,Gen,Storage):
     ax.spines['right'].set_visible(False)
     lgd = ax.legend(fontsize=7)
     lgd.set_frame_on(False)
-    fig.savefig('../Verification/Flux_Python.jpg',
+    fig.savefig('../Verification/Flux_Python_q.jpg',
                 dpi=300,
                 bbox_inches='tight')
     plt.show()
@@ -90,9 +96,6 @@ def Plotting_file(Flow,Gen,Storage):
     ax.set_yscale('log')
     lgd = ax.legend(fontsize=7)
     lgd.set_frame_on(False)
-    fig.savefig('../Verification/Flux_Python.jpg',
-                dpi=300,
-                bbox_inches='tight')
     plt.show()
 
     # =============================================================================
@@ -116,9 +119,6 @@ def Plotting_file(Flow,Gen,Storage):
     ax.spines['right'].set_visible(False)
     lgd = ax.legend(fontsize=7)
     lgd.set_frame_on(False)
-    fig.savefig('../Verification/Flux_Python.jpg',
-                dpi=300,
-                bbox_inches='tight')
     plt.show()
 
     return
