@@ -2,7 +2,7 @@
 function [Flow, Gen, Plotting, State, Storage] = InputData()
 %% - General Parameters
 %Final time [sec]
-Gen.tf = 10000;                                                 %[1,1]    
+Gen.tf = 1000000;                                                 %[1,1]    
 %Time step [sec]
 Gen.tstep = 100;                                                %[1,1]    
 %Tolerance [-]
@@ -32,12 +32,12 @@ k_left = 1e-12;                                                  %[1,1]
 %Permeability, of right zone [m^2]
 k_right = 1e-13;                                                   %[1,1] 
 %Permeability left edge bands length [m]
-L_k = 2;                                                        %[1,1] 
+Flow.L_k = 2;                                                        %[1,1] 
 %Permeability [m^2] 
 Flow.kx = k_right*ones(Gen.Nx,1);                                  %[1,1]
-Flow.kx(Storage.x < L_k) = k_left;
+Flow.kx(Storage.x < Flow.L_k) = k_left;
 %Porosity, of left edges [-]
-phi_left = 0.3;                                                  %[1,1] 
+phi_left = 0.2;                                                  %[1,1] 
 %Porosity, of right zone [-]
 phi_right = 0.2;                                                   %[1,1] 
 %Porosity left edge bands length [m]

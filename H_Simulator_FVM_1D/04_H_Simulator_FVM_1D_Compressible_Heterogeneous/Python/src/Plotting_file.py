@@ -7,9 +7,12 @@ def Plotting_file(Flow,Gen,Storage):
     # =============================================================================
     # Validation
     # =============================================================================
-    #Semi infinite solution, valid at early time
-    alpha = Flow["kx"] / (Flow["phi"] * Flow["muf"] * Flow["cf"])
-    P_an = 1e5 + (Gen["PL"] - 1e5) * erfc(Storage["x"] / (2 * np.sqrt(alpha * Storage["TStorage"][1])))
+    #Steady state solution
+    idx1 = Gen["x"] <= Flow["L_k"]
+    idx2 = Gen["x"] > Flow["L_k"]
+    P_an = Gen["PL"] - (Gen["PL"] - Gen["PR"])*Gen["x"]/ Flow["kx"][0] / (Flow["L_k"] / Flow["kx"][0] + (Gen["Lx"] - Flow["L_k"]) / Flow["kx"][-1])
+    P_an[idx2] = Gen["PL"] - (Gen["PL"] - Gen["PR"])/(Flow["L_k"] / Flow["kx"][0] + (Gen["Lx"] - Flow["L_k"]) / Flow["kx"][-1]) * (Flow["L_k"]/Flow["kx"][0] + (Gen["x"][idx2] - Flow["L_k"])/Flow["kx"][-1])
+
     #Error calculation
     err = np.abs((Storage["P"][1, :] - P_an) / (Gen["PL"] - Gen["PR"]))
     Ep = np.max(err)

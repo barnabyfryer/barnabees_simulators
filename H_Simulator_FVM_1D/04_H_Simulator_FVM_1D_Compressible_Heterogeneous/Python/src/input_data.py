@@ -8,7 +8,7 @@ def input_data():
 
     Gen = {}
 
-    Gen["tf"] = 10000.0  # Final time [sec]
+    Gen["tf"] = 1000000.0  # Final time [sec]
     Gen["tstep"] = 100.0  # Time step [sec]
     Gen["tol"] = 1e-4  # Tolerance [-]
 
@@ -51,13 +51,13 @@ def input_data():
     #Permeability on right side
     k_right = 1e-13
     #Permeability band size on left side
-    L_k = 2
+    Flow["L_k"] = 2
 
     Flow["kx"] = np.zeros(Gen["Nx"]) + k_right  # Permeability [m²]
-    Flow["kx"][Storage["x"] < L_k ] = k_left
+    Flow["kx"][Storage["x"] < Flow["L_k"] ] = k_left
 
     #Porosity on the left side
-    phi_left = 0.3
+    phi_left = 0.2
     #Porosity on the right side
     phi_right = 0.2
     #Porosity band size on left side
