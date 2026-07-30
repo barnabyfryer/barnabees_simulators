@@ -11,15 +11,15 @@ def input_data():
 
     Gen = {}
 
-    Gen["tf"] = 1000.0  # Final time [sec]
+    Gen["tf"] = 3000.0  # Final time [sec]
     Gen["tstep"] = 10.0  # Time step [sec]
     Gen["tol"] = 1e-5  # Tolerance [-]
 
-    Gen["Nx"] = 31  # Number of cells in x direction [-]
-    Gen["Ny"] = 31  # Number of cells in y direction [-]
+    Gen["Nx"] = 101  # Number of cells in x direction [-]
+    Gen["Ny"] = 121  # Number of cells in y direction [-]
 
-    Gen["Lx"] = 10.0  # Reservoir length x [m]
-    Gen["Ly"] = 10.0  # Reservoir length y [m]
+    Gen["Lx"] = 700.0  # Reservoir length x [m]
+    Gen["Ly"] = 500.0  # Reservoir length y [m]
     Gen["Lz"] = 1.0  # Reservoir height [m]
 
     # ------------------------------------------------------------------
@@ -51,7 +51,7 @@ def input_data():
     #Permeability on left side
     kx_left = 1e-12
     #Permeability on right side
-    kx_right = 1e-13
+    kx_right = 1e-12
     #Permeability band size on left side
     Lx_k = 0
     #Reference permeability
@@ -62,7 +62,7 @@ def input_data():
     # Permeability on top side
     ky_top = 1e-12
     # Permeability on bot side
-    ky_bot = 1e-13
+    ky_bot = 1e-12
     # Permeability band size on left side
     Ly_k = 0
     # Reference permeability
@@ -70,12 +70,12 @@ def input_data():
     Flow["ky0"][Storage["y"] < Ly_k] = ky_top
 
     #"Compressibility" of permeability
-    Flow["ck"] = 1e-8
+    Flow["ck"] = 0e-8
     #Reference pressure [Pa]
     Flow["kP0"] = 1e5
 
     #Porosity on the left side
-    phi_left = 0.3
+    phi_left = 0.2
     #Porosity on the right side
     phi_right = 0.2
     #Porosity band size on left side
@@ -84,11 +84,11 @@ def input_data():
     Flow["phi0"] = np.zeros(Gen["Nx"]*Gen["Ny"]) + phi_right  # Porosity [-]
     Flow["phi0"][Storage["x"] < L_phi] = phi_left
     #"Compressibility" of permeability
-    Flow["cphi"] = 1e-9
+    Flow["cphi"] = 0e-9
     #Reference pressure [Pa]
     Flow["phiP0"] = 1e5
 
-    Flow["cf"] = 1e-8  # Fluid compressibility [1/Pa]
+    Flow["cf"] = 1e-10  # Fluid compressibility [1/Pa]
     Flow["muf"] = 0.1  # Fluid viscosity [Pa.s]
 
     Flow["Rho0"] = 1000.0  # Reference density [kg/m³]
@@ -112,8 +112,8 @@ def input_data():
 
     # Constant rate wells
     Wells["Q"] = [1]  # Row vector of well rates [kg/sec]
-    Wells["xQ"] = [5]  # Well locations in x [m]
-    Wells["yQ"] = [5]  # Well locations in y [m]
+    Wells["xQ"] = [Gen["Lx"]/2]  # Well locations in x [m]
+    Wells["yQ"] = [Gen["Ly"]/2]  # Well locations in y [m]
 
     # Find the cells for these wells
     Wells["Loc_Q"] = np.zeros(np.size(Wells["Q"]), dtype=int)

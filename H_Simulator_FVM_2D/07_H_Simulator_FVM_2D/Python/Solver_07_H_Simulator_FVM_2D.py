@@ -48,6 +48,6 @@ while State["t"] < Gen["tf"]:
 # Plotting
 # =============================================================================
 
-Plotting_file(Flow,Gen,Storage)
+Plotting_file(Flow,Gen,Storage,Wells)
 
 
