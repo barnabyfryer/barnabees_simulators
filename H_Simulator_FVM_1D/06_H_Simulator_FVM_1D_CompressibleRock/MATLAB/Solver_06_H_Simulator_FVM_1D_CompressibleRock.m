@@ -20,6 +20,8 @@ while State.t < Gen.tf
     %% - Solve For Pressure
     [State] = FIMPressure1D_1Phase(Flow,Gen,State,Wells);
 
+    State.t = State.t + Gen.tstep;
+
     %Store results
     if ~isempty(find(State.t == Storage.TStorage,1))
         State.step = State.step + 1;
@@ -29,9 +31,9 @@ while State.t < Gen.tf
         Storage.phi(State.step,:) = State.phi;
     end
 
-    State.t = State.t + Gen.tstep;
+    
 end
 
 %% - Plotting
-Plotter_simulator(Plotting,Storage);
+Plotter_simulator(Flow,Gen,Plotting,Storage,Wells);
 

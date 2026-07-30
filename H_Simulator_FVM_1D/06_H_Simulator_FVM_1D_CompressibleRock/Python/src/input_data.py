@@ -11,7 +11,7 @@ def input_data():
 
     Gen = {}
 
-    Gen["tf"] = 10000.0  # Final time [sec]
+    Gen["tf"] = 1000.0  # Final time [sec]
     Gen["tstep"] = 10.0  # Time step [sec]
     Gen["tol"] = 1e-5  # Tolerance [-]
 
@@ -47,9 +47,9 @@ def input_data():
     Flow = {}
 
     #Permeability on left side
-    k_left = 1e-12
+    k_left = 1e-11
     #Permeability on right side
-    k_right = 1e-13
+    k_right = 1e-11
     #Permeability band size on left side
     L_k = 2
     #Reference permeability
@@ -61,7 +61,7 @@ def input_data():
     Flow["kP0"] = 1e5
 
     #Porosity on the left side
-    phi_left = 0.3
+    phi_left = 0.2
     #Porosity on the right side
     phi_right = 0.2
     #Porosity band size on left side
@@ -70,11 +70,11 @@ def input_data():
     Flow["phi0"] = np.zeros(Gen["Nx"]) + phi_right  # Porosity [-]
     Flow["phi0"][Storage["x"] < L_phi] = phi_left
     #"Compressibility" of permeability
-    Flow["cphi"] = 1e-9
+    Flow["cphi"] = 1e-8
     #Reference pressure [Pa]
     Flow["phiP0"] = 1e5
 
-    Flow["cf"] = 1e-8  # Fluid compressibility [1/Pa]
+    Flow["cf"] = 1e-10  # Fluid compressibility [1/Pa]
     Flow["muf"] = 0.1  # Fluid viscosity [Pa.s]
 
     Flow["Rho0"] = 1000.0  # Reference density [kg/m³]
@@ -86,9 +86,9 @@ def input_data():
 
     #Constant pressure wells
     Wells = {}
-    Wells["P"] = [5e7, 1e7] #Row vector of well pressurese [Pa]
-    Wells["WI"] = [1, 1]    #Well indices [m]
-    Wells["xP"] = [10, 0]   #Well locations [m]
+    Wells["P"] = [1e7] #Row vector of well pressurese [Pa]
+    Wells["WI"] = [0]    #Well indices [m]
+    Wells["xP"] = [0]   #Well locations [m]
 
     #Find the cells for these wells
     Wells["Loc_P"] = np.zeros(np.size(Wells["P"]), dtype=int)
@@ -97,7 +97,7 @@ def input_data():
 
     # Constant rate wells
     Wells["Q"] = [1]  # Row vector of well rates [kg/sec]
-    Wells["xQ"] = [4]  # Well locations [m]
+    Wells["xQ"] = [10]  # Well locations [m]
 
     # Find the cells for these wells
     Wells["Loc_Q"] = np.zeros(np.size(Wells["Q"]), dtype=int)
@@ -125,7 +125,7 @@ def input_data():
     # Storage Matrices
     # ------------------------------------------------------------------
 
-    TStore = 1
+    TStore = 5
 
     Storage["TStorage"] = np.arange(
         0,

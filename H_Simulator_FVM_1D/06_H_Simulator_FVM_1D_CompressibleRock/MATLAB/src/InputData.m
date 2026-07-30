@@ -2,7 +2,7 @@
 function [Flow, Gen, Plotting, State, Storage, Wells] = InputData()
 %% - General Parameters
 %Final time [sec]
-Gen.tf = 10000;                                                 %[1,1]    
+Gen.tf = 1000;                                                 %[1,1]    
 %Time step [sec]
 Gen.tstep = 10;                                                %[1,1]    
 %Tolerance [-]
@@ -24,9 +24,9 @@ Storage.x = linspace(Gen.dx/2,Gen.Lx-Gen.dx/2,Gen.Nx);          %[N,1]
 
 %% - Flow Model
 %Permeability, of left edges [m^2]
-k_left = 1e-12;                                                  %[1,1] 
+k_left = 1e-11;                                                  %[1,1] 
 %Permeability, of right zone [m^2]
-k_right = 1e-13;                                                %[1,1] 
+k_right = 1e-11;                                                %[1,1] 
 %Permeability left edge bands length [m]
 L_k = 2;                                                        %[1,1] 
 %Permeability [m^2] 
@@ -38,7 +38,7 @@ Flow.ck = 1e-8;                                                 %[1,1]
 Flow.kP0 = 1e5;                                                 %[1,1]  
 
 %Porosity, of left edges [-]
-phi_left = 0.3;                                                 %[1,1] 
+phi_left = 0.2;                                                 %[1,1] 
 %Porosity, of right zone [-]
 phi_right = 0.2;                                                %[1,1] 
 %Porosity left edge bands length [m]
@@ -47,14 +47,14 @@ L_phi = 2;                                                      %[1,1]
 Flow.phi0 = phi_right*ones(Gen.Nx,1);                           %[1,1]  
 Flow.phi0(Storage.x < L_phi) = phi_left;
 %"Compressibility" of porosity
-Flow.cphi = 1e-9;                                               %[1,1] 
+Flow.cphi = 1e-8;                                               %[1,1] 
 %Reference pressure [Pa]
 Flow.phiP0 = 1e5;                                               %[1,1] 
 
 
 
 %Fluid compressibility [1/Pa]
-Flow.cf = 1e-8;                                                 %[1,1]          
+Flow.cf = 1e-10;                                                 %[1,1]          
 %Fluid viscosity [Pa sec]
 Flow.muf = .1;                                                  %[1,1]           
 %Reference density [kg/m^3]
@@ -65,11 +65,11 @@ Flow.RhoP = 1e5;                                                %[1,1]
 %% - Wells
 % Constant pressure wells
 %Row vector of well pressures [Pa]
-Wells.P = [5e7 1e7];                                            %[1,Nwells]
+Wells.P = [1e7];                                            %[1,Nwells]
 %Well indexes [m]
-Wells.WI = [1 1];                                               %[1,Nwells]
+Wells.WI = [1e7*0];                                               %[1,Nwells]
 % Well locations [m]
-Wells.xP = [10 0];                                              %[1,Nwells]
+Wells.xP = [0];                                              %[1,Nwells]
     
 %Find the cells of these wells
 Wells.Loc_P = zeros(size(Wells.xP));
@@ -80,7 +80,7 @@ end
 %Constant rate wells (always keep at least a zero contribution in one cell
 %Define constant rate [kg/sec]
 Wells.Q = 1;                                                    %[1,Nwells_Q]
-Wells.xQ = 4;                                                   %[1,Nwells_Q]
+Wells.xQ = 10;                                                   %[1,Nwells_Q]
 
 %Find the cells of these wells
 Wells.Loc_Q = zeros(size(Wells.xQ));

@@ -74,7 +74,7 @@ for i = 2
     plot(Storage.x,Storage.flux(i,:), 'k-','LineWidth',Plotting.lwidth_1col);
 end
 xlab = xlabel('Position, $$x$$ [m]');
-ylab = ylabel('Mass flux [kg/s]');
+ylab = ylabel('Mass rate [kg/s]');
 set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(fh, 'Color','white')

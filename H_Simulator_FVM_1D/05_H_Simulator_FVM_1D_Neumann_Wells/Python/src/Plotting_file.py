@@ -59,7 +59,7 @@ def Plotting_file(Flow,Gen,Storage, Wells):
     ax.plot(Gen["x"], Storage["flux"][1, :], 'k-', linewidth=1, label='Simulation')
     # Labels
     ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
-    ax.set_ylabel(r'Darcy Flux [m/s]', fontsize=10)
+    ax.set_ylabel(r'Mass rate [kg/s]', fontsize=10)
     # Font size
     ax.tick_params(labelsize=7)
     # Tick direction

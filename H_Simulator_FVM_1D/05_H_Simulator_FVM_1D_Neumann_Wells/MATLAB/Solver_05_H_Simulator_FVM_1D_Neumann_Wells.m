@@ -20,6 +20,8 @@ while State.t < Gen.tf
     %% - Solve For Pressure
     [State] = FIMPressure1D_1Phase(Flow,Gen,State,Wells);
 
+    State.t = State.t + Gen.tstep;
+    
     %Store results
     if ~isempty(find(State.t == Storage.TStorage,1))
         State.step = State.step + 1;
@@ -27,7 +29,7 @@ while State.t < Gen.tf
         Storage.flux(State.step,:) = State.flux;
     end
 
-    State.t = State.t + Gen.tstep;
+    
 end
 
 %% - Plotting pressure
@@ -100,7 +102,7 @@ for i = length(Storage.TStorage)
     plot(Storage.x,Storage.flux(i,:), 'k-','LineWidth',Plotting.lwidth_1col);
 end
 xlab = xlabel('Position, $$x$$ [m]');
-ylab = ylabel('Mass flux [kg/s]');
+ylab = ylabel('Mass rate [kg/s]');
 set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 set(fh, 'Color','white')
