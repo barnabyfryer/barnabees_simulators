@@ -69,15 +69,18 @@ ax = axes;
 set(ax,'Units','centimeters','Position',Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
-surf(x,y,du)
+imagesc(x(:,1),y(1,:),du')
+set(gca,'YDir','normal')
 xlab = xlabel('x-Location [m]');
 ylab = ylabel('y-Location [m]');
-zlab = zlabel('x-displacement [m]');
 set(xlab,'Interpreter','latex','fontsize',fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',fsize_1col)
-set(zlab,'Interpreter','latex','fontsize',fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = 'x-displacement [m]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
 
 %% - Plot y displacements
 fh = figure;
@@ -85,15 +88,18 @@ ax = axes;
 set(ax,'Units','centimeters','Position',Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
-surf(x,y,dv)
+imagesc(x(:,1),y(1,:),dv')
+set(gca,'YDir','normal')
 xlab = xlabel('x-Location [m]');
 ylab = ylabel('y-Location [m]');
-zlab = zlabel('y-displacement [m]');
 set(xlab,'Interpreter','latex','fontsize',fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',fsize_1col)
-set(zlab,'Interpreter','latex','fontsize',fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = 'y-displacement [m]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
 
 %% - Plot x direction forces
 fh = figure;
@@ -133,15 +139,18 @@ ax = axes;
 set(ax,'Units','centimeters','Position',Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
-surf(xc,yc,Sigx)
+imagesc(xc(:,1),yc(1,:),Sigx')
+set(gca,'YDir','normal')
 xlab = xlabel('x-Location [m]');
 ylab = ylabel('y-Location [m]');
-zlab = zlabel('$$\sigma_{xx}$$ [Pa]');
 set(xlab,'Interpreter','latex','fontsize',fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',fsize_1col)
-set(zlab,'Interpreter','latex','fontsize',fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\sigma_{xx}$$ [Pa]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
 
 %% - Plot y direction stress
 fh = figure;
@@ -149,15 +158,18 @@ ax = axes;
 set(ax,'Units','centimeters','Position',Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
-surf(xc,yc,Sigy)
+imagesc(xc(:,1),yc(1,:),Sigy')
+set(gca,'YDir','normal')
 xlab = xlabel('x-Location [m]');
 ylab = ylabel('y-Location [m]');
-zlab = zlabel('$$\sigma_{yy}$$ [Pa]');
 set(xlab,'Interpreter','latex','fontsize',fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',fsize_1col)
-set(zlab,'Interpreter','latex','fontsize',fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\sigma_{yy}$$ [Pa]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
 
 %% - Plot shear stresses
 fh = figure;
@@ -165,31 +177,37 @@ ax = axes;
 set(ax,'Units','centimeters','Position',Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
-surf(xc,yc,Sigxy)
+imagesc(xc(:,1),yc(1,:),Sigxy')
+set(gca,'YDir','normal')
 xlab = xlabel('x-Location [m]');
 ylab = ylabel('y-Location [m]');
-zlab = zlabel('$$\sigma_{xy}$$ [Pa]');
 set(xlab,'Interpreter','latex','fontsize',fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',fsize_1col)
-set(zlab,'Interpreter','latex','fontsize',fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\sigma_{xy}$$ [Pa]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
 
-%% - Plot shear stresses
+%% - Plot volumetric strain
 fh = figure;
 ax = axes;
 set(ax,'Units','centimeters','Position',Position_1col_matrix)
 set(ax,'ActivePositionProperty','position')
 set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
-surf(xc,yc,e_vol)
+imagesc(xc(:,1),yc(1,:),e_vol')
+set(gca,'YDir','normal')
 xlab = xlabel('x-Location [m]');
 ylab = ylabel('y-Location [m]');
-zlab = zlabel('$$\epsilon_{v}$$ [-]');
 set(xlab,'Interpreter','latex','fontsize',fsize_1col)
 set(ylab,'Interpreter','latex','fontsize',fsize_1col)
-set(zlab,'Interpreter','latex','fontsize',fsize_1col)
 set(fh, 'Color','white')
 set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\epsilon_{v}$$ [-]';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
 
 %% - Plot fixed nodes
 nodesfixed = zeros(Gen.Nn,1);
