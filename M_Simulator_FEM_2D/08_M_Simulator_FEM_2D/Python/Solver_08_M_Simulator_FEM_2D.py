@@ -71,11 +71,11 @@ Pos["y_new"] = Pos["y"] + Pos["dv"]
 # Solve for stresses and volumetric strain
 # =============================================================================
 
-Sigma, e_vol = solve_stresses(Gen, Pos)
+Sigma, Strain, e_vol = solve_stresses(Gen, Pos)
 
 # =============================================================================
 # Plotting
 # =============================================================================
 
-plotting_sim(f, Gen, Plotting, Pos, Sigma, e_vol)
+plotting_sim(f, Gen, Plotting, Pos, Sigma, Strain, e_vol)
 

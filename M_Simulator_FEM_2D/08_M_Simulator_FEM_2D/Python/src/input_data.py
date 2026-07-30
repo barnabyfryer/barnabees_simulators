@@ -8,9 +8,9 @@ def input_data():
 
     Gen = {}
     #Elements in x direction
-    Gen["Nx"] = 21
+    Gen["Nx"] = 81
     #Elements in y direction
-    Gen["Ny"] = 21
+    Gen["Ny"] = 81
     #Reservoir length [m]
     Gen["Lx"] = 30
     Gen["Ly"] = 10

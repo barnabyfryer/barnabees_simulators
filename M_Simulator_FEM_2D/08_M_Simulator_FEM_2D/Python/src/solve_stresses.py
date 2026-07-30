@@ -125,7 +125,7 @@ def solve_stresses(Gen, Pos):
             B[2, 2 * a] = deriv[1, a]
             B[2, 2 * a + 1] = deriv[0, a]
 
-        strain = B @ disp
+        strain = -B @ disp
         Eps[i, :] = strain
         Sigma[i, :] = D @ strain
 
@@ -138,4 +138,4 @@ def solve_stresses(Gen, Pos):
 
     eps_vol = Eps_xx + Eps_yy
 
-    return Sigma, eps_vol
+    return Sigma, Eps, eps_vol
