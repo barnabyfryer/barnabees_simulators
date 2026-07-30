@@ -1,9 +1,12 @@
-function [] = Plotting_sim(e_vol,F,Gen,Plotting, Pos,Sig)
+function [] = Plotting_sim(e_vol,F,Gen,Plotting, Pos,Sig,Strain)
 
 %% - Unpack
 Sigx = reshape(Sig(:,1),Gen.Nx,Gen.Ny);                     %[Nx,Ny]
 Sigy = reshape(Sig(:,2),Gen.Nx,Gen.Ny);                     %[Nx,Ny]
 Sigxy = reshape(Sig(:,3),Gen.Nx,Gen.Ny);                    %[Nx,Ny]
+ex = reshape(Strain(:,1),Gen.Nx,Gen.Ny);                     %[Nx,Ny]
+ey = reshape(Strain(:,2),Gen.Nx,Gen.Ny);                     %[Nx,Ny]
+exy = reshape(Strain(:,3),Gen.Nx,Gen.Ny);                    %[Nx,Ny]
 x = Pos.x;
 y = Pos.y;
 x_new = Pos.x_new;
@@ -152,6 +155,30 @@ c.Label.String = '$$\sigma_{xx}$$ [Pa]';
 set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
 c.FontSize = Plotting.fsize_1col;
 
+exportgraphics(fh,'Sig_xx.pdf','ContentType','vector')
+
+%% - Plot x direction strain
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
+imagesc(xc(:,1),yc(1,:),ex')
+set(gca,'YDir','normal')
+xlab = xlabel('x-Location [m]');
+ylab = ylabel('y-Location [m]');
+set(xlab,'Interpreter','latex','fontsize',fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\epsilon_{xx}$$';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
+exportgraphics(fh,'e_xx.pdf','ContentType','vector')
+
+
 %% - Plot y direction stress
 fh = figure;
 ax = axes;
@@ -170,6 +197,30 @@ c = colorbar;
 c.Label.String = '$$\sigma_{yy}$$ [Pa]';
 set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
 c.FontSize = Plotting.fsize_1col;
+
+exportgraphics(fh,'Sig_yy.pdf','ContentType','vector')
+
+%% - Plot y direction strain
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
+imagesc(xc(:,1),yc(1,:),ey')
+set(gca,'YDir','normal')
+xlab = xlabel('x-Location [m]');
+ylab = ylabel('y-Location [m]');
+set(xlab,'Interpreter','latex','fontsize',fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\epsilon_{yy}$$';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
+exportgraphics(fh,'e_yy.pdf','ContentType','vector')
+
 
 %% - Plot shear stresses
 fh = figure;
@@ -190,6 +241,31 @@ c.Label.String = '$$\sigma_{xy}$$ [Pa]';
 set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
 c.FontSize = Plotting.fsize_1col;
 
+exportgraphics(fh,'Sig_xy.pdf','ContentType','vector')
+
+
+%% - Plot engineering shear strains
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',fsize_1col,'TickLabelInterpreter','latex');
+imagesc(xc(:,1),yc(1,:),exy')
+set(gca,'YDir','normal')
+xlab = xlabel('x-Location [m]');
+ylab = ylabel('y-Location [m]');
+set(xlab,'Interpreter','latex','fontsize',fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\gamma_{xy}$$';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
+exportgraphics(fh,'gamma_xy.pdf','ContentType','vector')
+
+
 %% - Plot volumetric strain
 fh = figure;
 ax = axes;
@@ -208,6 +284,9 @@ c = colorbar;
 c.Label.String = '$$\epsilon_{v}$$ [-]';
 set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
 c.FontSize = Plotting.fsize_1col;
+
+exportgraphics(fh,'e_v.pdf','ContentType','vector')
+
 
 %% - Plot fixed nodes
 nodesfixed = zeros(Gen.Nn,1);

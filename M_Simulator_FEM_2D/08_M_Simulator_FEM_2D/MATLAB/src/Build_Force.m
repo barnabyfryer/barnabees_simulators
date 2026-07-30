@@ -1,7 +1,8 @@
 function [F] = Build_Force(Gen)
 
 %Where to apply the force (on all top nodes)
-A = (2*Gen.Nn-Gen.Nx*2+2):2:2*Gen.Nn-2;       
+A = (2*Gen.Nn-Gen.Nx*2+2):2:2*Gen.Nn-2;      
+Ax = (2*Gen.Nn-Gen.Nx*2+1):2:2*Gen.Nn-3;       
 %On all right nodes
 B = 4*(Gen.Nx+1)-1:2*(Gen.Nx+1):2*Gen.Nn-2*(Gen.Nx+1);
 %On all bottom nodes
@@ -11,9 +12,20 @@ D = 2*(Gen.Nx+1)+1:2*(Gen.Nx+1):2*Gen.Nn-4*(Gen.Nx+1)+1;
 %Set up force vector
 F = zeros(2*Gen.Nn,1);                                      %[2*Nn,1]
 
-%Apply force (per unit of out of plane thickness) [N/m]
-fy = -10e7;
-fx = -8.5e7;
+%Apply load [Pa]
+fy = -10*0;
+fx = -10;
+
+%Convert to force per node
+fy = fy/Gen.Nx*Gen.Lx;
+fx = fx/Gen.Ny*Gen.Ly;
+
+
+% %On top nodes
+% F(A,1) = fx;
+% F(2*Gen.Nn-Gen.Nx*2-1,1) = fx/2;
+% F(2*Gen.Nn-1,1) = fx/2;
+
 
 %On top nodes
 F(A,1) = fy;

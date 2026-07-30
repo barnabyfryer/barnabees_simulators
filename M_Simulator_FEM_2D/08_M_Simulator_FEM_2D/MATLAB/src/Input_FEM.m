@@ -3,9 +3,9 @@ function [Gen, Plotting, Pos] = Input_FEM()
 
 %% - General Inputs
 %Elements in x direction [-]
-Gen.Nx = 21;                                         	%[1,1]
+Gen.Nx = 81;                                         	%[1,1]
 %Elements in y direction [-]
-Gen.Ny = 21;                                        	%[1,1]
+Gen.Ny = 81;                                        	%[1,1]
 %Reservoir lengths [m]
 Gen.Lx = 30;                                        	%[1,1]
 Gen.Ly = 10;                                            %[1,1]
@@ -13,6 +13,8 @@ Gen.Ly = 10;                                            %[1,1]
 Gen.E = 1e9;                                            %[1,1]
 %Poisson's Ratio [-]
 Gen.v = .3;                                             %[1,1]
+%Select plane stress (stress) or plane strain (strain)
+Gen.plane = "stress";
 
 %% - Basic Calculations
 %Element edge lengths
@@ -58,6 +60,9 @@ Pos.y = ones(Gen.Nx+1,Gen.Ny+1).*linspace(0,Gen.Ly,Gen.Ny+1);   %[Nx+1,Ny+1]
 % %Fix x-direction
 % %Fix left nodes
 Gen.nodesx(1:Gen.Ny+1,1) = (1:Gen.Nx+1:Gen.Nn-Gen.Nx)';
+%Fix bottom nodes
+% Gen.nodesx(1:Gen.Nx+1,1) = (1:Gen.Nx+1)';
+
 % %Fix right nodes
 % Gen.nodesx(Gen.Ny+2:2*Gen.Ny+2) = (Gen.Nx+1:Gen.Nx+1:Gen.Nn)';
 %  

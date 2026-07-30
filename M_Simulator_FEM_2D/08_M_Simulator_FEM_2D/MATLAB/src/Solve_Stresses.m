@@ -1,4 +1,4 @@
-function [Sigma,e_vol] = Solve_Stresses(Gen,Pos)
+function [Sigma,Strain,e_vol] = Solve_Stresses(Gen,Pos)
 %% - FEM code that takes displacements and turns them into stresses
 %Barnaby Fryer 27.04.17
 
@@ -25,15 +25,24 @@ u = Pos.u;                                                      %[Nn,1]
 v = Pos.v;                                                      %[Nn,1]
 
 %% - Start, decide plane strain or plane stress
-AA = (Gen.E/((1+Gen.v)*(1-2*Gen.v)));                           %[1,1]
-BB = 1-Gen.v;                                                   %[1,1]
-CC = Gen.v;                                                     %[1,1]
-DD = ((1-2*Gen.v)/2);                                           %[1,1]
+if Gen.plane == "strain"
+    %Plane strain
+    AA = (Gen.E/((1+Gen.v)*(1-2*Gen.v)));                       %[1,1]
+    BB = 1-Gen.v;                                               %[1,1]
+    CC = Gen.v;                                                 %[1,1]
+    DD = ((1-2*Gen.v)/2);                                       %[1,1]
+elseif Gen.plane == "stress"
+    %Plane stress
+    AA = Gen.E/(1-Gen.v^2);                                     %[1,1]
+    BB = 1;                                                     %[1,1]
+    CC = Gen.v;                                                 %[1,1]
+    DD = (1-Gen.v)/2;                                           %[1,1]
+end
 
 %        _        _
 %       | BB CC 0  |
 % D = AA| CC BB 0  |
-%       |_0  0  DD_|                
+%       |_0  0  DD_|            
 
 %% - Solve for displacements and locations of the nodes of each element
 %Predefine memory
@@ -197,7 +206,7 @@ for i = 1:Gen.Ne
         
         %% - Strain and Stress calculations
         %Calculate the strains of the element
-        Strain(i,:) = (B*transpose(disp(1,:)))';                %[Ne,3]
+        Strain(i,:) = -(B*transpose(disp(1,:)))';                %[Ne,3]
         %Calculate the stresses of the element
         Sigma(i,:) = (D*Strain(i,:)')';                         %[Ne,3]
     end

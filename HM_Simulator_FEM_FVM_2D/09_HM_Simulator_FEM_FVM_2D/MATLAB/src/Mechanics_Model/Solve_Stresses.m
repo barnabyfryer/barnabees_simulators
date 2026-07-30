@@ -25,10 +25,20 @@ u = Pos.u;                                                      %[Nn,1]
 v = Pos.v;                                                      %[Nn,1]
 
 %% - Start, decide plane strain or plane stress
-AA = (Gen.E/((1+Gen.v)*(1-2*Gen.v)));                           %[1,1]
-BB = 1-Gen.v;                                                   %[1,1]
-CC = Gen.v;                                                     %[1,1]
-DD = ((1-2*Gen.v)/2);                                           %[1,1]
+if Gen.plane == "strain"
+    %Plane strain
+    AA = (Gen.E/((1+Gen.v)*(1-2*Gen.v)));                       %[1,1]
+    BB = 1-Gen.v;                                               %[1,1]
+    CC = Gen.v;                                                 %[1,1]
+    DD = ((1-2*Gen.v)/2);                                       %[1,1]
+elseif Gen.plane == "stress"
+    %Plane stress
+    AA = Gen.E/(1-Gen.v^2);                                     %[1,1]
+    BB = 1;                                                     %[1,1]
+    CC = Gen.v;                                                 %[1,1]
+    DD = (1-Gen.v)/2;                                           %[1,1]
+end
+
 
 %        _        _
 %       | BB CC 0  |

@@ -4,10 +4,15 @@ function [k_global] = Global_Stiffness_Builder(Gen)
 k_global = zeros(2*Gen.Nn,2*Gen.Nn);                        %[2*Nn,2*Nn]
 
 %Prepare local stiffness matrix of element (only need to do once since elements same size)
-%Plane strain
-[kl] = Local_Stiffness_PStrain(Gen);              %[8,8]
-%Plane stress
-%[kl] = Local_Stiffness_PStress(Gen);              %[8,8] 
+if Gen.plane == "strain"
+    %Plane strain
+    [kl] = Local_Stiffness_PStrain(Gen);              %[8,8]
+elseif Gen.plane == "stress"
+    %Plane stress
+    [kl] = Local_Stiffness_PStress(Gen);              %[8,8]
+else
+    disp("Error: Please select plane stress or plane strain (stress,strain)")
+end
 
 %Build global stiffness matrix
 for i = 1:Gen.Ne
