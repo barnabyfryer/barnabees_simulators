@@ -38,13 +38,18 @@ Pos.y_new = Pos.y + Pos.dv;                                     %[Nx+1,Ny+1]
 
 %% - Solve for stresses
 %Solve for stresses
-[stress_e, State.e_vol] = Solve_Stresses(Gen,Pos);                   %[Nn,3]
+[strain_e,stress_e, State.e_vol] = Solve_Stresses(Gen,Pos);     %[Nn,3]
 
 State.e_vol = reshape(State.e_vol,Gen.Ne,1);
 %Effective stress
 State.Sig_xx = reshape(stress_e.s_xx,Gen.Ne,1);
 State.Sig_yy = reshape(stress_e.s_yy,Gen.Ne,1);
 State.Sig_xy = reshape(stress_e.s_xy,Gen.Ne,1);
+
+%Strain
+State.e_xx = reshape(strain_e.e_xx,Gen.Ne,1);
+State.e_yy = reshape(strain_e.e_yy,Gen.Ne,1);
+State.gamma_xy = reshape(strain_e.gamma_xy,Gen.Ne,1);
 
 
 end

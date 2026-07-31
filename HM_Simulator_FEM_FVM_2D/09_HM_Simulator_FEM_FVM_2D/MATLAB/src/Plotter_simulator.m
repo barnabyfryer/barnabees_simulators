@@ -175,6 +175,63 @@ c.Label.String = '$$\Delta S_{xy}$$ [MPa]';
 set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
 c.FontSize = Plotting.fsize_1col;
 
+%% - Plotting e_xx
+e_xx = reshape(Storage.e_xx(end,:),Gen.Nx,Gen.Ny)';
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+imagesc(Storage.x,Storage.y,e_xx)
+xlab = xlabel('Position, $$x$$ [m]');
+ylab = ylabel('Position, $$y$$ [m]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$e_{xx}$$';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
+%% - Plotting e_yy
+e_yy = reshape(Storage.e_yy(end,:),Gen.Nx,Gen.Ny)';
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+imagesc(Storage.x,Storage.y,e_yy)
+xlab = xlabel('Position, $$x$$ [m]');
+ylab = ylabel('Position, $$y$$ [m]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$e_{yy}$$';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
+%% - Plotting gamma_xy
+gamma_xy = reshape(Storage.gamma_xy(end,:),Gen.Nx,Gen.Ny)';
+fh = figure;
+ax = axes;
+set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
+set(ax,'ActivePositionProperty','position')
+set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+imagesc(Storage.x,Storage.y,gamma_xy)
+xlab = xlabel('Position, $$x$$ [m]');
+ylab = ylabel('Position, $$y$$ [m]');
+set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+set(fh, 'Color','white')
+set(gca, 'Box','off', 'TickDir','out');
+c = colorbar;
+c.Label.String = '$$\gamma_{xy}$$';
+set(c.Label, 'Interpreter', 'latex', 'FontSize', Plotting.fsize_1col);
+c.FontSize = Plotting.fsize_1col;
+
 %% - Plotting volumetric strain error
 errP = reshape(Storage.errP(end,:),Gen.Nx,Gen.Ny)';
 fh = figure;

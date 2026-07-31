@@ -59,6 +59,6 @@ State.flux = -FTrans*State.P + Q;                           %[N,1]
 %Calculate perm and derivative
 [State,~] = Perm(Flow,State);                	            %[N,1]
 %Calculate porosity and derivative
-[State.phi,~] = PhiCalc(Flow,State);                	    %[N,1]
+[State.phi,~] = PhiCalc(Flow,Gen,State);                    %[N,1]
 
 end

@@ -11,9 +11,14 @@ D = 2*(Gen.Nx+1)+1:2*(Gen.Nx+1):2*Gen.Nn-4*(Gen.Nx+1)+1;
 %Set up force vector
 F = zeros(2*Gen.Nn,1);                                      %[2*Nn,1]
 
-%Apply force (per unit of out of plane thickness) [N/m]
-fy = -0e7;
-fx = -0e7;
+%Apply load [Pa]
+fy = Gen.F;
+fx = -10*0;
+
+%Convert to force per node
+fy = fy/Gen.Nx*Gen.Lx;
+fx = fx/Gen.Ny*Gen.Ly;
+
 
 %On top nodes
 F(A,1) = fy;

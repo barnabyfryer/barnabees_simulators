@@ -15,9 +15,9 @@ function [Res] = BuildResidual(Flow,Gen,State,State0,Trans,Wells)
 [Rho,~] = Density(Flow,State.P);                                %[N,1]
 
 %Calculate porosity of last time step
-[phiOld,~] = PhiCalc(Flow,State0);                	            %[N,1]
+[phiOld,~] = PhiCalc(Flow,Gen,State0);                	        %[N,1]
 %Calculate porosity and derivative
-[phi,~] = PhiCalc(Flow,State);                	                %[N,1]
+[phi,~] = PhiCalc(Flow,Gen,State);                	            %[N,1]
 
 %Transmissibility matrix
 [FTrans,~] = Trans_Fluid(A,Flow,Gen,State);                     %[N,N]

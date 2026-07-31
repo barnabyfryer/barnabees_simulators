@@ -2,7 +2,7 @@
 function [Flow, Gen, Plotting, State, Storage, Wells] = InputFlowData()
 %% - General Parameters
 %Final time [sec]
-Gen.tf = 200;                                                   %[1,1]    
+Gen.tf = 150;                                                   %[1,1]    
 %Time step [sec]
 Gen.tstep = 5;                                                  %[1,1]    
 %Tolerance [-]
@@ -14,13 +14,21 @@ Gen.Nx = 41;                                                    %[1,1]
 %Number of cells in y-direction [-]
 Gen.Ny = 41;                                                    %[1,1]  
 %Reservoir length in x-direction [m]
-Gen.Lx = 10;                                                    %[1,1]   
+Gen.Lx = 1;                                                     %[1,1]   
 %Reservoir length in y-direction [m]
-Gen.Ly = 10;                                                    %[1,1]    
+Gen.Ly = 1;                                                     %[1,1]    
 %Reservoir height [m]
 Gen.Lz = 1;                                                     %[1,1]  
 %Initial pressure in reservoir [Pa]
-Gen.Pi = 1e7;
+Gen.Pi = 1e5;
+%Mandel approach ? (1 = yes)
+Gen.Mandel = 0;
+
+%% - Mandel parameters
+if Gen.Mandel == 1
+    %Grain Bulk Modulus [Pa]
+    Flow.ks = 36e9;                                             %[1,1]
+end
 
 %% - Basic Calculations
 %Total number of elements
@@ -50,7 +58,7 @@ kx_right = 1e-12;                                               %[1,1]
 %Permeability left edge bands length [m]
 Lx_k = 2;                                                       %[1,1] 
 %Permeability [m^2] 
-Flow.kx0 = kx_right*ones(Gen.Nx*Gen.Ny,1);                      %[1,1]
+Flow.kx0 = kx_right*ones(Gen.Nx*Gen.Ny,1);                      %[N,1]
 Flow.kx0(Storage.x < Lx_k) = kx_left;
 
 %y-direction
@@ -61,11 +69,11 @@ ky_right = 1e-12;                                               %[1,1]
 %Permeability left edge bands length [m]
 Ly_k = 2;                                                       %[1,1] 
 %Permeability [m^2] 
-Flow.ky0 = ky_right*ones(Gen.Nx*Gen.Ny,1);                      %[1,1]
+Flow.ky0 = ky_right*ones(Gen.Nx*Gen.Ny,1);                      %[N,1]
 Flow.ky0(Storage.y < Ly_k) = ky_left;
 
 %"Compressibility" of permeability
-Flow.ck = 1e-8;                                                 %[1,1] 
+Flow.ck = 1e-8*0;                                               %[1,1] 
 %"Compressibility" of due to volumetric strain
 Flow.ckv = 1e-8;                                                %[1,1] 
 %Reference pressure [Pa]
@@ -78,7 +86,7 @@ phi_right = 0.2;                                                %[1,1]
 %Porosity left edge bands length [m]
 L_phi = 2;                                                      %[1,1] 
 %Porosity [-]
-Flow.phi0 = phi_right*ones(Gen.Nx*Gen.Ny,1);                    %[1,1]  
+Flow.phi0 = phi_right*ones(Gen.Nx*Gen.Ny,1);                    %[N,1]  
 Flow.phi0(Storage.x < L_phi) = phi_left;
 
 %"Compressibility" of porosity
@@ -101,10 +109,16 @@ Flow.RhoP = 1e5;                                                %[1,1]
 %Row vector of well pressures [Pa]
 Wells.P = [3.5e7];                                              %[1,Nwells]
 %Well indexes [m]
-Wells.WI = [1000];                                              %[1,Nwells]
+Wells.WI = [1000*0];                                              %[1,Nwells]
 % Well locations [m]
 Wells.xP = [5];                                                 %[1,Nwells]
 Wells.yP = [5];                                                 %[1,Nwells]
+
+%For Mandel's problem, put zero pressure wells on right
+Wells.P = zeros(Gen.Ny,1) + Gen.Pi;
+Wells.WI = zeros(Gen.Ny,1) + 1e7;
+Wells.xP = zeros(Gen.Ny,1) + max(Storage.x);
+Wells.yP = Storage.y(1:Gen.Nx:end)';
 
     
 %Find the cells of these wells

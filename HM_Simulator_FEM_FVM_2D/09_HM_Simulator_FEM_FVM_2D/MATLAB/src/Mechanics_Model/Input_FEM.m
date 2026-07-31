@@ -3,15 +3,28 @@ function [Gen, Pos, State, Storage] = Input_FEM(Flow, Gen, State, Storage)
 
 %% - General Inputs
 %Young's Modulus [Pa]
-Gen.E = 1e9;                                           %[1,1]
+Gen.E = 18.3e9;                                           %[1,1]
 %Poisson's Ratio [-]
-Gen.v = .3;                                             %[1,1]
-%Biot's coefficient [-]
-Gen.biot = 1;                                           %[1,1]
+Gen.v = .16;                                             %[1,1]
 %Select plane stress (stress) or plane strain (strain)
 Gen.plane = "strain";
+%Load to be applied [Pa]
+Gen.F_2 = -10e6;
+Gen.F = 0;
+Gen.t_applied = 30;
 
 %% - Basic Calculations
+if Gen.Mandel == 1
+    %Shear Modulus (same drained and undrained)
+    G = Gen.E./(2*(1+Gen.v));
+    %Bulk Modulus drained
+    K = 2*G.*(Gen.v + 1)./(3*(1-2*Gen.v));
+    %Biot coefficient (Cheng 2016 pg 90)
+    Gen.biot = 1 - K./Flow.ks;
+else
+    Gen.biot = 1;
+end
+
 % Cell center coordinates
 xc = linspace(Gen.dx/2, Gen.Lx-Gen.dx/2, Gen.Nx);
 yc = linspace(Gen.dy/2, Gen.Ly-Gen.dy/2, Gen.Ny);
@@ -89,7 +102,7 @@ State.e_vol = zeros(Gen.Nx*Gen.Ny,1);                           %[N,1]
 %Initialize permeability
 [State,~,~,~,~] = Perm(Flow,State);                             %[N,1]
 %Initialize porosity
-[State.phi,~] = PhiCalc(Flow,State);                	        %[N,1]
+[State.phi,~] = PhiCalc(Flow,Gen,State);                	    %[N,1]
 
 %% - Storage matrices
 %Number of points to store
@@ -126,10 +139,19 @@ Storage.e_vol(1,:) = State.e_vol;                               %[TStore,N]
 Storage.Sig_xx = zeros(TStore,Gen.Nx*Gen.Ny);                   %[TStore,N]
 Storage.Sig_yy = zeros(TStore,Gen.Nx*Gen.Ny);                   %[TStore,N]
 Storage.Sig_xy = zeros(TStore,Gen.Nx*Gen.Ny);                   %[TStore,N]
-%Store initial volumetric strain
+%Store initial stress
 Storage.Sig_xx(1,:) = State.Sig_xx;                             %[TStore,N]
-Storage.Sig_yy(1,:) = State.Sig_xx;                             %[TStore,N]
-Storage.Sig_xy(1,:) = State.Sig_xx;                             %[TStore,N]
+Storage.Sig_yy(1,:) = State.Sig_yy;                             %[TStore,N]
+Storage.Sig_xy(1,:) = State.Sig_xy;                             %[TStore,N]
+
+%Predefine memory for saved stresses
+Storage.e_xx = zeros(TStore,Gen.Nx*Gen.Ny);                     %[TStore,N]
+Storage.e_yy = zeros(TStore,Gen.Nx*Gen.Ny);                     %[TStore,N]
+Storage.gamma_xy = zeros(TStore,Gen.Nx*Gen.Ny);                 %[TStore,N]
+%Store initial strain
+Storage.e_xx(1,:) = State.e_xx;                                 %[TStore,N]
+Storage.e_yy(1,:) = State.e_yy;                                 %[TStore,N]
+Storage.gamma_xy(1,:) = State.gamma_xy;                         %[TStore,N]
 
 %% - Plotting inputs
 Plotting.lwidth_1col = 0.75;

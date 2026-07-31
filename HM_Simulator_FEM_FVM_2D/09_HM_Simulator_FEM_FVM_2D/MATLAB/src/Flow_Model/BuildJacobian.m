@@ -15,7 +15,7 @@ V = dx*dy*Gen.Lz;                                       %[1,1]
 [Rho,dRhodP] = Density(Flow,State.P);                   %[N,1] [N,1]
 
 %Calculate porosity and derivative
-[phi,dphidp] = PhiCalc(Flow,State);                	    %[N,1]
+[phi,dphidp] = PhiCalc(Flow,Gen,State);                 %[N,1]
 
  %Returns structure of 2 matrices containg whether a cell (represented by the row) is the upstream direction for flow between it and the cell (column) on the right (or top) of row cell
 [A] = Upwind(Gen,State,Trans);                          %2x[N,N] 
