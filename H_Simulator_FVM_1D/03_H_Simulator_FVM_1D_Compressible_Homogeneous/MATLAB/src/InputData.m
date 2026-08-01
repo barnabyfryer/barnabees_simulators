@@ -2,9 +2,9 @@
 function [Flow, Gen, Plotting, State, Storage] = InputData()
 %% - General Parameters
 %Final time [sec]
-Gen.tf = 2000;                                                 %[1,1]    
+Gen.tf = 200;                                                 %[1,1]    
 %Time step [sec]
-Gen.tstep = 10;                                                %[1,1]    
+Gen.tstep = 1;                                                %[1,1]    
 %Tolerance [-]
 Gen.tol = 1e-8;                                                 %[1,1]    
 %Number of cells in x-direction [-]

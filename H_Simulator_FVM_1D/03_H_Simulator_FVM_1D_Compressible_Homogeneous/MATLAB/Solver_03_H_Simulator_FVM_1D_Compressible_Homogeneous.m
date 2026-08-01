@@ -59,9 +59,12 @@ set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
 
 for i = 1:10:length(Storage.TStorage)
 
+    cla(ax)          % Clear previous lines
+
+    hold(ax,'on')
     plot(ax, Storage.x, Storage.P(i,:)/1e6, ...
         'k-', 'LineWidth', Plotting.lwidth_1col);
-    
+
     xlab = xlabel('Position, $$x$$ [m]');
     ylab = ylabel('Pressure, $$P_{\mathrm{p}}$$ [MPa]');
     set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
@@ -71,16 +74,21 @@ for i = 1:10:length(Storage.TStorage)
     ylim([0 Gen.PL/1e6])
 
     % plot(Storage.x,Storage.P(i,:)/1e6, 'k-','LineWidth',Plotting.lwidth_1col);
-    % plot(Storage.x,P_an(1,:)/1e6, 'r--','LineWidth',Plotting.lwidth_1col);
+    P_an = 1e5 + (Gen.PL - 1e5)*erfc(Storage.x./(2*sqrt(alpha * Storage.TStorage(i)')));
+    plot(ax,Storage.x,P_an(1,:)/1e6, 'r--','LineWidth',Plotting.lwidth_1col);
+    hold(ax,'off')
+
+    lgd = legend('Simulation','Analytical Soln.');
+    set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+    legend box off
+
     drawnow
     % exportgraphics(fh,['Readme_images/sim03_pressure_matlab_',num2str(i),'.pdf'],'ContentType','vector')
     exportgraphics(ax,...
     sprintf('Readme_images/frame_%04d.png',i),...
     'Resolution',200)
 end
-% lgd = legend('Simulation','Analytical Soln.');
-% set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
-% legend box off
+
 
 %% - Convert to gif
 
