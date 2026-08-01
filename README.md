@@ -223,7 +223,7 @@ A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FV
 
 **Directory**
 
-`H_Simulator_FVM_1D/07_H_Simulator_FVM_2D`
+`H_Simulator_FVM_2D/07_H_Simulator_FVM_2D`
 
 **Description**
 
@@ -262,7 +262,7 @@ A two-dimensional mechanics simulator based on the Finite Element Method (FEM) w
 
 **Directory**
 
-`M_Simulator_FEM_2D/09_HM_Simulator_FEM_2D`
+`HM_Simulator_FEM_2D/09_HM_Simulator_FEM_2D`
 
 **Description**
 
@@ -355,7 +355,12 @@ Friction and fracture
 
 - Variable viscosity
 - Gravity-driven flow
-- Multiphase flow
+- Multiphase flow (immiscible)
+- Compositional flow
+
+### Thermal (H)
+
+- Heat equation
 
 ### Hydro-Thermal (HT)
 
@@ -366,12 +371,13 @@ Friction and fracture
 ### Thermo-Hydro-Mechanical (THM)
 
 - Fully coupled THM reservoir simulators
-- Geothermal reservoir models
-- Fault slip and earthquake simulations
 
 ### Crack models
 
 - Linear slip weakening injection only
+- Loading rate Griffith
+- Rubin and Ampuero 2005
+-Uenishi and Rice 2003
 
 ---
 
