@@ -348,7 +348,7 @@ Friction and fracture
 - Rate-and-state friction governs fault strength
 
 <img width="1590" height="1215" alt="Image" src="https://github.com/user-attachments/assets/40d49010-0884-426d-b75c-064a02d615b0" />
-
+[Sim11.pdf](https://github.com/user-attachments/files/30610474/Sim11.pdf)
 ---
 
 ## Planned Future Simulators
