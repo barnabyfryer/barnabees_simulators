@@ -3,12 +3,13 @@ function [Flow, Gen, Plotting, State, Storage] = InputData()
 %% - General Parameters
 %Final time [sec]
 Gen.tf = 1000000;                                                 %[1,1]    
+Gen.tf = 5000;                                                 %[1,1]    
 %Time step [sec]
-Gen.tstep = 100;                                                %[1,1]    
+Gen.tstep = 10;                                                %[1,1]    
 %Tolerance [-]
 Gen.tol = 1e-4;                                                 %[1,1]    
 %Number of cells in x-direction [-]
-Gen.Nx = 5000;                                                  %[1,1]  
+Gen.Nx = 10000;                                                  %[1,1]  
 %Reservoir length in x-direction [m]
 Gen.Lx = 10;                                                    %[1,1]   
 %Reservoir length in y-direction [m]
@@ -18,7 +19,7 @@ Gen.Lz = 1;                                                     %[1,1]
 %Fixed boundary pressure on left [Pa]
 Gen.PL = 10e6;                                                  %[1,1] 
 %Fixed boundary pressure on right [Pa]
-Gen.PR = 1e6;                                                   %[1,1] 
+Gen.PR = 1e5;                                                   %[1,1] 
 
 %% - Basic Calculations
 %Element edge lengths
@@ -36,6 +37,7 @@ Flow.L_k = 2;                                                        %[1,1]
 %Permeability [m^2] 
 Flow.kx = k_right*ones(Gen.Nx,1);                                  %[1,1]
 Flow.kx(Storage.x < Flow.L_k) = k_left;
+Flow.kx(Storage.x > Flow.L_k+1) = k_left;
 %Porosity, of left edges [-]
 phi_left = 0.2;                                                  %[1,1] 
 %Porosity, of right zone [-]
@@ -64,7 +66,7 @@ State.step = 1;                                                 %[1,1]
 
 %% - Storage matrices
 %Number of points to store
-TStore = 5;                                                     %[1,1]
+TStore = min([200,floor(Gen.tf/Gen.tstep)]);                    %[1,1]
 %Get storage times
 Storage.TStorage = 0:Gen.tf/TStore:Gen.tf;                      %[1,TStore]
 Storage.TStorage = floor(Storage.TStorage/Gen.tstep)*Gen.tstep; %[1,TStore]

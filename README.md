@@ -180,6 +180,12 @@ A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FV
 - No gravity
 - Fixed-pressure (Dirichlet) boundary conditions
 
+<img width="562" height="437" alt="Image" src="Auxillary/Images_Readme/sim04_k_pressure.gif" />
+
+<p align="center">
+  <strong>Figure.</strong> An example showing a simulation run produced by sim0k</em>.
+</p>
+
 ---
 
 ## 05_H_Simulator_FVM_1D_Neumann_Wells
