@@ -152,6 +152,13 @@ A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FV
 - No gravity
 - Fixed-pressure (Dirichlet) boundary conditions
 
+<img width="562" height="437" alt="Image" src="https://github.com/user-attachments/assets/9ff09c77-0312-4c70-ab78-5e89a7cbb3ef" />
+
+<p align="center">
+  <strong>Figure.</strong> An example showing a simulation run produced by sim03</em>.
+</p>
+
+
 ---
 
 ## 04_H_Simulator_FVM_1D_Compressible_Heterogeneous
