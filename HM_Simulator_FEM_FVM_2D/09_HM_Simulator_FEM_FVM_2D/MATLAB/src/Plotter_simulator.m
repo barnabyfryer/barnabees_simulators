@@ -348,6 +348,111 @@ cb.Label.Interpreter = 'latex';
 % Map colors to actual times
 clim([Storage.TStorage(1), Storage.TStorage(end)])
 
+%% - Make gif
+
+% Pressure range
+P_all = Storage.P/1e6;
+P_lim = [0, max(P_all(:))];
+
+% Stress range
+S_all = Storage.Sig_xx + Gen.biot*Storage.P;
+S_lim = [min(S_all(:)), max(S_all(:))]/1e6;
+S_lim = [-2 10];
+
+fh = figure;
+set(fh,'Color','white')
+
+t = tiledlayout(1,2,'TileSpacing','compact','Padding','compact');
+
+
+% Left: pressure
+
+ax1 = nexttile;
+
+P_plot = reshape(Storage.P(1,:),Gen.Nx,Gen.Ny)'/1e6;
+
+hpL = imagesc(ax1,Storage.x,Storage.y,P_plot);
+clim(ax1,P_lim)
+
+axis(ax1,'image')
+
+set(ax1,...
+    'Box','off',...
+    'TickDir','out',...
+    'FontSize',Plotting.fsize_1col,...
+    'TickLabelInterpreter','latex')
+
+xlabel(ax1,'Position, $$x$$ [m]','Interpreter','latex')
+ylabel(ax1,'Position, $$y$$ [m]','Interpreter','latex')
+
+c1 = colorbar(ax1);
+c1.Label.String = 'Pressure, $$P_{\mathrm{p}}$$ [MPa]';
+set(c1.Label,'Interpreter','latex',...
+    'FontSize',Plotting.fsize_1col)
+
+
+% Right: stress
+
+ax2 = nexttile;
+
+S_plot = reshape(Storage.Sig_xx(1,:) + Gen.biot*Storage.P(1,:),...
+    Gen.Nx,Gen.Ny)';
+
+hp = imagesc(ax2,Storage.x,Storage.y,S_plot/1e6);
+clim(ax2,S_lim)
+
+axis(ax2,'image')
+
+set(ax2,...
+    'Box','off',...
+    'TickDir','out',...
+    'FontSize',Plotting.fsize_1col,...
+    'TickLabelInterpreter','latex')
+
+xlabel(ax2,'Position, $$x$$ [m]','Interpreter','latex')
+ylabel(ax2,'Position, $$y$$ [m]','Interpreter','latex')
+
+c2 = colorbar(ax2);
+c2.Label.String = 'Total stress change, $$\Delta S_{xx}$$ [MPa]';
+set(c2.Label,'Interpreter','latex',...
+    'FontSize',Plotting.fsize_1col)
+
+
+% Animation loop
+
+for i = 1:length(Storage.TStorage)
+
+    % Update pressure
+    hpL.CData = reshape(Storage.P(i,:),Gen.Nx,Gen.Ny)'/1e6;
+
+    % Update stress
+    hp.CData = reshape(Storage.Sig_xx(i,:) + Gen.biot*Storage.P(i,:),...
+        Gen.Nx,Gen.Ny)'/1e6;
+
+    drawnow
+
+    exportgraphics(fh,...
+        sprintf('Readme_images/frame_%04d.png',i),...
+        'Resolution',200)
+
+end
+
+%Make gif
+files = dir('Readme_images/frame_*.png');
+
+for k = 1:length(files)
+    img = imread(fullfile(files(k).folder,files(k).name));
+    [A,map] = rgb2ind(img,256);
+
+    if k == 1
+        imwrite(A,map,'Readme_images/sim09_pressure_sxx.gif',...
+            'gif','LoopCount',Inf,'DelayTime',0.08);
+    else
+        imwrite(A,map,'Readme_images/sim09_pressure_sxx.gif',...
+            'gif','WriteMode','append','DelayTime',0.08);
+    end
+end
+
 %% - Sanity check orientation of vectors
 % x = reshape(Storage.x,Gen.Nx,Gen.Ny)';
 % fh = figure;

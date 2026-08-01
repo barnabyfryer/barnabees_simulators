@@ -304,6 +304,14 @@ Fluid flow
 - No-flow (Neumann) boundary conditions
 - Source terms in domain (wells)
 
+<p align="center">
+<img width="3500" height="1313" alt="Image" src="Auxillary/Images_Readme/sim09_pressure_sxx.gif" />
+</p>
+
+<p align="center">
+  <strong>Figure.</strong> An example showing a simulation run produced by sim09.
+</p>
+
 ---
 
 ## 10_Linear_Slip_Weakening_1D_Pore_Pressure

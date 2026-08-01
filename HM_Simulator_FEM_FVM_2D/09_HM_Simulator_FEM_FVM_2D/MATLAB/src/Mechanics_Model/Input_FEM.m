@@ -9,7 +9,7 @@ Gen.v = .16;                                             %[1,1]
 %Select plane stress (stress) or plane strain (strain)
 Gen.plane = "strain";
 %Load to be applied [Pa]
-Gen.F_2 = -10e6;
+Gen.F_2 = -10e6*0;
 Gen.F = 0;
 Gen.t_applied = 30;
 

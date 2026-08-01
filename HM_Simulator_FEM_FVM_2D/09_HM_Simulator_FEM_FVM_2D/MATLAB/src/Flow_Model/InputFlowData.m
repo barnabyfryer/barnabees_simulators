@@ -10,19 +10,19 @@ Gen.tol = 1e-5;                                                 %[1,1]
 %Tolerance of sequential coupling [-]
 Gen.tol_all = 1e-3;                                             %[1,1]
 %Number of cells in x-direction [-]
-Gen.Nx = 41;                                                    %[1,1]  
+Gen.Nx = 61;                                                    %[1,1]  
 %Number of cells in y-direction [-]
-Gen.Ny = 41;                                                    %[1,1]  
+Gen.Ny = 61;                                                    %[1,1]  
 %Reservoir length in x-direction [m]
-Gen.Lx = 1;                                                     %[1,1]   
+Gen.Lx = 30;                                                     %[1,1]   
 %Reservoir length in y-direction [m]
-Gen.Ly = 1;                                                     %[1,1]    
+Gen.Ly = 30;                                                     %[1,1]    
 %Reservoir height [m]
 Gen.Lz = 1;                                                     %[1,1]  
 %Initial pressure in reservoir [Pa]
 Gen.Pi = 1e5;
 %Mandel approach ? (1 = yes)
-Gen.Mandel = 1;
+Gen.Mandel = 0;
 
 %% - Mandel parameters
 if Gen.Mandel == 1
@@ -107,18 +107,18 @@ Flow.RhoP = 1e5;                                                %[1,1]
 %% - Wells
 % Constant pressure wells
 %Row vector of well pressures [Pa]
-Wells.P = [3.5e7];                                              %[1,Nwells]
+Wells.P = [3e7];                                              %[1,Nwells]
 %Well indexes [m]
-Wells.WI = [1000*0];                                              %[1,Nwells]
+Wells.WI = [1000];                                              %[1,Nwells]
 % Well locations [m]
-Wells.xP = [5];                                                 %[1,Nwells]
-Wells.yP = [5];                                                 %[1,Nwells]
+Wells.xP = [Gen.Lx/2];                                          %[1,Nwells]
+Wells.yP = [Gen.Ly/2];                                          %[1,Nwells]
 
 %For Mandel's problem, put zero pressure wells on right
-Wells.P = zeros(Gen.Ny,1) + Gen.Pi;
-Wells.WI = zeros(Gen.Ny,1) + 1e7;
-Wells.xP = zeros(Gen.Ny,1) + max(Storage.x);
-Wells.yP = Storage.y(1:Gen.Nx:end)';
+% Wells.P = zeros(Gen.Ny,1) + Gen.Pi;
+% Wells.WI = zeros(Gen.Ny,1) + 1e7;
+% Wells.xP = zeros(Gen.Ny,1) + max(Storage.x);
+% Wells.yP = Storage.y(1:Gen.Nx:end)';
 
     
 %Find the cells of these wells
