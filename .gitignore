@@ -20,4 +20,5 @@ __pycache__/
 *.asv
 
 # Auxillary files
-**/Images_Readme/
+**/Images_Readme/*.pdf
+**/Images_Readme/*.png
