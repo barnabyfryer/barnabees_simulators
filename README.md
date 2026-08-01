@@ -349,7 +349,7 @@ Friction and fracture
 
 <img width="3500" height="1313" alt="Image" src="https://github.com/user-attachments/assets/17ba0c58-267a-4aa0-bab9-3f9cd15d6ccc" />
 <p align="center">
-  **Figure**: An example figure showing various simulation runs produced by sim11. Figure published in Fryer et al., 2026, *Nature*.
+  <strong>Figure.</strong> An example figure showing various simulation runs produced by sim11. Figure published in Fryer et al., 2026, <em>Nature</em>.
 </p>
 
 ---
