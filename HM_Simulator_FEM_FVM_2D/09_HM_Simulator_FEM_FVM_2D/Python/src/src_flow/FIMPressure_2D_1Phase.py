@@ -69,6 +69,6 @@ def FIMPressure_2D_1Phase(Flow,Gen,State,State0,State_phi,Wells):
     #Find permeability
     State["kx"],State["ky"],_,_,_,_ = perm(Flow,State)
     #Find porosity
-    State["phi"],_ = phiCalc(Flow,State)
+    State["phi"],_ = phiCalc(Flow, Gen, State)
 
     return State

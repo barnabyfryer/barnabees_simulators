@@ -22,7 +22,7 @@ Gen.Lz = 1;                                                     %[1,1]
 %Initial pressure in reservoir [Pa]
 Gen.Pi = 1e5;
 %Mandel approach ? (1 = yes)
-Gen.Mandel = 0;
+Gen.Mandel = 1;
 
 %% - Mandel parameters
 if Gen.Mandel == 1
@@ -75,7 +75,7 @@ Flow.ky0(Storage.y < Ly_k) = ky_left;
 %"Compressibility" of permeability
 Flow.ck = 1e-8*0;                                               %[1,1] 
 %"Compressibility" of due to volumetric strain
-Flow.ckv = 1e-8;                                                %[1,1] 
+Flow.ckv = 0*1e-8;                                                %[1,1] 
 %Reference pressure [Pa]
 Flow.kP0 = 1e5;                                                 %[1,1]  
 

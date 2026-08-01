@@ -146,6 +146,12 @@ def solve_stresses(Gen, Pos, State):
     stress_e["s_yy"] = Sigma[:, 1].reshape(Gen["Ny"], Gen["Nx"])
     stress_e["s_xy"] = Sigma[:, 2].reshape(Gen["Ny"], Gen["Nx"])
 
+    #Strain
+    strain_e = {}
+    strain_e["e_xx"] = Eps[:, 0].reshape(Gen["Ny"], Gen["Nx"])
+    strain_e["e_yy"] = Eps[:, 1].reshape(Gen["Ny"], Gen["Nx"])
+    strain_e["gamma_xy"] = Eps[:, 2].reshape(Gen["Ny"], Gen["Nx"])
+
     eps_vol = Eps_xx + Eps_yy
 
-    return stress_e, eps_vol
+    return stress_e, strain_e, eps_vol

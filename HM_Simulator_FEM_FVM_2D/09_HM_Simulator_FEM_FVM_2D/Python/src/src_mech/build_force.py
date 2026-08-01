@@ -19,8 +19,12 @@ def build_force(Gen):
     F = np.zeros(2*Gen["Nn"])
 
     #Forces to be applied (per unit of out of plane thickness - note mesh dependent as written here) [N/m]
-    fy = 0
+    fy = Gen["F"]
     fx = 0
+
+    #Convert to force per node
+    fy = fy / Gen["Nx"] * Gen["Lx"]
+    fx = fx / Gen["Ny"] * Gen["Ly"]
 
     #To which nodes to we apply it
     #On top nodes

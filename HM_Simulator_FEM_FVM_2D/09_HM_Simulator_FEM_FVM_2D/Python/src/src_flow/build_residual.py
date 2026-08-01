@@ -13,9 +13,9 @@ def build_residual(Flow,Gen,State,State0,trans,Wells):
     #Current iteration density
     Rho,_ = density(Flow,State["P"])
     #Old time step porosity
-    phiOld, _ = phiCalc(Flow, State0)
+    phiOld, _ = phiCalc(Flow, Gen, State0)
     # Find porosity and derivative
-    phi, _ = phiCalc(Flow, State)
+    phi, _ = phiCalc(Flow, Gen, State)
 
     #Transmissibility matrix
     FTrans,_ = trans_fluid(A,Flow,Gen,State)

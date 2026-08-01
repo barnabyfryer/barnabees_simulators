@@ -113,9 +113,6 @@ if Gen.Mandel == 1
     %Find middle cells
     [y_mid,~] = min(abs(Storage.y - Gen.Ly/2));
     idx = find(Storage.y == y_mid+Gen.Ly/2);
-    %Normalization for pressure for simulator
-    % P_d = max(max(Storage.P(:,idx))) - Storage.P(1,idx(1));
-    % P_0 = Mandel.p0;
 
     %Show match to Mandel solution
     fh = figure;

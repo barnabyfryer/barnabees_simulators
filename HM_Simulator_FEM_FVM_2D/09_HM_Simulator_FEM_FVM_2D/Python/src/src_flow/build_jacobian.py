@@ -24,7 +24,7 @@ def build_jacobian(Flow,Gen,State,trans,Wells):
     #Find density and derivative
     Rho, dRhodP = density(Flow,State["P"])
     #Find porosity and derivative
-    phi, dphidP = phiCalc(Flow,State)
+    phi, dphidP = phiCalc(Flow, Gen, State)
     #Find upwinding
     A = upwind(Gen,State,trans)
 

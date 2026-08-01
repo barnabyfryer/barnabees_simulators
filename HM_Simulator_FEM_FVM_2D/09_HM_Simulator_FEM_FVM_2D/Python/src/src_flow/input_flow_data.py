@@ -11,7 +11,7 @@ def input_flow_data():
 
     Gen = {}
 
-    Gen["tf"] = 20.0  # Final time [sec]
+    Gen["tf"] = 150.0  # Final time [sec]
     Gen["tstep"] = 5.0  # Time step [sec]
     Gen["tol"] = 1e-5  # Tolerance of flow simulator [-]
     Gen["tol_all"] = 1e-4  # Tolerance of coupled system [-]
@@ -19,11 +19,13 @@ def input_flow_data():
     Gen["Nx"] = 41  # Number of cells in x direction [-]
     Gen["Ny"] = 41  # Number of cells in y direction [-]
 
-    Gen["Lx"] = 10.0  # Reservoir length x [m]
-    Gen["Ly"] = 10.0  # Reservoir length y [m]
+    Gen["Lx"] = 1.0  # Reservoir length x [m]
+    Gen["Ly"] = 1.0  # Reservoir length y [m]
     Gen["Lz"] = 1.0  # Reservoir height [m]
 
-    Gen["Pi"] = 1e7 #Initial pressure [Pa]
+    Gen["Pi"] = 1e5 #Initial pressure [Pa]
+
+    Gen["Mandel"] = 1 #Run Mandel verification = 1
 
     # ------------------------------------------------------------------
     # Basic Calculations
@@ -50,6 +52,10 @@ def input_flow_data():
 
     Flow = {}
 
+    if Gen["Mandel"] == 1:
+        #Grain bulk modulus [Pa]
+        Flow["ks"] = 36e9
+
     # Permeability in x direction [m^2]
     #Permeability on left side
     kx_left = 1e-12
@@ -73,9 +79,9 @@ def input_flow_data():
     Flow["ky0"][Storage["y"] < Ly_k] = ky_top
 
     #"Compressibility" of permeability
-    Flow["ck"] = 1e-8
+    Flow["ck"] = 0*1e-8
     #Dependence of permeability on volumetric strain
-    Flow["ckv"] = 1e-8
+    Flow["ckv"] = 0*1e-8
     #Reference pressure [Pa]
     Flow["kP0"] = 1e5
 
@@ -88,7 +94,7 @@ def input_flow_data():
     #Reference porosity
     Flow["phi0"] = np.zeros(Gen["Nx"]*Gen["Ny"]) + phi_right  # Porosity [-]
     Flow["phi0"][Storage["x"] < L_phi] = phi_left
-    #"Compressibility" of permeability
+    #"Compressibility" of porosity
     Flow["cphi"] = 1e-9
     #Reference pressure [Pa]
     Flow["phiP0"] = 1e5
@@ -109,6 +115,11 @@ def input_flow_data():
     Wells["WI"] = [1000]    #Well indices [m]
     Wells["xP"] = [5]   #Well locations in x [m]
     Wells["yP"] = [5]  #Well locations in y [m]
+
+    Wells["P"] = np.zeros(Gen["Ny"]) + Gen["Pi"]
+    Wells["WI"] = np.zeros(Gen["Ny"]) + 1e7
+    Wells["xP"] = np.zeros(Gen["Ny"]) + np.max(Storage["x"])
+    Wells["yP"] = Storage["y"][::Gen["Nx"]]
 
     #Find the cells for these wells
     Wells["Loc_P"] = np.zeros(np.size(Wells["P"]), dtype=int)
@@ -142,7 +153,8 @@ def input_flow_data():
 
     State["kx"],State["ky"],_,_,_,_ = perm(Flow,State)
 
-    State["phi"],_ = phiCalc(Flow,State)
+    Gen["biot"] = 1 #dummy initialization just to run phiCalc. biot set in input_mech_data.py
+    State["phi"],_ = phiCalc(Flow, Gen, State)
 
 
 

@@ -4,7 +4,7 @@ from src.src_flow.density import density
 def PStrainUpdate(Flow,Gen,State,State_phi):
 
     #Porosity before mechanics update
-    phi_prior, _ = phiCalc(Flow, State_phi)
+    phi_prior, _ = phiCalc(Flow, Gen, State_phi)
     #Density before mechanics update
     rho_prior, _ = density(Flow, State_phi["P"])
 
@@ -18,7 +18,7 @@ def PStrainUpdate(Flow,Gen,State,State_phi):
         #Calculate new fluid densities
         rho_p, drho_dp = density(Flow, State["P"])
         #Calculate new porosity
-        phi_p, dphi_dp = phiCalc(Flow, State)
+        phi_p, dphi_dp = phiCalc(Flow, Gen, State)
         #Find error in this term that should be equal to m0
         r = rho_p * phi_p * V - m0
         #Jacobian

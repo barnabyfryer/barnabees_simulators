@@ -20,6 +20,9 @@ def Plotting_file(Gen,Pos,Storage):
     s_xx = Storage["s_xx"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T + Gen["biot"]*P2D
     s_yy = Storage["s_yy"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T + Gen["biot"]*P2D
     s_xy = Storage["s_xy"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    e_xx = Storage["e_xx"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    e_yy = Storage["e_yy"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
+    gamma_xy = Storage["gamma_xy"][-1, :].reshape((Gen["Nx"], Gen["Ny"]), order='F').T
 
     # =============================================================================
     # Plotting pressure
@@ -208,6 +211,33 @@ def Plotting_file(Gen,Pos,Storage):
     plt.show()
 
     # =============================================================================
+    # Plotting strain change, exx
+    # =============================================================================
+
+    fig, ax = plt.subplots()
+    # Figure size
+    fig.set_size_inches(6, 4.5)
+    # Plot
+    pcm = ax.pcolormesh(X, Y, e_xx, shading='nearest')
+    # Labels
+    ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
+    ax.set_ylabel(r'Position, $y$ [m]', fontsize=10)
+    # Font size
+    ax.tick_params(labelsize=7)
+    # Tick direction
+    ax.tick_params(direction='out')
+    # Colorbar
+    cbar = plt.colorbar(pcm, ax=ax)
+    cbar.set_label(r'Strain, $\epsilon_{xx}$ [MPa]')
+    # Box off
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    fig.savefig('../Verification/e_xx_Python.jpg',
+                dpi=300,
+                bbox_inches='tight')
+    plt.show()
+
+    # =============================================================================
     # Plotting total stress change, syy
     # =============================================================================
 
@@ -235,6 +265,33 @@ def Plotting_file(Gen,Pos,Storage):
     plt.show()
 
     # =============================================================================
+    # Plotting strain change, eyy
+    # =============================================================================
+
+    fig, ax = plt.subplots()
+    # Figure size
+    fig.set_size_inches(6, 4.5)
+    # Plot
+    pcm = ax.pcolormesh(X, Y, e_yy, shading='nearest')
+    # Labels
+    ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
+    ax.set_ylabel(r'Position, $y$ [m]', fontsize=10)
+    # Font size
+    ax.tick_params(labelsize=7)
+    # Tick direction
+    ax.tick_params(direction='out')
+    # Colorbar
+    cbar = plt.colorbar(pcm, ax=ax)
+    cbar.set_label(r'Strain, $\epsilon_{yy}$ [MPa]')
+    # Box off
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    fig.savefig('../Verification/e_yy_Python.jpg',
+                dpi=300,
+                bbox_inches='tight')
+    plt.show()
+
+    # =============================================================================
     # Plotting shear stress change, sxy
     # =============================================================================
 
@@ -257,6 +314,33 @@ def Plotting_file(Gen,Pos,Storage):
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     fig.savefig('../Verification/s_xy_Python.jpg',
+                dpi=300,
+                bbox_inches='tight')
+    plt.show()
+
+    # =============================================================================
+    # Plotting engineering shear strain, gamma_xy
+    # =============================================================================
+
+    fig, ax = plt.subplots()
+    # Figure size
+    fig.set_size_inches(6, 4.5)
+    # Plot
+    pcm = ax.pcolormesh(X, Y, gamma_xy, shading='nearest')
+    # Labels
+    ax.set_xlabel(r'Position, $x$ [m]', fontsize=10)
+    ax.set_ylabel(r'Position, $y$ [m]', fontsize=10)
+    # Font size
+    ax.tick_params(labelsize=7)
+    # Tick direction
+    ax.tick_params(direction='out')
+    # Colorbar
+    cbar = plt.colorbar(pcm, ax=ax)
+    cbar.set_label(r'Engineering shear starin, $\gamma_{xy}$')
+    # Box off
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    fig.savefig('../Verification/gamma_xy_Python.jpg',
                 dpi=300,
                 bbox_inches='tight')
     plt.show()

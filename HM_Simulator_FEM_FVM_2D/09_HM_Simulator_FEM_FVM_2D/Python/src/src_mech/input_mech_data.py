@@ -10,17 +10,31 @@ def input_mech_data(Flow, Gen, State, Storage):
     # =============================================================================
 
     #Young's modulus [Pa]
-    Gen["E"] = 50e9
+    Gen["E"] = 18.3e9
     #Poisson's ratio
-    Gen["nu"] = 0.3
+    Gen["nu"] = 0.16
     #Choose plane strain ("plane") or plane stress ("stress")
     Gen["plane"] = "strain"
-    #Biot coefficient
-    Gen["biot"] = 1
+
+
+    #Load to be applied [Pa]
+    Gen["F_2"] = -10e6
+    Gen["F"] = 0
+    Gen["t_applied"] = 30
 
     # =============================================================================
     # Basic calculations
     # =============================================================================
+    if Gen["Mandel"] == 1:
+        #Shear modulus (either drained or undrained)
+        G = Gen["E"]/(2*(1 + Gen["nu"]))
+        #Drained bulk modulus
+        K = 2*G*(Gen["nu"] + 1) / (3*(1 - 2*Gen["nu"]))
+        #Bio coefficient (Cheng 2016 pg90)
+        Gen["biot"] = 1 - K/Flow["ks"]
+    else:
+        #Biot coefficient
+        Gen["biot"] = 1
 
     #Number of elements
     Gen["Ne"] = Gen["Nx"] * Gen["Ny"]
@@ -59,7 +73,7 @@ def input_mech_data(Flow, Gen, State, Storage):
     #Initialize permeability
     State["kx"], State["ky"], _, _, _, _ = perm(Flow, State)
     #Initialize porosity
-    State["phi"], _ = phiCalc(Flow, State)
+    State["phi"], _ = phiCalc(Flow, Gen, State)
 
     # ------------------------------------------------------------------
     # Storage Matrices
@@ -111,6 +125,11 @@ def input_mech_data(Flow, Gen, State, Storage):
     Storage["s_xx"] = np.zeros((TStore + 1, Gen["Ne"]))
     Storage["s_yy"] = np.zeros((TStore + 1, Gen["Ne"]))
     Storage["s_xy"] = np.zeros((TStore + 1, Gen["Ne"]))
+
+    # Initialize strains
+    Storage["e_xx"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["e_yy"] = np.zeros((TStore + 1, Gen["Ne"]))
+    Storage["gamma_xy"] = np.zeros((TStore + 1, Gen["Ne"]))
 
     return Gen, Pos, State, Storage
 
