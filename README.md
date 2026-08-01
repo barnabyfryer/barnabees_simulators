@@ -234,6 +234,14 @@ A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FV
 - No-flow (Neumann) boundary conditions
 - Source terms in domain (wells)
 
+<p align="center">
+<img width="562" height="437" alt="Image" src="Auxillary/Images_Readme/sim06_pressure_k.gif" />
+</p>
+
+<p align="center">
+  <strong>Figure.</strong> An example showing a simulation run produced by sim06</em>.
+</p>
+
 ---
 
 ## 07_H_Simulator_FVM_2D

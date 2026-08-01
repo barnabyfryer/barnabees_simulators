@@ -101,35 +101,97 @@ set(gca, 'Box','off', 'TickDir','out', 'YScale', 'log');
 
 
 
-%% - Plot total mass
+% %% - Plot total mass for validation
+% 
+% fh = figure;
+% ax = axes;
+% set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
+% set(ax,'ActivePositionProperty','position')
+% set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
+% hold on
+% t = linspace(0,max(Storage.TStorage),100);
+% plot(t,t*Wells.Q, 'r--','LineWidth',Plotting.lwidth_1col);
+% for i = 1:length(Storage.TStorage)
+%     rho = Density(Flow,Storage.P(i,:));
+%     State.P = Storage.P(i,:)';
+%     phi = PhiCalc(Flow,State);
+%     V = Gen.dx*Gen.Ly*Gen.Lz;
+%     mass(i) = sum(rho'.*phi.*V);
+%     plot(Storage.TStorage(i),mass(i) - mass(1), 'ko','LineWidth',Plotting.lwidth_1col,'MarkerFaceColor','w');
+% end
+% xlab = xlabel('Time, $$t$$ [s]');
+% ylab = ylabel('Mass change [kg]');
+% set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+% set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+% set(fh, 'Color','white')
+% set(gca, 'Box','off', 'TickDir','out');
+% lgd = legend('Analytical Soln.','Simulation','Location','best');
+% set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+% legend box off
+% 
 
+
+%% - Make gif
 fh = figure;
-ax = axes;
-set(ax,'Units','centimeters','Position',Plotting.Position_1col_matrix)
-set(ax,'ActivePositionProperty','position')
-set(ax,'FontSize',Plotting.fsize_1col,'TickLabelInterpreter','latex');
-hold on
-t = linspace(0,max(Storage.TStorage),100);
-plot(t,t*Wells.Q, 'r--','LineWidth',Plotting.lwidth_1col);
+set(fh,'Color','white')
+
+t = tiledlayout(1,2,'TileSpacing','compact','Padding','compact');
+
+% Left: pressure
+ax1 = nexttile;
+hpL = plot(ax1,Storage.x,Storage.P(1,:)/1e6,...
+    'k-','LineWidth',Plotting.lwidth_1col);
+set(ax1,...
+    'Box','off',...
+    'TickDir','out',...
+    'FontSize',Plotting.fsize_1col,...
+    'TickLabelInterpreter','latex')
+xlabel(ax1,'Position, $$x$$ [m]','Interpreter','latex')
+ylabel(ax1,'Pressure, $$P_{\mathrm{p}}$$ [MPa]','Interpreter','latex')
+ylim(ax1,[0 Wells.P(1)/1e6])
+
+
+% Right: permeability
+ax2 = nexttile;
+hp = plot(ax2,Storage.x,Storage.k(1,:),'k-','LineWidth',Plotting.lwidth_1col);
+
+set(ax2,'Box','off',...
+    'TickDir','out',...
+    'FontSize',Plotting.fsize_1col,...
+    'TickLabelInterpreter','latex')
+
+xlabel(ax2,'Position, $$x$$ [m]','Interpreter','latex')
+ylabel(ax2,'Permeability, $$k$$ [m$^2$]','Interpreter','latex')
+ylim([1 1.7]*1e-12)
+
 for i = 1:length(Storage.TStorage)
-    rho = Density(Flow,Storage.P(i,:));
-    State.P = Storage.P(i,:)';
-    phi = PhiCalc(Flow,State);
-    V = Gen.dx*Gen.Ly*Gen.Lz;
-    mass(i) = sum(rho'.*phi.*V);
-    plot(Storage.TStorage(i),mass(i) - mass(1), 'ko','LineWidth',Plotting.lwidth_1col,'MarkerFaceColor','w');
+
+    hpL.YData = Storage.P(i,:)/1e6;
+
+    hp.YData = Storage.k(i,:);
+
+    drawnow
+
+    exportgraphics(fh,...
+        sprintf('Readme_images/frame_%04d.png',i),...
+        'Resolution',200)
+
 end
-xlab = xlabel('Time, $$t$$ [s]');
-ylab = ylabel('Mass change [kg]');
-set(xlab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
-set(ylab,'Interpreter','latex','fontsize',Plotting.fsize_1col)
-set(fh, 'Color','white')
-set(gca, 'Box','off', 'TickDir','out');
-lgd = legend('Analytical Soln.','Simulation','Location','best');
-set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
-legend box off
 
+files = dir('Readme_images/frame_*.png');
 
+for k = 1:length(files)
+    img = imread(fullfile(files(k).folder,files(k).name));
+    [A,map] = rgb2ind(img,256);
+
+    if k == 1
+        imwrite(A,map,'Readme_images/sim06_pressure_k.gif',...
+            'gif','LoopCount',Inf,'DelayTime',0.08);
+    else
+        imwrite(A,map,'Readme_images/sim06_pressure_k.gif',...
+            'gif','WriteMode','append','DelayTime',0.08);
+    end
+end
 
 
 

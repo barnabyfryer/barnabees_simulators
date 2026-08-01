@@ -2,7 +2,7 @@
 function [Flow, Gen, Plotting, State, Storage, Wells] = InputData()
 %% - General Parameters
 %Final time [sec]
-Gen.tf = 1000;                                                 %[1,1]    
+Gen.tf = 500;                                                 %[1,1]    
 %Time step [sec]
 Gen.tstep = 10;                                                %[1,1]    
 %Tolerance [-]
@@ -24,16 +24,16 @@ Storage.x = linspace(Gen.dx/2,Gen.Lx-Gen.dx/2,Gen.Nx);          %[N,1]
 
 %% - Flow Model
 %Permeability, of left edges [m^2]
-k_left = 1e-11;                                                  %[1,1] 
+k_left = 1e-12;                                                  %[1,1] 
 %Permeability, of right zone [m^2]
-k_right = 1e-11;                                                %[1,1] 
+k_right = 1e-12;                                                %[1,1] 
 %Permeability left edge bands length [m]
 L_k = 2;                                                        %[1,1] 
 %Permeability [m^2] 
 Flow.kx0 = k_right*ones(Gen.Nx,1);                              %[1,1]
 Flow.kx0(Storage.x < L_k) = k_left;
 %"Compressibility" of permeability
-Flow.ck = 1e-8;                                                 %[1,1] 
+Flow.ck = 5e-8;                                                 %[1,1] 
 %Reference pressure [Pa]
 Flow.kP0 = 1e5;                                                 %[1,1]  
 
@@ -67,7 +67,7 @@ Flow.RhoP = 1e5;                                                %[1,1]
 %Row vector of well pressures [Pa]
 Wells.P = [1e7];                                            %[1,Nwells]
 %Well indexes [m]
-Wells.WI = [1e7*0];                                               %[1,Nwells]
+Wells.WI = [1e7];                                               %[1,Nwells]
 % Well locations [m]
 Wells.xP = [0];                                              %[1,Nwells]
     
@@ -79,7 +79,7 @@ end
 
 %Constant rate wells (always keep at least a zero contribution in one cell
 %Define constant rate [kg/sec]
-Wells.Q = 1;                                                    %[1,Nwells_Q]
+Wells.Q = 0;                                                    %[1,Nwells_Q]
 Wells.xQ = 10;                                                   %[1,Nwells_Q]
 
 %Find the cells of these wells
@@ -103,7 +103,7 @@ State.step = 1;                                                 %[1,1]
 
 %% - Storage matrices
 %Number of points to store
-TStore = 5;                                                     %[1,1]
+TStore = min([200,floor(Gen.tf/Gen.tstep)]);                    %[1,1]
 %Get storage times
 Storage.TStorage = 0:Gen.tf/TStore:Gen.tf;                      %[1,TStore]
 Storage.TStorage = floor(Storage.TStorage/Gen.tstep)*Gen.tstep; %[1,TStore]
