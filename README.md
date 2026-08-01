@@ -347,7 +347,7 @@ Friction and fracture
 - A LEFM framework with a localized frictional process zone whose dissipation is homogenized into a velocity-dependent fracture energy
 - Rate-and-state friction governs fault strength
 
-![Example image sim11](https://github.com/barnabyfryer/barnabees_simulators/blob/main/Auxillary/Images_Readme/Sim11.pdf)
+![Example image sim11](https://github.com/barnabyfryer/barnabees_simulators/issues/1#issue-5034965506)
 
 ---
 
