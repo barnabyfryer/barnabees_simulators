@@ -266,11 +266,11 @@ A two-dimensional mechanics simulator based on the Finite Element Method (FEM) w
 
 **Description**
 
+A two-dimensional mechanics simulator based on the Finite Element Method (FEM) with linear elasticity and small strains. The simulator is sequentially coupled to a FVM flow model (simulator 07).
+
 **Notes**
 
 This model is used in the publications Fryer et al., 2018 JGR: Solid Earth and Fryer et al., 2019, PAGEOPH.
-
-A two-dimensional mechanics simulator based on the Finite Element Method (FEM) with linear elasticity and small strains. The simulator is sequentially coupled to a FVM flow model (simulator 07).
 
 **Assumptions**
 
