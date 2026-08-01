@@ -423,6 +423,16 @@ Friction and fracture
 
 ---
 
+## License
+
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+
+You are free to use, study, modify, and redistribute this software under the terms of the GPL. Any distributed derivative work must also be released under the GPL with its corresponding source code.
+
+See the `LICENSE` file for the full license text.
+
+---
+
 ## Author
 
 **Barnaby Fryer**  
