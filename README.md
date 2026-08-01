@@ -184,7 +184,9 @@ A one-dimensional hydraulic flow simulator based on the Finite Volume Method (FV
 
 <p align="center">
 <img width="562" height="437" alt="Image" src="Auxillary/Images_Readme/sim04_k_pressure.gif" />
+</p>
 
+<p align="center">
   <strong>Figure.</strong> An example showing a simulation run produced by sim04</em>.
 </p>
 
@@ -336,7 +338,10 @@ Fluid flow
 - Small fluid compressibility
 - Two operational phases; pressure increase then decrease due to source
 
+<p align="center">
 <img width="3500" height="3938" alt="Image" src="Auxillary/Images_Readme/sim10.png" />
+</p>
+
 <p align="center">
   <strong>Figure.</strong> An example figure showing two simulation runs produced by sim10; one with and one without pre-production. Figure published in Fryer et al., 2023, <em>JGR: Solid Earth</em>.
 </p>
@@ -368,7 +373,10 @@ Friction and fracture
 - A LEFM framework with a localized frictional process zone whose dissipation is homogenized into a velocity-dependent fracture energy
 - Rate-and-state friction governs fault strength
 
+<p align="center">
 <img width="3500" height="1313" alt="Image" src="Auxillary/Images_Readme/Sim11.png" />
+</p>
+
 <p align="center">
   <strong>Figure.</strong> An example figure showing various simulation runs produced by sim11. Figure published in Fryer et al., 2026, <em>Nature</em>.
 </p>
