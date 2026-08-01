@@ -21,4 +21,5 @@ __pycache__/
 
 # Auxillary files
 **/Images_Readme/*.pdf
-**/Images_Readme/*.png
+**/Readme_images/*.png
+**/Readme_images/*.gif

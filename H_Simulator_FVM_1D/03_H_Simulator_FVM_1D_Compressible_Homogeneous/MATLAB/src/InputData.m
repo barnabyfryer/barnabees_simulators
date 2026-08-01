@@ -2,9 +2,9 @@
 function [Flow, Gen, Plotting, State, Storage] = InputData()
 %% - General Parameters
 %Final time [sec]
-Gen.tf = 200;                                                 %[1,1]    
+Gen.tf = 2000;                                                 %[1,1]    
 %Time step [sec]
-Gen.tstep = 1;                                                %[1,1]    
+Gen.tstep = 10;                                                %[1,1]    
 %Tolerance [-]
 Gen.tol = 1e-8;                                                 %[1,1]    
 %Number of cells in x-direction [-]
@@ -50,7 +50,7 @@ State.step = 1;                                                 %[1,1]
 
 %% - Storage matrices
 %Number of points to store
-TStore = 1;                                                     %[1,1]
+TStore = min([200,floor(Gen.tf/Gen.tstep)]);                    %[1,1]
 %Get storage times
 Storage.TStorage = 0:Gen.tf/TStore:Gen.tf;                      %[1,TStore]
 Storage.TStorage = floor(Storage.TStorage/Gen.tstep)*Gen.tstep; %[1,TStore]
