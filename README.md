@@ -328,7 +328,7 @@ Fluid flow
 - Small fluid compressibility
 - Two operational phases; pressure increase then decrease due to source
 
-<img width="3500" height="3938" alt="Image" src="https://github.com/user-attachments/assets/f9c48e28-ad31-471d-b2a7-03f5428c9f4a" />
+<img width="3500" height="3938" alt="Image" src="Auxillary/Images_Readme/sim10.png" />
 <p align="center">
   <strong>Figure.</strong> An example figure showing two simulation runs produced by sim10; one with and one without pre-production. Figure published in Fryer et al., 2023, <em>JGR: Solid Earth</em>.
 </p>
