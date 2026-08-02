@@ -13,8 +13,8 @@ lwidth = 1.4;
 %% -------------------- Parameters --------------------
 % Friction parameters
 Param.a_over_b = 0.9;            %a/b
-Param.Delta_f0_over_b = 1;       %Overstress
-Param.rs_type = "slip";          %'slip' or 'aging'
+Param.Delta_f0_over_b = -1;       %Overstress
+Param.rs_type = "aging";          %'slip' or 'aging'
 
 % Foreshock and rupture parameters
 delta_a_over_L = 1.25e-6 / 0.192e-6;       %Foreshock slip divided by L
@@ -30,9 +30,7 @@ cs = 1800;
 
 %% -------------------- Crack-length domain --------------------
 l_ini_over_lb = 3e-5;    % initial crack length
-l_ini_over_lb = .5;    % initial crack length
-
-l_fin_over_lb = 1e4;     % final crack length
+l_fin_over_lb = 5e2;     % final crack length
 
 %% -------------------- Solver tolerances --------------------
 % Recommended both 1e-9 for aging law, 1e-10 for slip law
@@ -47,7 +45,6 @@ for i = 1:length(delta_a_over_L)
     %% -------------------- Basic calculations --------------------
     % Scaled hypocentral force
     Param.Delta_T = C * delta_a_over_L(i);
-    Param.Delta_T = 0
     % Scaled ambient rupture velocity
     Param.v0_over_cs = Param.V0_over_Vs;
     % Scaled \bar{v}_0

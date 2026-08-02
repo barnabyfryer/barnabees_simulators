@@ -23,3 +23,5 @@ __pycache__/
 **/Images_Readme/*.pdf
 **/Readme_images/*.png
 **/Readme_images/*.gif
+**/Readme_images/*.m
+**/Readme_images/*.csv
