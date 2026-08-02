@@ -122,6 +122,74 @@ lgd = legend('Simulation','Analytical Soln.','Location','best');
 set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
 legend box off
 
+%% - Make gif
+
+
+% Pressure range
+P_all = Storage.P/1e6;
+P_lim = [0, max(P_all(:))];
+
+fh = figure;
+set(fh,'Color','white')
+
+% Left: pressure
+
+ax1 = nexttile;
+
+P_plot = reshape(Storage.P(1,:),Gen.Nx,Gen.Ny)'/1e6;
+
+hpL = imagesc(ax1,Storage.x,Storage.y,P_plot);
+clim(ax1,P_lim)
+
+axis(ax1,'image')
+
+set(ax1,...
+    'Box','off',...
+    'TickDir','out',...
+    'FontSize',Plotting.fsize_1col,...
+    'TickLabelInterpreter','latex')
+
+xlabel(ax1,'Position, $$x$$ [m]','Interpreter','latex')
+ylabel(ax1,'Position, $$y$$ [m]','Interpreter','latex')
+
+c1 = colorbar(ax1);
+c1.Label.String = 'Pressure, $$P_{\mathrm{p}}$$ [MPa]';
+set(c1.Label,'Interpreter','latex',...
+    'FontSize',Plotting.fsize_1col)
+
+colormap(gray)
+
+% Animation loop
+
+for i = 1:length(Storage.TStorage)
+
+    % Update pressure
+    hpL.CData = reshape(Storage.P(i,:)/1e6,Gen.Nx,Gen.Ny)';
+
+    drawnow
+
+    exportgraphics(fh,...
+        sprintf('Readme_images/frame_%04d.png',i),...
+        'Resolution',200)
+
+end
+
+%Make gif
+files = dir('Readme_images/frame_*.png');
+
+for k = 1:length(files)
+    img = imread(fullfile(files(k).folder,files(k).name));
+    [A,map] = rgb2ind(img,256);
+
+    if k == 1
+        imwrite(A,map,'Readme_images/sim07_pressure.gif',...
+            'gif','LoopCount',Inf,'DelayTime',0.04);
+    else
+        imwrite(A,map,'Readme_images/sim07_pressure.gif',...
+            'gif','WriteMode','append','DelayTime',0.04);
+    end
+end
+
 %% - Sanity check orientation of vectors
 % x = reshape(Storage.x,Gen.Nx,Gen.Ny)';
 % fh = figure;

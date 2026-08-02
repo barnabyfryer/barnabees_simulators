@@ -2,9 +2,9 @@
 function [Flow, Gen, Plotting, State, Storage, Wells] = InputData()
 %% - General Parameters
 %Final time [sec]
-Gen.tf = 3000;                                                 %[1,1]    
+Gen.tf = 1000;                                                 %[1,1]    
 %Time step [sec]
-Gen.tstep = 10;                                                 %[1,1]    
+Gen.tstep = 5;                                                 %[1,1]    
 %Tolerance [-]
 Gen.tol = 1e-5;                                                 %[1,1]    
 %Number of cells in x-direction [-]
@@ -12,11 +12,18 @@ Gen.Nx = 101;                                                   %[1,1]
 %Number of cells in y-direction [-]
 Gen.Ny = 121;                                                   %[1,1]  
 %Reservoir length in x-direction [m]
-Gen.Lx = 700;                                                    %[1,1]   
+Gen.Lx = 1;                                                    %[1,1]   
 %Reservoir length in y-direction [m]
-Gen.Ly = 500;                                                    %[1,1]    
+Gen.Ly = 1;                                                    %[1,1]    
 %Reservoir height [m]
 Gen.Lz = 1;                                                     %[1,1]  
+
+%% - Use permeability creator, comment out later permeability initiation
+filepath = 'GitHub_Invertocat_White.png';
+k_min = 1e-12;    % [m^2]
+k_max = 1e-18;    % [m^2]
+[Flow.kx0,Gen.Nx] = image2permeability(filepath,k_min,k_max,Gen.Ny);
+Flow.ky0 = Flow.kx0;
 
 %% - Basic Calculations
 %Total number of elements
@@ -36,27 +43,27 @@ Storage.x = reshape(xc',1,Gen.Nx*Gen.Ny);                        %[1,N]
 Storage.y = reshape(yc',1,Gen.Nx*Gen.Ny);                        %[1,N]
 
 %% - Flow Model
-%x-direction
-%Permeability, of left edges [m^2]
-kx_left = 1e-12;                                                %[1,1] 
-%Permeability, of right zone [m^2]
-kx_right = 1e-12;                                               %[1,1] 
-%Permeability left edge bands length [m]
-Lx_k = 2;                                                       %[1,1] 
-%Permeability [m^2] 
-Flow.kx0 = kx_right*ones(Gen.Nx*Gen.Ny,1);                      %[1,1]
-Flow.kx0(Storage.x < Lx_k) = kx_left;
-
-%y-direction
-%Permeability, of left edges [m^2]
-ky_left = 1e-12;                                                %[1,1] 
-%Permeability, of right zone [m^2]
-ky_right = 1e-12;                                               %[1,1] 
-%Permeability left edge bands length [m]
-Ly_k = 2;                                                       %[1,1] 
-%Permeability [m^2] 
-Flow.ky0 = ky_right*ones(Gen.Nx*Gen.Ny,1);                      %[1,1]
-Flow.ky0(Storage.y < Ly_k) = ky_left;
+% %x-direction
+% %Permeability, of left edges [m^2]
+% kx_left = 1e-12;                                                %[1,1] 
+% %Permeability, of right zone [m^2]
+% kx_right = 1e-12;                                               %[1,1] 
+% %Permeability left edge bands length [m]
+% Lx_k = 2;                                                       %[1,1] 
+% %Permeability [m^2] 
+% Flow.kx0 = kx_right*ones(Gen.Nx*Gen.Ny,1);                      %[1,1]
+% Flow.kx0(Storage.x < Lx_k) = kx_left;
+% 
+% %y-direction
+% %Permeability, of left edges [m^2]
+% ky_left = 1e-12;                                                %[1,1] 
+% %Permeability, of right zone [m^2]
+% ky_right = 1e-12;                                               %[1,1] 
+% %Permeability left edge bands length [m]
+% Ly_k = 2;                                                       %[1,1] 
+% %Permeability [m^2] 
+% Flow.ky0 = ky_right*ones(Gen.Nx*Gen.Ny,1);                      %[1,1]
+% Flow.ky0(Storage.y < Ly_k) = ky_left;
 
 %"Compressibility" of permeability
 Flow.ck = 0e-8;                                                 %[1,1] 
@@ -81,7 +88,7 @@ Flow.phiP0 = 1e5;                                               %[1,1]
 
 
 %Fluid compressibility [1/Pa]
-Flow.cf = 1e-10;                                                 %[1,1]          
+Flow.cf = 1e-8;                                                 %[1,1]          
 %Fluid viscosity [Pa sec]
 Flow.muf = .1;                                                  %[1,1]           
 %Reference density [kg/m^3]
@@ -92,12 +99,12 @@ Flow.RhoP = 1e5;                                                %[1,1]
 %% - Wells
 % Constant pressure wells
 %Row vector of well pressures [Pa]
-Wells.P = [5e7 1e7];                                            %[1,Nwells]
+Wells.P = [5e7 5e7 5e7 5e7];                                            %[1,Nwells]
 %Well indexes [m]
-Wells.WI = [0 0];                                               %[1,Nwells]
+Wells.WI = [1e7 1e7 1e7 1e7];                                               %[1,Nwells]
 % Well locations [m]
-Wells.xP = [10 0];                                              %[1,Nwells]
-Wells.yP = [10 0];                                              %[1,Nwells]
+Wells.xP = [Gen.Lx 0 Gen.Lx 0];                                              %[1,Nwells]
+Wells.yP = [Gen.Ly 0 0 Gen.Ly];                                              %[1,Nwells]
     
 %Find the cells of these wells
 Wells.Loc_P = zeros(size(Wells.xP));
@@ -107,7 +114,7 @@ end
 
 %Constant rate wells (always keep at least a zero contribution in one cell
 %Define constant rate [kg/sec]
-Wells.Q = 1;                                                    %[1,Nwells_Q]
+Wells.Q = 0;                                                    %[1,Nwells_Q]
 Wells.xQ = Gen.Lx/2;                                                   %[1,Nwells_Q]
 Wells.yQ = Gen.Ly/2;                                                   %[1,Nwells_Q]
 
@@ -132,7 +139,7 @@ State.step = 1;                                                 %[1,1]
 
 %% - Storage matrices
 %Number of points to store
-TStore = 5;                                                     %[1,1]
+TStore = min([200,floor(Gen.tf/Gen.tstep)]);                    %[1,1]
 %Get storage times
 Storage.TStorage = 0:Gen.tf/TStore:Gen.tf;                      %[1,TStore]
 Storage.TStorage = floor(Storage.TStorage/Gen.tstep)*Gen.tstep; %[1,TStore]
