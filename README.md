@@ -363,11 +363,11 @@ Fluid flow
 - Two operational phases; pressure increase then decrease due to source
 
 <p align="center">
-<img width="3500" height="3938" alt="Image" src="Auxillary/Images_Readme/sim10.png" />
+<img width="3500" height="3938" alt="Image" src="Auxillary/Images_Readme/sim10_pressure_crack.gif" />
 </p>
 
 <p align="center">
-  <strong>Figure.</strong> An example figure showing two simulation runs produced by sim10; one with and one without pre-production. Figure published in Fryer et al., 2023, <em>JGR: Solid Earth</em>.
+  <strong>Figure.</strong> An example showing a simulation run produced by sim10</em>.
 </p>
 
 ---

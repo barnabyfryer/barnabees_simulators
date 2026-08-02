@@ -50,15 +50,15 @@ close all
 
 %% - Inputs
 %Decrease of pore pressure during production
-dP_prod = -0.2;
+dP_prod = -0.5;
 %Duration of production phase
-dt_prod = 1e10;
+dt_prod = 10;
 %Increase of pore pressure due to injection
-dP_inj = 0.7;
+dP_inj = 0.4;
 %Residual friction
 f_r = 0.6;
 %Background stress
-tau_b = 0.744;
+tau_b = 0.8;
 %Number of points along each crack, discretization
 N = 301;
 
@@ -83,10 +83,10 @@ Plotting.gap = 0.2;        % space between axes and colorbar
 Plotting.gap2 = -0.6;        % space between axes and colorbar
 
 %% - Computed crack lengths
-aa = linspace(0,2,843*3);
-bb = linspace(2,30,843*3);
+aa = linspace(0,9,843*2);
+bb = linspace(9,10,843);
 %Crack lengths to evaluate
-a = [aa bb];
+a = [aa];
 
 %Remove duplicates
 a = unique(sort(a(2:end)));
@@ -490,6 +490,146 @@ set(fh2, 'Color','white')
 set(ax2, 'Box','off', 'TickDir','out');
 
 axis([0 20 0 2])
+
+%% - Make gif
+xplot = logspace(-3,2,100);
+pplot = xplot;
+
+fh = figure;
+set(fh,'Color','white')
+
+t = tiledlayout(1,2,'TileSpacing','compact','Padding','compact');
+
+% Left: pressure
+ax1 = nexttile;
+hold on
+hpL = plot(ax1,xplot,xplot,...
+    'k-','LineWidth',Plotting.lwidth_1col);
+hpL2 = plot(ax1,[1e-3 1e-3],[-0.5 0.4],...
+    'k--','LineWidth',Plotting.lwidth_1col);
+set(ax1,...
+    'Box','off',...
+    'TickDir','out',...
+    'FontSize',Plotting.fsize_1col,...
+    'TickLabelInterpreter','latex')
+xlabel(ax1,'Location, $$\tilde{x}$$','Interpreter','latex')
+ylabel(ax1,'Pressure, $$\tilde{P}$$','Interpreter','latex')
+ylim(ax1,[-0.5 0.4])
+xlim([0 10])
+lgd = legend([hpL2],'Crack position','Location','southeast');
+set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+legend box off
+
+
+% Right: crack length
+ax2 = nexttile;
+hold on
+hp = plot(ax2,time(1),a(1),'k-','LineWidth',Plotting.lwidth_1col);
+hp2 = plot(ax2,time(1),a(1),'--','Color',[0.5 0.5 0.5],'LineWidth',Plotting.lwidth_1col);
+hp3 = plot(ax2,time(1),a(1),'k-','LineWidth',Plotting.lwidth_1col);
+hp4 = plot(ax2,time(1),a(1),'--','Color',[0.5 0.5 0.5],'LineWidth',Plotting.lwidth_1col);
+
+hp5 = plot(ax2,-time(1),-a(1),'ko','LineWidth',Plotting.lwidth_1col,'MarkerFaceColor','w','MarkerSize',4);
+hp6 = plot(ax2,-time(1),-a(1),'ko','LineWidth',Plotting.lwidth_1col,'MarkerFaceColor',[0.5 0.5 0.5],'MarkerSize',4);
+hp7 = plot(ax2,-time(1),-a(1),'ko','LineWidth',Plotting.lwidth_1col,'MarkerFaceColor','k','MarkerSize',4);
+
+set(ax2,'Box','off',...
+    'TickDir','out',...
+    'FontSize',Plotting.fsize_1col,...
+    'TickLabelInterpreter','latex')
+
+xlabel(ax2,'Time, $$\tilde{t}$$','Interpreter','latex')
+ylabel(ax2,'Crack Length, $$\tilde{a}$$','Interpreter','latex')
+ylim([0 10])
+xlim([0 3])
+
+lgd = legend([hp5 hp6 hp7],'Nucleation','Arrest','Re-nucleation','Location','west');
+set(lgd,'Interpreter','latex','fontsize',Plotting.fsize_1col)
+legend box off
+
+d = diff(time);
+idx_fstart = find(d < 0,1);
+idx_fend = find(time > time(idx_fstart),1);
+[t_max_all,idx_mstart] = max(time);
+
+for i = 1:20:length(a)
+
+    %Current max crack length
+    [t_max,idx] = max(time(1:i));
+
+    if i > idx_fstart
+        %Plot 2 solid line
+        hp.XData = time(1:idx_fstart);
+        hp.YData = a(1:idx_fstart);
+        %Mark fs onset
+        hp5.XData = time(idx_fstart);
+        hp5.YData = a(idx_fstart);
+        if i > idx_fend
+            %Plot 2 dashed line
+            hp2.XData = time(idx_fstart:idx_fend);
+            hp2.YData = a(idx_fstart:idx_fend);
+            %Arrest
+            hp6.XData = time(idx_fend);
+            hp6.YData = a(idx_fend);
+            if i > idx_mstart
+                %Plot 2 solid line after fs
+                hp3.XData = time(idx_fend:idx_mstart);
+                hp3.YData = a(idx_fend:idx_mstart);
+                %Plot 2 dashed line ms
+                hp4.XData = time(idx_mstart:i);
+                hp4.YData = a(idx_mstart:i);
+                %Main shock
+                hp7.XData = time(idx_mstart);
+                hp7.YData = a(idx_mstart);
+            else
+                %Plot 2 solid line after fs
+                hp3.XData = time(idx_fend:i);
+                hp3.YData = a(idx_fend:i);
+            end
+        else
+            %Plot 2 dashed line
+            hp2.XData = time(idx_fstart:i);
+            hp2.YData = a(idx_fstart:i);
+        end
+    else
+        %Plot 2 solid line
+        hp.XData = time(1:i);
+        hp.YData = a(1:i);
+    end
+
+
+    %Plot 1 pressure
+    pressure = dP_prod.*erfc(xplot/(t_max^2+dt_prod^2)^.5) +...
+    (dP_inj-dP_prod).*erfc(xplot/t_max);
+    hpL.YData = pressure;
+    %Plot 1 crack position
+    hpL2.XData = [a(i) a(i)];
+    if a(i) > 4
+        hpL2.YData = [-0.4 0.4];
+    end
+
+    drawnow
+
+    exportgraphics(fh,...
+        sprintf('Readme_images/frame_%04d.png',i),...
+        'Resolution',200)
+
+end
+
+files = dir('Readme_images/frame_*.png');
+
+for k = 1:length(files)
+    img = imread(fullfile(files(k).folder,files(k).name));
+    [A,map] = rgb2ind(img,256);
+
+    if k == 1
+        imwrite(A,map,'Readme_images/sim10_pressure_crack.gif',...
+            'gif','LoopCount',Inf,'DelayTime',0.08);
+    else
+        imwrite(A,map,'Readme_images/sim10_pressure_crack.gif',...
+            'gif','WriteMode','append','DelayTime',0.08);
+    end
+end
 
 
 %% - Small scale yielding function
