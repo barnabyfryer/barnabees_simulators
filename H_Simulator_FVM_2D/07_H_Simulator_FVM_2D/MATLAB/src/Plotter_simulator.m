@@ -161,7 +161,7 @@ colormap(gray)
 
 % Animation loop
 
-for i = [1:10 15:10:length(Storage.TStorage)]
+for i = [1:10:length(Storage.TStorage)]
 
     % Update pressure
     hpL.CData = reshape(Storage.P(i,:)/1e6,Gen.Nx,Gen.Ny)';
@@ -183,10 +183,10 @@ for k = 1:length(files)
 
     if k == 1
         imwrite(A,map,'Readme_images/sim07_pressure.gif',...
-            'gif','LoopCount',Inf,'DelayTime',0.08);
+            'gif','LoopCount',Inf,'DelayTime',0.3);
     else
         imwrite(A,map,'Readme_images/sim07_pressure.gif',...
-            'gif','WriteMode','append','DelayTime',0.08);
+            'gif','WriteMode','append','DelayTime',0.3);
     end
 end
 
