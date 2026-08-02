@@ -402,7 +402,7 @@ Friction and fracture
 </p>
 
 <p align="center">
-  <strong>Figure.</strong> An example showing a simulation run produced by sim11.
+  <strong>Figure.</strong> An example showing three different simulation runs produced by sim11, reproducing the three regimes discussed in Fryer et al., 2026 *Nature*.
 </p>
 
 ---
