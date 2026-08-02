@@ -303,7 +303,7 @@ A two-dimensional mechanics simulator based on the Finite Element Method (FEM) w
 
 **Notes**
 
-This model is used in the publications Fryer et al., 2018 JGR: Solid Earth and Fryer et al., 2019, PAGEOPH.
+This model is used in the publications Fryer et al., 2018 *JGR: Solid Earth* and Fryer et al., 2019, *PAGEOPH*.
 
 **Assumptions**
 
@@ -344,7 +344,7 @@ A one-dimensional crack propagation model based on linear slip weakening and por
 
 Mathias Lebihain is credited with the writing of the first version of the simulator, which was done in Python.
 
-This model is used in the publication Fryer et al., 2023 JGR: Solid Earth.
+This model is used in the publication Fryer et al., 2023 *JGR: Solid Earth*.
 
 **Assumptions**
 
@@ -386,7 +386,7 @@ A one-dimensional Griffith-like crack propagation model with rate-and-state fric
 
 This model was written co-jointly with Mathias Lebihain.
 
-This model is used in the publication Fryer et al., 2026 Nature.
+This model is used in the publication Fryer et al., 2026 *Nature*.
 
 **Assumptions**
 
