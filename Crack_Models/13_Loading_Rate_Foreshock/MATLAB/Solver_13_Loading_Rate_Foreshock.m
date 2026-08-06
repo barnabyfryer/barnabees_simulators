@@ -1,6 +1,6 @@
 %% - Main file to run
 % Script solving the EoM of (Garagash, Phil. Trans. Roy. Soc, 2021)
-% Used in Fryer et al., 2026, Nature
+% but updated by Barnaby Fryer to include the effect of loading rate
 % Authors: Barnaby Fryer, Mathias Lebihain, Dmitry Garagash, François Passelègue
 % Contact: barnaby.fryer@geoazur.unice.fr
 
@@ -12,13 +12,13 @@ lwidth = 1.4;
 
 %% -------------------- Parameters --------------------
 % Friction parameters
-Param.a_over_b = 1.1;            %a/b
-Param.Delta_f0_over_b_in = 1;       %Initial overstress
-Param.rs_type = "aging";          %'slip' or 'aging'
+Param.a_over_b = 1.1;                                   %a/b
+Param.Delta_f0_over_b_in = 1;                           %Initial overstress
+Param.rs_type = "aging";                                %'slip' or 'aging'
 
-Param.V0_over_Vs = 1e-10;       %Ambient sliding velocity
+Param.V0_over_Vs = 1e-10;                               %Ambient sliding velocity
 
-Param.Loading_rate = 1;         %Loading rate df0/b per unit of t/ts where ts = L/V0
+Param.Loading_rate = 1;                                 %Loading rate df0/b per unit of t/ts where ts = L/V0
 
 % Approximate minimum of 𝒱 from G21
 Param.V_min = 2.138;
@@ -27,8 +27,8 @@ Param.V_min = 2.138;
 cs = 1800;
 
 %% -------------------- Crack-length domain --------------------
-l_ini_over_lb = 1;    % initial crack length
-l_fin_over_lb = 1e4;     % final crack length
+l_ini_over_lb = 1;                                      % initial crack length
+l_fin_over_lb = 1e4;                                    % final crack length
 
 %% -------------------- Solver tolerances --------------------
 % Recommended both 1e-9 for aging law, 1e-10 for slip law

@@ -12,15 +12,15 @@ lwidth = 1.4;
 
 %% -------------------- Parameters --------------------
 % Friction parameters
-Param.a_over_b = 0.9;            %a/b
-Param.Delta_f0_over_b = -1;       %Overstress
-Param.rs_type = "aging";          %'slip' or 'aging'
+Param.a_over_b = 0.9;                                   %a/b
+Param.Delta_f0_over_b = -1;                             %Overstress
+Param.rs_type = "aging";                                %'slip' or 'aging'
 
 % Foreshock and rupture parameters
-delta_a_over_L = 1.25e-6 / 0.192e-6;       %Foreshock slip divided by L
-Param.V0_over_Vs = 1e-10; %Ambient sliding velocity
+delta_a_over_L = 1.25e-6 / 0.192e-6;                    %Foreshock slip divided by L
+Param.V0_over_Vs = 1e-10;                               %Ambient sliding velocity
 
-C = 0.3;                                   %Coefficient for hypocentral force
+C = 0.3;                                                %Coefficient for hypocentral force
 
 % Approximate minimum of 𝒱 from G21
 Param.V_min = 2.138;
@@ -29,8 +29,8 @@ Param.V_min = 2.138;
 cs = 1800;
 
 %% -------------------- Crack-length domain --------------------
-l_ini_over_lb = 3e-5;    % initial crack length
-l_fin_over_lb = 5e2;     % final crack length
+l_ini_over_lb = 3e-5;                                   % initial crack length
+l_fin_over_lb = 5e2;                                    % final crack length
 
 %% -------------------- Solver tolerances --------------------
 % Recommended both 1e-9 for aging law, 1e-10 for slip law
@@ -128,7 +128,7 @@ plot(t_over_ts,l_over_lb,'k','LineWidth',lwidth)
 if reason > 0
     plot(t_over_ts(ind_nuc),l_over_lb(ind_nuc),'ko','LineWidth',lwidth,'MarkerFaceColor','w')
 end
-xlab = xlabel('$$t/t_{\mathrm{s}}\times c_{\mathrm{s}}/v0$$ [-]');
+xlab = xlabel('$$t/t_{\mathrm{s}}\times c_{\mathrm{s}}/v_0$$ [-]');
 ylab = ylabel('$$\ell/\ell_b$$ [-]');
 set(xlab,'Interpreter','latex','fontsize',fsize)
 set(ylab,'Interpreter','latex','fontsize',fsize)
@@ -142,7 +142,7 @@ plot(t_over_ts,vr_over_cs,'k','LineWidth',lwidth)
 if reason > 0
     plot(t_over_ts(ind_nuc),vr_over_cs(ind_nuc),'ko','LineWidth',lwidth,'MarkerFaceColor','w')
 end
-xlab = xlabel('$$t/t_{\mathrm{s}}\times c_{\mathrm{s}}/v0$$ [-]');
+xlab = xlabel('$$t/t_{\mathrm{s}}\times c_{\mathrm{s}}/v_0$$ [-]');
 ylab = ylabel('$$v_{\mathrm{r}}/c_{\mathrm{s}}$$ [-]');
 set(xlab,'Interpreter','latex','fontsize',fsize)
 set(ylab,'Interpreter','latex','fontsize',fsize)
@@ -156,7 +156,7 @@ plot(t_over_ts,V_eff,'k','LineWidth',lwidth)
 if reason > 0
     plot(t_over_ts(ind_nuc),V_eff(ind_nuc),'ko','LineWidth',lwidth,'MarkerFaceColor','w')
 end
-xlab = xlabel('$$t/t_{\mathrm{s}}\times c_{\mathrm{s}}/v0$$ [-]');
+xlab = xlabel('$$t/t_{\mathrm{s}}\times c_{\mathrm{s}}/v_0$$ [-]');
 ylab = ylabel('$$V_{\mathrm{eff}}/V_0$$ [-]');
 set(xlab,'Interpreter','latex','fontsize',fsize)
 set(ylab,'Interpreter','latex','fontsize',fsize)
