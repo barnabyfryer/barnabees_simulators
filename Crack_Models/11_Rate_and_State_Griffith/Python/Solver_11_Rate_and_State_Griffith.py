@@ -309,6 +309,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
             raise RuntimeError("The solver stopped without handled reasons. Check it manually.")
 
     V_over_V0 = Veff_over_V0(l_over_lb, vr_over_cs)
+    t_over_ts = t_over_ts * V0_over_Vs
     return t_over_ts, l_over_lb, vr_over_cs, V_over_V0, reason
 
 # Solve
@@ -349,7 +350,7 @@ plt.ylim(bar_v0_over_cs, 1.2)
 plt.tight_layout()
 plt.show()
 
-# Plot crack slip rate versus crack length
+# Plot crack length versus crack slip rate
 plt.plot(l_over_lb, V_over_V0, color='black')
 plt.xlabel(r'Crack length $\ell/\ell_b$', fontsize=20)
 plt.ylabel(r'Slip velocity $V_{eff}/V_0$', fontsize=20)
