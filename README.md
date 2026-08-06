@@ -435,7 +435,7 @@ Friction and fracture
 - Linear slip weakening injection only
 - Loading rate Griffith
 - Rubin and Ampuero 2005
--Uenishi and Rice 2003
+- Uenishi and Rice 2003
 
 ---
 

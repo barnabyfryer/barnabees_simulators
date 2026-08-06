@@ -38,7 +38,7 @@ V0_over_Vs = 1e-10
 # Scaled overstress
 Δf0_over_b = 1
 # Type of R&S law: "slip" or "aging"
-rs_type = "slip"
+rs_type = "aging"
 
 ########################################################################################
 # Compute associated parameters
@@ -47,7 +47,6 @@ rs_type = "slip"
 C = 0.3
 # Scaled hypocentral force
 ΔT = C * δ_a_over_L
-ΔT = 50
 # Scaled ambient rupture velocity
 v0_over_cs = V0_over_Vs
 # Scaled \bar{v}_0
@@ -308,12 +307,13 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
             vr_over_cs = np.concatenate([vr_over_cs[:i_restart+1], v_cont_over_cs, v_end_over_cs])
         else:
             raise RuntimeError("The solver stopped without handled reasons. Check it manually.")
-    return t_over_ts, l_over_lb, vr_over_cs, reason
+
+    V_over_V0 = Veff_over_V0(l_over_lb, vr_over_cs)
+    return t_over_ts, l_over_lb, vr_over_cs, V_over_V0, reason
 
 # Solve
 l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
-l_ini_over_lb, l_fin_over_lb = .01, 1E4
-t_over_ts, l_over_lb, vr_over_cs, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT)
+t_over_ts, l_over_lb, vr_over_cs, V_over_V0, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT)
 
 # Export file
 filename = (
@@ -324,8 +324,8 @@ filename = (
     f"_ab_{fmt(a_over_b)}.csv"
 )
 #filename = f"Output/EoM_{rs_type:s}_Df_{Δf0_over_b:.0f}_DT_{ΔT:.2f}_V0_{V0_over_Vs:.2f}_ab_{a_over_b:.2f}.csv"
-header = "t_over_ts_times_cs_over_v0; l_over_lb; vr_over_cs"
-data = np.column_stack((t_over_ts, l_over_lb, vr_over_cs))
+header = "t_over_ts_times_cs_over_v0; l_over_lb; vr_over_cs; Veff_over_V0"
+data = np.column_stack((t_over_ts, l_over_lb, vr_over_cs, V_over_V0))
 np.savetxt(filename, data, delimiter="; ", header=header, comments='')
 
 # Plot crack velocity versus crack length
@@ -334,7 +334,7 @@ plt.xlabel(r'Crack length $\ell/\ell_b$', fontsize=20)
 plt.ylabel(r'Crack velocity $v_r/v_0$', fontsize=20)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlim(1E-1, 1E4)
+plt.xlim(1E-4, 1E4)
 plt.ylim(0.5, 2e10)
 plt.tight_layout()
 plt.show()
@@ -349,14 +349,13 @@ plt.ylim(bar_v0_over_cs, 1.2)
 plt.tight_layout()
 plt.show()
 
-# Plot time versus rupture velocity
-plt.plot(7.32489240602825e-03 * t_over_ts[1:], 1345 * vr_over_cs[1:], color='black')
-plt.xlabel(r'Time $t$ (s)', fontsize=20)
-plt.ylabel(r'Rupture velocity $v_r$ (m/s)', fontsize=20)
+# Plot crack slip rate versus crack length
+plt.plot(l_over_lb, V_over_V0, color='black')
+plt.xlabel(r'Crack length $\ell/\ell_b$', fontsize=20)
+plt.ylabel(r'Slip velocity $V_{eff}/V_0$', fontsize=20)
 plt.xscale('log')
 plt.yscale('log')
-plt.xlim(0.03, 20)
-plt.ylim(0.01, 1000)
+plt.xlim(1E-4, 1E4)
+plt.ylim(0.5, 1e11)
 plt.tight_layout()
 plt.show()
-
