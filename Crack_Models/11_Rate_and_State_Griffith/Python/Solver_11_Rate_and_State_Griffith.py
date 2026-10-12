@@ -17,12 +17,14 @@ import matplotlib.pyplot as plt
 # use double-precision in JAX
 jax.config.update("jax_enable_x64", True)
 
-#Function to help with file naming for outputs
+
+# Function to help with file naming for outputs
 def fmt(x):
     return (f"{x:g}"
             .replace(".", "p")
             .replace("-", "m")
             .replace("+", ""))
+
 
 ########################################################################################
 # Unwrap parameters
@@ -52,6 +54,7 @@ v0_over_cs = V0_over_Vs
 # Scaled \bar{v}_0
 bar_v0_over_cs = jnp.exp(-Δf0_over_b) * v0_over_cs
 
+
 ########################################################################################
 # EoM functionals
 
@@ -60,33 +63,35 @@ def safe_m(v):
     # m = 1 - v^2, but never let it hit exactly 1.0
     return jnp.clip(1.0 - v ** 2, 0.0, 1.0 - 1e-14)
 
+
 # Function g for mode III
-g = lambda vr_over_cs : jnp.sqrt(1 - vr_over_cs**2)
+g = lambda vr_over_cs: jnp.sqrt(1 - vr_over_cs ** 2)
 # Function k for mode III
-k = lambda vr_over_cs : jnp.sqrt(1 - vr_over_cs**2) / ellipe(safe_m(vr_over_cs))
+k = lambda vr_over_cs: jnp.sqrt(1 - vr_over_cs ** 2) / ellipe(safe_m(vr_over_cs))
 
 # 𝓕 of P, G21's Eq. (3.12), assuming P = 0
 𝓕 = 1
 # Prefactor κ0 (between 0.838 and 0.916 from G21) - taken as average value
-if (rs_type=='slip'):
+if (rs_type == 'slip'):
     κ0 = 0.838
-elif (rs_type=='aging'):
-    κ0 = 0.916 # rough approximation
+elif (rs_type == 'aging'):
+    κ0 = 0.916  # rough approximation
 else:
     raise ValueError('The friction law must be the slip law or the aging law.')
 # Define real dilog from spence function
-Li2 = lambda z : spence(1-z)
+Li2 = lambda z: spence(1 - z)
 # 𝒱 function of G21's Eq. (2.17)
-if (rs_type=='slip'):
-    𝒱 = lambda ζ : κ0 * jnp.exp(ζ) / jnp.cbrt(ζ)**2
-elif (rs_type=='aging'):
-    𝒱 = lambda ζ : κ0 * -jnp.exp(ζ) * jnp.cbrt(1-jnp.exp(-ζ)) * jnp.cbrt(Li2(1-jnp.exp(ζ))) / jnp.cbrt(ζ)**4
+if (rs_type == 'slip'):
+    𝒱 = lambda ζ: κ0 * jnp.exp(ζ) / jnp.cbrt(ζ) ** 2
+elif (rs_type == 'aging'):
+    𝒱 = lambda ζ: κ0 * -jnp.exp(ζ) * jnp.cbrt(1 - jnp.exp(-ζ)) * jnp.cbrt(Li2(1 - jnp.exp(ζ))) / jnp.cbrt(ζ) ** 4
 else:
     raise ValueError('The friction law must be the slip law or the aging law.')
 # χ function of G21's Eq. (2.17)
-χ = lambda ζ : 𝒱(ζ) * jnp.exp(-ζ)
+χ = lambda ζ: 𝒱(ζ) * jnp.exp(-ζ)
 # Approximate minimum value of 𝒱 from G21
 𝒱_min = 2.138
+
 
 # Invert Δfp_over_b using G21's method
 def Δfp_over_b(vr_over_cs):
@@ -102,48 +107,51 @@ def Δfp_over_b(vr_over_cs):
         ζ = jnp.log(V / χ(ζ))
     return ζ
 
+
 # Scaled fracture energy, G21's Eq. (2.12)
-if (rs_type=='slip'):
-    Gc = lambda vr_over_cs : Δfp_over_b(vr_over_cs)
-elif (rs_type=='aging'):
-    Gc = lambda vr_over_cs : - Li2(1 - jnp.exp(Δfp_over_b(vr_over_cs)))
+if (rs_type == 'slip'):
+    Gc = lambda vr_over_cs: Δfp_over_b(vr_over_cs)
+elif (rs_type == 'aging'):
+    Gc = lambda vr_over_cs: - Li2(1 - jnp.exp(Δfp_over_b(vr_over_cs)))
 else:
     raise ValueError('The friction law must be the slip law or the aging law.')
 # Scaled toughness
-Kc = lambda vr_over_cs : jnp.sqrt(2 * Gc(vr_over_cs) * g(vr_over_cs) / k(vr_over_cs)**2)
+Kc = lambda vr_over_cs: jnp.sqrt(2 * Gc(vr_over_cs) * g(vr_over_cs) / k(vr_over_cs) ** 2)
 # Scaled effective velocity
-Veff_over_V0 = lambda l_over_lb, vr_over_cs : k(vr_over_cs)/g(vr_over_cs) * 4*Kc(vr_over_cs) * vr_over_cs/v0_over_cs / jnp.sqrt(jnp.pi * l_over_lb) * 𝓕
+Veff_over_V0 = lambda l_over_lb, vr_over_cs: k(vr_over_cs) / g(vr_over_cs) * 4 * Kc(
+    vr_over_cs) * vr_over_cs / v0_over_cs / jnp.sqrt(jnp.pi * l_over_lb) * 𝓕
 # Scaled effective stress
-Δτ_eff = lambda l_over_lb, vr_over_cs : Δf0_over_b - (a_over_b - 1) * jnp.log(Veff_over_V0(l_over_lb, vr_over_cs))
+Δτ_eff = lambda l_over_lb, vr_over_cs: Δf0_over_b - (a_over_b - 1) * jnp.log(Veff_over_V0(l_over_lb, vr_over_cs))
 # Background SIF
-K_Δτ = lambda l_over_lb, vr_over_cs : Δτ_eff(l_over_lb, vr_over_cs) * jnp.sqrt(jnp.pi * l_over_lb)
+K_Δτ = lambda l_over_lb, vr_over_cs: Δτ_eff(l_over_lb, vr_over_cs) * jnp.sqrt(jnp.pi * l_over_lb)
 # Foreshock SIF
-K_ΔT = lambda l_over_lb, ΔT : ΔT / jnp.sqrt(jnp.pi * l_over_lb)
+K_ΔT = lambda l_over_lb, ΔT: ΔT / jnp.sqrt(jnp.pi * l_over_lb)
 
 ########################################################################################
 # EoM solution
 
 # Residue
-EoM_objective = lambda l_over_lb, vr_over_cs, ΔT : K_Δτ(l_over_lb, vr_over_cs) + K_ΔT(l_over_lb, ΔT) - Kc(vr_over_cs)
+EoM_objective = lambda l_over_lb, vr_over_cs, ΔT: K_Δτ(l_over_lb, vr_over_cs) + K_ΔT(l_over_lb, ΔT) - Kc(vr_over_cs)
 EoM_dl = jax.jit(jax.grad(EoM_objective, argnums=0))
 EoM_dv = jax.jit(jax.grad(EoM_objective, argnums=1))
+
 
 # Find rupture velocity for v_r/c_s for any crack length l/l_b - used only to initialize the ODE
 def initialize(l_over_lb, ΔT, method='brentq'):
     # Bounds on tested velocities
     vmin_over_cs = 𝒱_min * bar_v0_over_cs
-    vmax_over_cs = 1-1E-12
+    vmax_over_cs = 1 - 1E-12
     # First guess on the velocity - This is usually quite high due to foreshock
     v_guess_over_cs = 0.9
     # Find root if possible
     if (EoM_objective(l_over_lb, vmin_over_cs, ΔT) * EoM_objective(l_over_lb, vmax_over_cs, ΔT) <= 0):
         # Function
-        func = lambda vr_over_cs : EoM_objective(l_over_lb, vr_over_cs, ΔT)
+        func = lambda vr_over_cs: EoM_objective(l_over_lb, vr_over_cs, ΔT)
         # Gradient
-        grad = lambda vr_over_cs : EoM_dv(l_over_lb, vr_over_cs, ΔT)
+        grad = lambda vr_over_cs: EoM_dv(l_over_lb, vr_over_cs, ΔT)
         # Solve for root of the EoM
         results = root_scalar(func, method=method, fprime=grad, \
-                                x0=v_guess_over_cs, bracket=(vmin_over_cs, vmax_over_cs))
+                              x0=v_guess_over_cs, bracket=(vmin_over_cs, vmax_over_cs))
         # Check convergence
         if (results.converged):
             print("Initialization success.")
@@ -151,30 +159,32 @@ def initialize(l_over_lb, ΔT, method='brentq'):
         else:
             raise RuntimeError("The root-finding algorithm in l did not converge.")
     else:
-        raise RuntimeError("The root-finding algorithm in l could not start. Decrease the initial crack length l_ini/lb.")
+        raise RuntimeError(
+            "The root-finding algorithm in l could not start. Decrease the initial crack length l_ini/lb.")
 
 
 # Find rupture velocity for v_r/c_s for any crack length l/l_b - used only to initialize the ODE
 def solve_root_in_l(l_over_lb, ΔT, v_guess_over_cs):
     # Function
-    func = lambda vr_over_cs : EoM_objective(l_over_lb, vr_over_cs, ΔT)
+    func = lambda vr_over_cs: EoM_objective(l_over_lb, vr_over_cs, ΔT)
     # Gradient
-    grad = lambda vr_over_cs : EoM_dv(l_over_lb, vr_over_cs, ΔT)
+    grad = lambda vr_over_cs: EoM_dv(l_over_lb, vr_over_cs, ΔT)
     # Solve for root of the EoM
     results = root_scalar(func, fprime=grad, x0=v_guess_over_cs)
-     
+
     # Check convergence
     if (results.converged):
         return results.root
     else:
         raise RuntimeError("The root-finding in v algorithm did not converge.")
 
+
 # Find crack length l/l_b for any rupture velocity for v_r/c_s - used to handle the stiff portion of the ODE
 def solve_root_in_v(vr_over_cs, ΔT, l_guess_over_lb):
     # Function
-    func = lambda l_over_lb : EoM_objective(l_over_lb, vr_over_cs, ΔT)
+    func = lambda l_over_lb: EoM_objective(l_over_lb, vr_over_cs, ΔT)
     # Gradient
-    grad = lambda l_over_lb : EoM_dl(l_over_lb, vr_over_cs, ΔT)
+    grad = lambda l_over_lb: EoM_dl(l_over_lb, vr_over_cs, ΔT)
     # Solve for root of the EoM
     results = root_scalar(func, fprime=grad, x0=l_guess_over_lb)
     # Check convergence
@@ -183,8 +193,10 @@ def solve_root_in_v(vr_over_cs, ΔT, l_guess_over_lb):
     else:
         raise RuntimeError("The root-finding in v algorithm did not converge.")
 
+
 # Find time t/t_s for different crack length l/l_b - using the idea of Dmitry reformulating the fixed points equation into a second-order ODE
-def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb = 1E-6, rtol=1E-9, atol=1E-9, max_steps=10000):
+def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb=1E-6, rtol=1E-9, atol=1E-9,
+                   max_steps=10000):
     # Right-hand side
     def formulate_ode_in_l(l_over_lb, y, args):
         # Time t/t_s and its first derivative with respect to crack length l_over_lb
@@ -192,39 +204,43 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
         # Args
         ΔT, = args
         # Rupture velocity
-        vr_over_cs = 1/t_over_ts_prime
-        
+        vr_over_cs = 1 / t_over_ts_prime
+
         # Kill higher-order derivatives through EoM_dl / EoM_dv for the stiff version
         num = EoM_dl(l_over_lb, vr_over_cs, ΔT)
         den = EoM_dv(l_over_lb, vr_over_cs, ΔT)
-        
+
         # Second derivative from the EoM
-        t_over_ts_second = 1/vr_over_cs**2 * num / den
+        t_over_ts_second = 1 / vr_over_cs ** 2 * num / den
         # Total derivative
         d_y = t_over_ts_prime, t_over_ts_second
         return d_y
+
     # Terms
     terms = dfx.ODETerm(formulate_ode_in_l)
-    
+
     # Initial condition
     t_ini_over_ts = 0
     v_ini_over_cs = initialize(l_ini_over_lb, ΔT)
-    
+
     # Start with an explicit solver for the non-stiff part
     solver = dfx.Tsit5()
     # Step size controller
     stepsize_controller = dfx.PIDController(rtol=rtol, atol=atol)
-    
+
     # Saved crack length
-    l_save_over_lb = jnp.logspace(np.log10(l_ini_over_lb), np.log10(l_fin_over_lb), endpoint=True, num=N_steps, base=10.)
+    l_save_over_lb = jnp.logspace(np.log10(l_ini_over_lb), np.log10(l_fin_over_lb), endpoint=True, num=N_steps,
+                                  base=10.)
     saveat = dfx.SaveAt(ts=l_save_over_lb)
-    
+
     # Termination procedure if the rupture velocity drops down below ~ the ambient velocity
     v_thres = 𝒱_min * bar_v0_over_cs
+
     def terminate_if_too_slow(l_over_lb, y, args, **kwargs):
-        return 1/y[1] < v_thres
+        return 1 / y[1] < v_thres
+
     event_stop = dfx.Event(terminate_if_too_slow)
-    
+
     # Solve
     sol = dfx.diffeqsolve(
         terms,
@@ -232,20 +248,20 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
         l_ini_over_lb,
         l_fin_over_lb,
         Δl_over_lb,
-        (t_ini_over_ts, 1/v_ini_over_cs),
+        (t_ini_over_ts, 1 / v_ini_over_cs),
         saveat=saveat,
-        stepsize_controller = stepsize_controller,
-        args = (ΔT, ),
-        event = event_stop,
-        max_steps = max_steps,
-        throw = False
+        stepsize_controller=stepsize_controller,
+        args=(ΔT,),
+        event=event_stop,
+        max_steps=max_steps,
+        throw=False
     )
-    
+
     # Get solutions
     l_over_lb = sol.ts
     t_over_ts = sol.ys[0]
-    vr_over_cs = 1/sol.ys[1]
-    
+    vr_over_cs = 1 / sol.ys[1]
+
     # Heuristic stopping reasons
     # 0: v below threshold
     if (sol.result == dfx.RESULTS.event_occurred):
@@ -266,12 +282,13 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
             v_max_over_cs = 0.8
             # Log-spaced velocities
             N_cont = 100
-            v_cont_over_cs = np.logspace(np.log10(v_min_over_cs), np.log10(v_max_over_cs), num=N_cont, endpoint=True, base=10.)
+            v_cont_over_cs = np.logspace(np.log10(v_min_over_cs), np.log10(v_max_over_cs), num=N_cont, endpoint=True,
+                                         base=10.)
             l_cont_over_lb = np.zeros(N_cont, dtype=float)
             l_cont_over_lb[0] = float(l_over_lb[i_restart])
             # Compute them
             for i in range(1, N_cont):
-                l_cont_over_lb[i] = solve_root_in_v(v_cont_over_cs[i], ΔT, l_cont_over_lb[i-1])
+                l_cont_over_lb[i] = solve_root_in_v(v_cont_over_cs[i], ΔT, l_cont_over_lb[i - 1])
             # Integrate for time
             t_cont_over_ts = np.zeros(N_cont)
             t_cont_over_ts[0] = t_over_ts[i_restart]
@@ -280,7 +297,7 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
             dt = dl / v_ave
             t_cont_over_ts = t_over_ts[i_restart] + np.concatenate(([0.0], np.cumsum(dt)))
             # Start again with ODE until maximum crack length
-            l_end_over_lb = l_save_over_lb[l_save_over_lb>l_cont_over_lb[-1]]
+            l_end_over_lb = l_save_over_lb[l_save_over_lb > l_cont_over_lb[-1]]
             # Solve
             saveat = dfx.SaveAt(ts=l_end_over_lb)
             sol = dfx.diffeqsolve(
@@ -289,32 +306,37 @@ def solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT, N_steps=1000, Δl_over_lb 
                 l_cont_over_lb[-1],
                 l_end_over_lb[-1],
                 Δl_over_lb,
-                (t_cont_over_ts[-1], 1/v_cont_over_cs[-1]),
+                (t_cont_over_ts[-1], 1 / v_cont_over_cs[-1]),
                 saveat=saveat,
-                stepsize_controller = stepsize_controller,
-                args = (ΔT, ),
-                event = event_stop,
-                max_steps = max_steps,
-                throw = False
+                stepsize_controller=stepsize_controller,
+                args=(ΔT,),
+                event=event_stop,
+                max_steps=max_steps,
+                throw=False
             )
             # Get solutions
             l_end_over_lb = sol.ts
             t_end_over_ts = sol.ys[0]
-            v_end_over_cs = 1/sol.ys[1]
+            v_end_over_cs = 1 / sol.ys[1]
             # Assemble solutions
-            l_over_lb = np.concatenate([l_over_lb[:i_restart+1], l_cont_over_lb, l_end_over_lb])
-            t_over_ts = np.concatenate([t_over_ts[:i_restart+1], t_cont_over_ts, t_end_over_ts])
-            vr_over_cs = np.concatenate([vr_over_cs[:i_restart+1], v_cont_over_cs, v_end_over_cs])
+            l_over_lb = np.concatenate([l_over_lb[:i_restart + 1], l_cont_over_lb, l_end_over_lb])
+            t_over_ts = np.concatenate([t_over_ts[:i_restart + 1], t_cont_over_ts, t_end_over_ts])
+            vr_over_cs = np.concatenate([vr_over_cs[:i_restart + 1], v_cont_over_cs, v_end_over_cs])
         else:
             raise RuntimeError("The solver stopped without handled reasons. Check it manually.")
 
     V_over_V0 = Veff_over_V0(l_over_lb, vr_over_cs)
     t_over_ts = t_over_ts * V0_over_Vs
-    return t_over_ts, l_over_lb, vr_over_cs, V_over_V0, reason
+    K_bg = K_Δτ(l_over_lb, vr_over_cs)
+    K_fs = K_ΔT(l_over_lb, ΔT)
+    Kc_calc = Kc(vr_over_cs)
+    return t_over_ts, l_over_lb, vr_over_cs, V_over_V0, K_bg, K_fs, Kc_calc, reason
+
 
 # Solve
 l_ini_over_lb, l_fin_over_lb = 3E-5, 1E4
-t_over_ts, l_over_lb, vr_over_cs, V_over_V0, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb, ΔT)
+t_over_ts, l_over_lb, vr_over_cs, V_over_V0, K_bg, K_fs, Kc_calc, reason = solve_ode_in_l(l_ini_over_lb, l_fin_over_lb,
+                                                                                          ΔT)
 
 # Export file
 filename = (
@@ -324,13 +346,13 @@ filename = (
     f"_V0_{fmt(V0_over_Vs)}"
     f"_ab_{fmt(a_over_b)}.csv"
 )
-#filename = f"Output/EoM_{rs_type:s}_Df_{Δf0_over_b:.0f}_DT_{ΔT:.2f}_V0_{V0_over_Vs:.2f}_ab_{a_over_b:.2f}.csv"
-header = "t_over_ts_times_cs_over_v0; l_over_lb; vr_over_cs; Veff_over_V0"
-data = np.column_stack((t_over_ts, l_over_lb, vr_over_cs, V_over_V0))
+# filename = f"Output/EoM_{rs_type:s}_Df_{Δf0_over_b:.0f}_DT_{ΔT:.2f}_V0_{V0_over_Vs:.2f}_ab_{a_over_b:.2f}.csv"
+header = "t_over_ts; l_over_lb; vr_over_cs; Veff_over_V0; K_bg_norm; K_fs_norm; Kc_calc_norm"
+data = np.column_stack((t_over_ts * V0_over_Vs, l_over_lb, vr_over_cs, V_over_V0, K_bg, K_fs, Kc_calc))
 np.savetxt(filename, data, delimiter="; ", header=header, comments='')
 
 # Plot crack velocity versus crack length
-plt.plot(l_over_lb, vr_over_cs/v0_over_cs, color='black')
+plt.plot(l_over_lb, vr_over_cs / v0_over_cs, color='black')
 plt.xlabel(r'Crack length $\ell/\ell_b$', fontsize=20)
 plt.ylabel(r'Crack velocity $v_r/v_0$', fontsize=20)
 plt.xscale('log')

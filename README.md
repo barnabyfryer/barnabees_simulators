@@ -416,7 +416,7 @@ Friction and fracture
 - Multiphase flow (immiscible)
 - Compositional flow
 
-### Thermal (H)
+### Thermal (T)
 
 - Heat equation
 

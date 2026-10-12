@@ -25,3 +25,9 @@ __pycache__/
 **/Readme_images/*.gif
 **/Readme_images/*.m
 **/Readme_images/*.csv
+
+
+# Simulators in preparation, untracked files
+**/12_Loading_Rate/
+**/12_T_Simulator_FVM_1D_Homogeneous/
+**/x_Fluid_Injection_Griffith/
